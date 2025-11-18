@@ -3,19 +3,20 @@
 import typing
 
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
+from ..core.pagination import AsyncPager, SyncPager
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawAgentManagementClient, RawAgentManagementClient
-from .types.agent_interrupt_response import AgentInterruptResponse
-from .types.agent_speak_request_priority import AgentSpeakRequestPriority
-from .types.agent_speak_response import AgentSpeakResponse
-from .types.get_agent_history_response import GetAgentHistoryResponse
-from .types.list_agents_request_state import ListAgentsRequestState
-from .types.list_agents_response import ListAgentsResponse
-from .types.query_agent_status_response import QueryAgentStatusResponse
-from .types.start_agent_request_properties import StartAgentRequestProperties
-from .types.start_agent_response import StartAgentResponse
-from .types.update_agent_request_properties import UpdateAgentRequestProperties
-from .types.update_agent_response import UpdateAgentResponse
+from .types.agent_management_get_history_response import AgentManagementGetHistoryResponse
+from .types.agent_management_get_response import AgentManagementGetResponse
+from .types.agent_management_interrupt_response import AgentManagementInterruptResponse
+from .types.agent_management_list_request_state import AgentManagementListRequestState
+from .types.agent_management_list_response_data_list_item import AgentManagementListResponseDataListItem
+from .types.agent_management_speak_request_priority import AgentManagementSpeakRequestPriority
+from .types.agent_management_speak_response import AgentManagementSpeakResponse
+from .types.agent_management_start_request_properties import AgentManagementStartRequestProperties
+from .types.agent_management_start_response import AgentManagementStartResponse
+from .types.agent_management_update_request_properties import AgentManagementUpdateRequestProperties
+from .types.agent_management_update_response import AgentManagementUpdateResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -36,14 +37,14 @@ class AgentManagementClient:
         """
         return self._raw_client
 
-    def start_agent(
+    def start(
         self,
         appid: str,
         *,
         name: str,
-        properties: StartAgentRequestProperties,
+        properties: AgentManagementStartRequestProperties,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> StartAgentResponse:
+    ) -> AgentManagementStartResponse:
         """
         Create and start a Conversational AI agent instance.
 
@@ -55,7 +56,7 @@ class AgentManagementClient:
         name : str
             The unique identifier of the agent. The same identifier cannot be used repeatedly.
 
-        properties : StartAgentRequestProperties
+        properties : AgentManagementStartRequestProperties
             Configuration details of the agent.
 
         request_options : typing.Optional[RequestOptions]
@@ -63,40 +64,40 @@ class AgentManagementClient:
 
         Returns
         -------
-        StartAgentResponse
+        AgentManagementStartResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
         --------
         from agoraio import Agora
         from agoraio.agent_management import (
-            StartAgentRequestProperties,
-            StartAgentRequestPropertiesAdvancedFeatures,
-            StartAgentRequestPropertiesAsr,
-            StartAgentRequestPropertiesLlm,
-            StartAgentRequestPropertiesTts,
+            AgentManagementStartRequestProperties,
+            AgentManagementStartRequestPropertiesAdvancedFeatures,
+            AgentManagementStartRequestPropertiesAsr,
+            AgentManagementStartRequestPropertiesLlm,
+            AgentManagementStartRequestPropertiesTts,
         )
 
         client = Agora(
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
-        client.agent_management.start_agent(
+        client.agent_management.start(
             appid="appid",
             name="unique_name",
-            properties=StartAgentRequestProperties(
+            properties=AgentManagementStartRequestProperties(
                 channel="channel_name",
                 token="token",
                 agent_rtc_uid="1001",
                 remote_rtc_uids=["1002"],
                 idle_timeout=120,
-                advanced_features=StartAgentRequestPropertiesAdvancedFeatures(
+                advanced_features=AgentManagementStartRequestPropertiesAdvancedFeatures(
                     enable_aivad=True,
                 ),
-                asr=StartAgentRequestPropertiesAsr(
+                asr=AgentManagementStartRequestPropertiesAsr(
                     language="en-US",
                 ),
-                tts=StartAgentRequestPropertiesTts(
+                tts=AgentManagementStartRequestPropertiesTts(
                     vendor="microsoft",
                     params={
                         "key": "<your_tts_api_key>",
@@ -104,7 +105,7 @@ class AgentManagementClient:
                         "voice_name": "en-US-AndrewMultilingualNeural",
                     },
                 ),
-                llm=StartAgentRequestPropertiesLlm(
+                llm=AgentManagementStartRequestPropertiesLlm(
                     url="https://api.openai.com/v1/chat/completions",
                     api_key="<your_llm_key>",
                     system_messages=[
@@ -118,23 +119,21 @@ class AgentManagementClient:
             ),
         )
         """
-        _response = self._raw_client.start_agent(
-            appid, name=name, properties=properties, request_options=request_options
-        )
+        _response = self._raw_client.start(appid, name=name, properties=properties, request_options=request_options)
         return _response.data
 
-    def list_agents(
+    def list(
         self,
         appid: str,
         *,
         channel: typing.Optional[str] = None,
         from_time: typing.Optional[float] = None,
         to_time: typing.Optional[float] = None,
-        state: typing.Optional[ListAgentsRequestState] = None,
+        state: typing.Optional[AgentManagementListRequestState] = None,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> ListAgentsResponse:
+    ) -> SyncPager[AgentManagementListResponseDataListItem]:
         """
         Retrieve a list of agents that meet the specified conditions.
 
@@ -152,7 +151,7 @@ class AgentManagementClient:
         to_time : typing.Optional[float]
             The end timestamp (in seconds) for the query. Default is current time.
 
-        state : typing.Optional[ListAgentsRequestState]
+        state : typing.Optional[AgentManagementListRequestState]
             The agent state to filter by. Only one state can be specified per query:
             - `IDLE` (0): Agent is idle.
             - `STARTING` (1): The agent is being started.
@@ -173,7 +172,7 @@ class AgentManagementClient:
 
         Returns
         -------
-        ListAgentsResponse
+        SyncPager[AgentManagementListResponseDataListItem]
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -184,7 +183,7 @@ class AgentManagementClient:
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
-        client.agent_management.list_agents(
+        response = client.agent_management.list(
             appid="appid",
             channel="channel",
             from_time=1.1,
@@ -193,8 +192,13 @@ class AgentManagementClient:
             limit=1,
             cursor="cursor",
         )
+        for item in response:
+            yield item
+        # alternatively, you can paginate page-by-page
+        for page in response.iter_pages():
+            yield page
         """
-        _response = self._raw_client.list_agents(
+        return self._raw_client.list(
             appid,
             channel=channel,
             from_time=from_time,
@@ -204,11 +208,10 @@ class AgentManagementClient:
             cursor=cursor,
             request_options=request_options,
         )
-        return _response.data
 
-    def query_agent_status(
+    def get(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> QueryAgentStatusResponse:
+    ) -> AgentManagementGetResponse:
         """
         Get the current state information of the specified agent instance.
 
@@ -225,7 +228,7 @@ class AgentManagementClient:
 
         Returns
         -------
-        QueryAgentStatusResponse
+        AgentManagementGetResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -236,17 +239,17 @@ class AgentManagementClient:
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
-        client.agent_management.query_agent_status(
+        client.agent_management.get(
             appid="appid",
             agent_id="agentId",
         )
         """
-        _response = self._raw_client.query_agent_status(appid, agent_id, request_options=request_options)
+        _response = self._raw_client.get(appid, agent_id, request_options=request_options)
         return _response.data
 
-    def get_agent_history(
+    def get_history(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> GetAgentHistoryResponse:
+    ) -> AgentManagementGetHistoryResponse:
         """
         Get the history of the conversation between the user and the agent.
 
@@ -265,7 +268,7 @@ class AgentManagementClient:
 
         Returns
         -------
-        GetAgentHistoryResponse
+        AgentManagementGetHistoryResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -276,15 +279,15 @@ class AgentManagementClient:
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
-        client.agent_management.get_agent_history(
+        client.agent_management.get_history(
             appid="appid",
             agent_id="agentId",
         )
         """
-        _response = self._raw_client.get_agent_history(appid, agent_id, request_options=request_options)
+        _response = self._raw_client.get_history(appid, agent_id, request_options=request_options)
         return _response.data
 
-    def stop_agent(self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> None:
+    def stop(self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> None:
         """
         Stop the specified conversational agent instance.
 
@@ -311,22 +314,22 @@ class AgentManagementClient:
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
-        client.agent_management.stop_agent(
+        client.agent_management.stop(
             appid="appid",
             agent_id="agentId",
         )
         """
-        _response = self._raw_client.stop_agent(appid, agent_id, request_options=request_options)
+        _response = self._raw_client.stop(appid, agent_id, request_options=request_options)
         return _response.data
 
-    def update_agent(
+    def update(
         self,
         appid: str,
         agent_id: str,
         *,
-        properties: typing.Optional[UpdateAgentRequestProperties] = OMIT,
+        properties: typing.Optional[AgentManagementUpdateRequestProperties] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> UpdateAgentResponse:
+    ) -> AgentManagementUpdateResponse:
         """
         Adjust Conversation AI Engine parameters at runtime.
 
@@ -338,7 +341,7 @@ class AgentManagementClient:
         agent_id : str
             The agent instance ID you obtained after successfully calling `join` to start a conversational AI agent.
 
-        properties : typing.Optional[UpdateAgentRequestProperties]
+        properties : typing.Optional[AgentManagementUpdateRequestProperties]
             Configuration properties to update.
 
         request_options : typing.Optional[RequestOptions]
@@ -346,27 +349,27 @@ class AgentManagementClient:
 
         Returns
         -------
-        UpdateAgentResponse
+        AgentManagementUpdateResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
         --------
         from agoraio import Agora
         from agoraio.agent_management import (
-            UpdateAgentRequestProperties,
-            UpdateAgentRequestPropertiesLlm,
+            AgentManagementUpdateRequestProperties,
+            AgentManagementUpdateRequestPropertiesLlm,
         )
 
         client = Agora(
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
-        client.agent_management.update_agent(
+        client.agent_management.update(
             appid="appid",
             agent_id="agentId",
-            properties=UpdateAgentRequestProperties(
+            properties=AgentManagementUpdateRequestProperties(
                 token="007eJxTYxxxxxxxxxxIaHMLAAAA0ex66",
-                llm=UpdateAgentRequestPropertiesLlm(
+                llm=AgentManagementUpdateRequestPropertiesLlm(
                     system_messages=[
                         {
                             "role": "system",
@@ -382,21 +385,19 @@ class AgentManagementClient:
             ),
         )
         """
-        _response = self._raw_client.update_agent(
-            appid, agent_id, properties=properties, request_options=request_options
-        )
+        _response = self._raw_client.update(appid, agent_id, properties=properties, request_options=request_options)
         return _response.data
 
-    def agent_speak(
+    def speak(
         self,
         appid: str,
         agent_id: str,
         *,
         text: str,
-        priority: typing.Optional[AgentSpeakRequestPriority] = OMIT,
+        priority: typing.Optional[AgentManagementSpeakRequestPriority] = OMIT,
         interruptable: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AgentSpeakResponse:
+    ) -> AgentManagementSpeakResponse:
         """
         Broadcast a custom message using the TTS module.
 
@@ -415,7 +416,7 @@ class AgentManagementClient:
         text : str
             The broadcast message text. The maximum length of the text content is 512 bytes.
 
-        priority : typing.Optional[AgentSpeakRequestPriority]
+        priority : typing.Optional[AgentManagementSpeakRequestPriority]
             Sets the priority of the message broadcast:
             - `INTERRUPT`: High priority. The agent immediately interrupts the current interaction to announce the message.
             - `APPEND`: Medium priority. The agent announces the message after the current interaction ends.
@@ -431,7 +432,7 @@ class AgentManagementClient:
 
         Returns
         -------
-        AgentSpeakResponse
+        AgentManagementSpeakResponse
             Request was successful. The agent starts to broadcast the specified message.
 
         Examples
@@ -442,7 +443,7 @@ class AgentManagementClient:
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
-        client.agent_management.agent_speak(
+        client.agent_management.speak(
             appid="appid",
             agent_id="agentId",
             text="Sorry, the conversation content is not compliant.",
@@ -450,14 +451,14 @@ class AgentManagementClient:
             interruptable=False,
         )
         """
-        _response = self._raw_client.agent_speak(
+        _response = self._raw_client.speak(
             appid, agent_id, text=text, priority=priority, interruptable=interruptable, request_options=request_options
         )
         return _response.data
 
-    def agent_interrupt(
+    def interrupt(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AgentInterruptResponse:
+    ) -> AgentManagementInterruptResponse:
         """
         Interrupt the specified agent while speaking or thinking.
 
@@ -474,7 +475,7 @@ class AgentManagementClient:
 
         Returns
         -------
-        AgentInterruptResponse
+        AgentManagementInterruptResponse
             Request was successful. The response body contains agent information and the agent stops talking and thinking immediately.
 
         Examples
@@ -485,12 +486,12 @@ class AgentManagementClient:
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
-        client.agent_management.agent_interrupt(
+        client.agent_management.interrupt(
             appid="appid",
             agent_id="agentId",
         )
         """
-        _response = self._raw_client.agent_interrupt(appid, agent_id, request_options=request_options)
+        _response = self._raw_client.interrupt(appid, agent_id, request_options=request_options)
         return _response.data
 
 
@@ -509,14 +510,14 @@ class AsyncAgentManagementClient:
         """
         return self._raw_client
 
-    async def start_agent(
+    async def start(
         self,
         appid: str,
         *,
         name: str,
-        properties: StartAgentRequestProperties,
+        properties: AgentManagementStartRequestProperties,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> StartAgentResponse:
+    ) -> AgentManagementStartResponse:
         """
         Create and start a Conversational AI agent instance.
 
@@ -528,7 +529,7 @@ class AsyncAgentManagementClient:
         name : str
             The unique identifier of the agent. The same identifier cannot be used repeatedly.
 
-        properties : StartAgentRequestProperties
+        properties : AgentManagementStartRequestProperties
             Configuration details of the agent.
 
         request_options : typing.Optional[RequestOptions]
@@ -536,7 +537,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        StartAgentResponse
+        AgentManagementStartResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -545,11 +546,11 @@ class AsyncAgentManagementClient:
 
         from agoraio import AsyncAgora
         from agoraio.agent_management import (
-            StartAgentRequestProperties,
-            StartAgentRequestPropertiesAdvancedFeatures,
-            StartAgentRequestPropertiesAsr,
-            StartAgentRequestPropertiesLlm,
-            StartAgentRequestPropertiesTts,
+            AgentManagementStartRequestProperties,
+            AgentManagementStartRequestPropertiesAdvancedFeatures,
+            AgentManagementStartRequestPropertiesAsr,
+            AgentManagementStartRequestPropertiesLlm,
+            AgentManagementStartRequestPropertiesTts,
         )
 
         client = AsyncAgora(
@@ -559,22 +560,22 @@ class AsyncAgentManagementClient:
 
 
         async def main() -> None:
-            await client.agent_management.start_agent(
+            await client.agent_management.start(
                 appid="appid",
                 name="unique_name",
-                properties=StartAgentRequestProperties(
+                properties=AgentManagementStartRequestProperties(
                     channel="channel_name",
                     token="token",
                     agent_rtc_uid="1001",
                     remote_rtc_uids=["1002"],
                     idle_timeout=120,
-                    advanced_features=StartAgentRequestPropertiesAdvancedFeatures(
+                    advanced_features=AgentManagementStartRequestPropertiesAdvancedFeatures(
                         enable_aivad=True,
                     ),
-                    asr=StartAgentRequestPropertiesAsr(
+                    asr=AgentManagementStartRequestPropertiesAsr(
                         language="en-US",
                     ),
-                    tts=StartAgentRequestPropertiesTts(
+                    tts=AgentManagementStartRequestPropertiesTts(
                         vendor="microsoft",
                         params={
                             "key": "<your_tts_api_key>",
@@ -582,7 +583,7 @@ class AsyncAgentManagementClient:
                             "voice_name": "en-US-AndrewMultilingualNeural",
                         },
                     ),
-                    llm=StartAgentRequestPropertiesLlm(
+                    llm=AgentManagementStartRequestPropertiesLlm(
                         url="https://api.openai.com/v1/chat/completions",
                         api_key="<your_llm_key>",
                         system_messages=[
@@ -599,23 +600,23 @@ class AsyncAgentManagementClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.start_agent(
+        _response = await self._raw_client.start(
             appid, name=name, properties=properties, request_options=request_options
         )
         return _response.data
 
-    async def list_agents(
+    async def list(
         self,
         appid: str,
         *,
         channel: typing.Optional[str] = None,
         from_time: typing.Optional[float] = None,
         to_time: typing.Optional[float] = None,
-        state: typing.Optional[ListAgentsRequestState] = None,
+        state: typing.Optional[AgentManagementListRequestState] = None,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> ListAgentsResponse:
+    ) -> AsyncPager[AgentManagementListResponseDataListItem]:
         """
         Retrieve a list of agents that meet the specified conditions.
 
@@ -633,7 +634,7 @@ class AsyncAgentManagementClient:
         to_time : typing.Optional[float]
             The end timestamp (in seconds) for the query. Default is current time.
 
-        state : typing.Optional[ListAgentsRequestState]
+        state : typing.Optional[AgentManagementListRequestState]
             The agent state to filter by. Only one state can be specified per query:
             - `IDLE` (0): Agent is idle.
             - `STARTING` (1): The agent is being started.
@@ -654,7 +655,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        ListAgentsResponse
+        AsyncPager[AgentManagementListResponseDataListItem]
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -670,7 +671,7 @@ class AsyncAgentManagementClient:
 
 
         async def main() -> None:
-            await client.agent_management.list_agents(
+            response = await client.agent_management.list(
                 appid="appid",
                 channel="channel",
                 from_time=1.1,
@@ -679,11 +680,17 @@ class AsyncAgentManagementClient:
                 limit=1,
                 cursor="cursor",
             )
+            async for item in response:
+                yield item
+
+            # alternatively, you can paginate page-by-page
+            async for page in response.iter_pages():
+                yield page
 
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.list_agents(
+        return await self._raw_client.list(
             appid,
             channel=channel,
             from_time=from_time,
@@ -693,11 +700,10 @@ class AsyncAgentManagementClient:
             cursor=cursor,
             request_options=request_options,
         )
-        return _response.data
 
-    async def query_agent_status(
+    async def get(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> QueryAgentStatusResponse:
+    ) -> AgentManagementGetResponse:
         """
         Get the current state information of the specified agent instance.
 
@@ -714,7 +720,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        QueryAgentStatusResponse
+        AgentManagementGetResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -730,7 +736,7 @@ class AsyncAgentManagementClient:
 
 
         async def main() -> None:
-            await client.agent_management.query_agent_status(
+            await client.agent_management.get(
                 appid="appid",
                 agent_id="agentId",
             )
@@ -738,12 +744,12 @@ class AsyncAgentManagementClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.query_agent_status(appid, agent_id, request_options=request_options)
+        _response = await self._raw_client.get(appid, agent_id, request_options=request_options)
         return _response.data
 
-    async def get_agent_history(
+    async def get_history(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> GetAgentHistoryResponse:
+    ) -> AgentManagementGetHistoryResponse:
         """
         Get the history of the conversation between the user and the agent.
 
@@ -762,7 +768,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        GetAgentHistoryResponse
+        AgentManagementGetHistoryResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -778,7 +784,7 @@ class AsyncAgentManagementClient:
 
 
         async def main() -> None:
-            await client.agent_management.get_agent_history(
+            await client.agent_management.get_history(
                 appid="appid",
                 agent_id="agentId",
             )
@@ -786,12 +792,10 @@ class AsyncAgentManagementClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.get_agent_history(appid, agent_id, request_options=request_options)
+        _response = await self._raw_client.get_history(appid, agent_id, request_options=request_options)
         return _response.data
 
-    async def stop_agent(
-        self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> None:
+    async def stop(self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> None:
         """
         Stop the specified conversational agent instance.
 
@@ -823,7 +827,7 @@ class AsyncAgentManagementClient:
 
 
         async def main() -> None:
-            await client.agent_management.stop_agent(
+            await client.agent_management.stop(
                 appid="appid",
                 agent_id="agentId",
             )
@@ -831,17 +835,17 @@ class AsyncAgentManagementClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.stop_agent(appid, agent_id, request_options=request_options)
+        _response = await self._raw_client.stop(appid, agent_id, request_options=request_options)
         return _response.data
 
-    async def update_agent(
+    async def update(
         self,
         appid: str,
         agent_id: str,
         *,
-        properties: typing.Optional[UpdateAgentRequestProperties] = OMIT,
+        properties: typing.Optional[AgentManagementUpdateRequestProperties] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> UpdateAgentResponse:
+    ) -> AgentManagementUpdateResponse:
         """
         Adjust Conversation AI Engine parameters at runtime.
 
@@ -853,7 +857,7 @@ class AsyncAgentManagementClient:
         agent_id : str
             The agent instance ID you obtained after successfully calling `join` to start a conversational AI agent.
 
-        properties : typing.Optional[UpdateAgentRequestProperties]
+        properties : typing.Optional[AgentManagementUpdateRequestProperties]
             Configuration properties to update.
 
         request_options : typing.Optional[RequestOptions]
@@ -861,7 +865,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        UpdateAgentResponse
+        AgentManagementUpdateResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -870,8 +874,8 @@ class AsyncAgentManagementClient:
 
         from agoraio import AsyncAgora
         from agoraio.agent_management import (
-            UpdateAgentRequestProperties,
-            UpdateAgentRequestPropertiesLlm,
+            AgentManagementUpdateRequestProperties,
+            AgentManagementUpdateRequestPropertiesLlm,
         )
 
         client = AsyncAgora(
@@ -881,12 +885,12 @@ class AsyncAgentManagementClient:
 
 
         async def main() -> None:
-            await client.agent_management.update_agent(
+            await client.agent_management.update(
                 appid="appid",
                 agent_id="agentId",
-                properties=UpdateAgentRequestProperties(
+                properties=AgentManagementUpdateRequestProperties(
                     token="007eJxTYxxxxxxxxxxIaHMLAAAA0ex66",
-                    llm=UpdateAgentRequestPropertiesLlm(
+                    llm=AgentManagementUpdateRequestPropertiesLlm(
                         system_messages=[
                             {
                                 "role": "system",
@@ -905,21 +909,21 @@ class AsyncAgentManagementClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.update_agent(
+        _response = await self._raw_client.update(
             appid, agent_id, properties=properties, request_options=request_options
         )
         return _response.data
 
-    async def agent_speak(
+    async def speak(
         self,
         appid: str,
         agent_id: str,
         *,
         text: str,
-        priority: typing.Optional[AgentSpeakRequestPriority] = OMIT,
+        priority: typing.Optional[AgentManagementSpeakRequestPriority] = OMIT,
         interruptable: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AgentSpeakResponse:
+    ) -> AgentManagementSpeakResponse:
         """
         Broadcast a custom message using the TTS module.
 
@@ -938,7 +942,7 @@ class AsyncAgentManagementClient:
         text : str
             The broadcast message text. The maximum length of the text content is 512 bytes.
 
-        priority : typing.Optional[AgentSpeakRequestPriority]
+        priority : typing.Optional[AgentManagementSpeakRequestPriority]
             Sets the priority of the message broadcast:
             - `INTERRUPT`: High priority. The agent immediately interrupts the current interaction to announce the message.
             - `APPEND`: Medium priority. The agent announces the message after the current interaction ends.
@@ -954,7 +958,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        AgentSpeakResponse
+        AgentManagementSpeakResponse
             Request was successful. The agent starts to broadcast the specified message.
 
         Examples
@@ -970,7 +974,7 @@ class AsyncAgentManagementClient:
 
 
         async def main() -> None:
-            await client.agent_management.agent_speak(
+            await client.agent_management.speak(
                 appid="appid",
                 agent_id="agentId",
                 text="Sorry, the conversation content is not compliant.",
@@ -981,14 +985,14 @@ class AsyncAgentManagementClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.agent_speak(
+        _response = await self._raw_client.speak(
             appid, agent_id, text=text, priority=priority, interruptable=interruptable, request_options=request_options
         )
         return _response.data
 
-    async def agent_interrupt(
+    async def interrupt(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AgentInterruptResponse:
+    ) -> AgentManagementInterruptResponse:
         """
         Interrupt the specified agent while speaking or thinking.
 
@@ -1005,7 +1009,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        AgentInterruptResponse
+        AgentManagementInterruptResponse
             Request was successful. The response body contains agent information and the agent stops talking and thinking immediately.
 
         Examples
@@ -1021,7 +1025,7 @@ class AsyncAgentManagementClient:
 
 
         async def main() -> None:
-            await client.agent_management.agent_interrupt(
+            await client.agent_management.interrupt(
                 appid="appid",
                 agent_id="agentId",
             )
@@ -1029,5 +1033,5 @@ class AsyncAgentManagementClient:
 
         asyncio.run(main())
         """
-        _response = await self._raw_client.agent_interrupt(appid, agent_id, request_options=request_options)
+        _response = await self._raw_client.interrupt(appid, agent_id, request_options=request_options)
         return _response.data

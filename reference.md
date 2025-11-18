@@ -1,6 +1,6 @@
 # Reference
 ## Agent Management
-<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">start_agent</a>(...)</code></summary>
+<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">start</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -29,33 +29,33 @@ Create and start a Conversational AI agent instance.
 ```python
 from agoraio import Agora
 from agoraio.agent_management import (
-    StartAgentRequestProperties,
-    StartAgentRequestPropertiesAdvancedFeatures,
-    StartAgentRequestPropertiesAsr,
-    StartAgentRequestPropertiesLlm,
-    StartAgentRequestPropertiesTts,
+    AgentManagementStartRequestProperties,
+    AgentManagementStartRequestPropertiesAdvancedFeatures,
+    AgentManagementStartRequestPropertiesAsr,
+    AgentManagementStartRequestPropertiesLlm,
+    AgentManagementStartRequestPropertiesTts,
 )
 
 client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.agent_management.start_agent(
+client.agent_management.start(
     appid="appid",
     name="unique_name",
-    properties=StartAgentRequestProperties(
+    properties=AgentManagementStartRequestProperties(
         channel="channel_name",
         token="token",
         agent_rtc_uid="1001",
         remote_rtc_uids=["1002"],
         idle_timeout=120,
-        advanced_features=StartAgentRequestPropertiesAdvancedFeatures(
+        advanced_features=AgentManagementStartRequestPropertiesAdvancedFeatures(
             enable_aivad=True,
         ),
-        asr=StartAgentRequestPropertiesAsr(
+        asr=AgentManagementStartRequestPropertiesAsr(
             language="en-US",
         ),
-        tts=StartAgentRequestPropertiesTts(
+        tts=AgentManagementStartRequestPropertiesTts(
             vendor="microsoft",
             params={
                 "key": "<your_tts_api_key>",
@@ -63,7 +63,7 @@ client.agent_management.start_agent(
                 "voice_name": "en-US-AndrewMultilingualNeural",
             },
         ),
-        llm=StartAgentRequestPropertiesLlm(
+        llm=AgentManagementStartRequestPropertiesLlm(
             url="https://api.openai.com/v1/chat/completions",
             api_key="<your_llm_key>",
             system_messages=[
@@ -107,7 +107,7 @@ client.agent_management.start_agent(
 <dl>
 <dd>
 
-**properties:** `StartAgentRequestProperties` — Configuration details of the agent.
+**properties:** `AgentManagementStartRequestProperties` — Configuration details of the agent.
     
 </dd>
 </dl>
@@ -127,7 +127,7 @@ client.agent_management.start_agent(
 </dl>
 </details>
 
-<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">list_agents</a>(...)</code></summary>
+<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">list</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -160,7 +160,7 @@ client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.agent_management.list_agents(
+response = client.agent_management.list(
     appid="appid",
     channel="channel",
     from_time=1.1,
@@ -169,6 +169,11 @@ client.agent_management.list_agents(
     limit=1,
     cursor="cursor",
 )
+for item in response:
+    yield item
+# alternatively, you can paginate page-by-page
+for page in response.iter_pages():
+    yield page
 
 ```
 </dd>
@@ -216,7 +221,7 @@ client.agent_management.list_agents(
 <dl>
 <dd>
 
-**state:** `typing.Optional[ListAgentsRequestState]` 
+**state:** `typing.Optional[AgentManagementListRequestState]` 
 
 The agent state to filter by. Only one state can be specified per query:
 - `IDLE` (0): Agent is idle.
@@ -261,7 +266,7 @@ The agent state to filter by. Only one state can be specified per query:
 </dl>
 </details>
 
-<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">query_agent_status</a>(...)</code></summary>
+<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">get</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -294,7 +299,7 @@ client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.agent_management.query_agent_status(
+client.agent_management.get(
     appid="appid",
     agent_id="agentId",
 )
@@ -341,7 +346,7 @@ client.agent_management.query_agent_status(
 </dl>
 </details>
 
-<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">get_agent_history</a>(...)</code></summary>
+<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">get_history</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -376,7 +381,7 @@ client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.agent_management.get_agent_history(
+client.agent_management.get_history(
     appid="appid",
     agent_id="agentId",
 )
@@ -423,7 +428,7 @@ client.agent_management.get_agent_history(
 </dl>
 </details>
 
-<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">stop_agent</a>(...)</code></summary>
+<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">stop</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -456,7 +461,7 @@ client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.agent_management.stop_agent(
+client.agent_management.stop(
     appid="appid",
     agent_id="agentId",
 )
@@ -503,7 +508,7 @@ client.agent_management.stop_agent(
 </dl>
 </details>
 
-<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">update_agent</a>(...)</code></summary>
+<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">update</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -532,20 +537,20 @@ Adjust Conversation AI Engine parameters at runtime.
 ```python
 from agoraio import Agora
 from agoraio.agent_management import (
-    UpdateAgentRequestProperties,
-    UpdateAgentRequestPropertiesLlm,
+    AgentManagementUpdateRequestProperties,
+    AgentManagementUpdateRequestPropertiesLlm,
 )
 
 client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.agent_management.update_agent(
+client.agent_management.update(
     appid="appid",
     agent_id="agentId",
-    properties=UpdateAgentRequestProperties(
+    properties=AgentManagementUpdateRequestProperties(
         token="007eJxTYxxxxxxxxxxIaHMLAAAA0ex66",
-        llm=UpdateAgentRequestPropertiesLlm(
+        llm=AgentManagementUpdateRequestPropertiesLlm(
             system_messages=[
                 {
                     "role": "system",
@@ -591,7 +596,7 @@ client.agent_management.update_agent(
 <dl>
 <dd>
 
-**properties:** `typing.Optional[UpdateAgentRequestProperties]` — Configuration properties to update.
+**properties:** `typing.Optional[AgentManagementUpdateRequestProperties]` — Configuration properties to update.
     
 </dd>
 </dl>
@@ -611,7 +616,7 @@ client.agent_management.update_agent(
 </dl>
 </details>
 
-<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">agent_speak</a>(...)</code></summary>
+<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">speak</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -648,7 +653,7 @@ client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.agent_management.agent_speak(
+client.agent_management.speak(
     appid="appid",
     agent_id="agentId",
     text="Sorry, the conversation content is not compliant.",
@@ -694,7 +699,7 @@ client.agent_management.agent_speak(
 <dl>
 <dd>
 
-**priority:** `typing.Optional[AgentSpeakRequestPriority]` 
+**priority:** `typing.Optional[AgentManagementSpeakRequestPriority]` 
 
 Sets the priority of the message broadcast:
 - `INTERRUPT`: High priority. The agent immediately interrupts the current interaction to announce the message.
@@ -731,7 +736,7 @@ Whether to allow users to interrupt the agent's broadcast by speaking:
 </dl>
 </details>
 
-<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">agent_interrupt</a>(...)</code></summary>
+<details><summary><code>client.agent_management.<a href="src/agoraio/agent_management/client.py">interrupt</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -764,7 +769,7 @@ client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.agent_management.agent_interrupt(
+client.agent_management.interrupt(
     appid="appid",
     agent_id="agentId",
 )
@@ -812,7 +817,7 @@ client.agent_management.agent_interrupt(
 </details>
 
 ## Telephony
-<details><summary><code>client.telephony.<a href="src/agoraio/telephony/client.py">retrieve_call_records</a>(...)</code></summary>
+<details><summary><code>client.telephony.<a href="src/agoraio/telephony/client.py">list</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -845,7 +850,7 @@ client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.telephony.retrieve_call_records(
+response = client.telephony.list(
     appid="appid",
     number="number",
     from_time=1,
@@ -854,6 +859,11 @@ client.telephony.retrieve_call_records(
     limit=1,
     cursor="cursor",
 )
+for item in response:
+    yield item
+# alternatively, you can paginate page-by-page
+for page in response.iter_pages():
+    yield page
 
 ```
 </dd>
@@ -901,7 +911,7 @@ client.telephony.retrieve_call_records(
 <dl>
 <dd>
 
-**type:** `typing.Optional[RetrieveCallRecordsRequestType]` 
+**type:** `typing.Optional[TelephonyListRequestType]` 
 
 Call type filter:
 - `inbound`: Inbound call.
@@ -943,7 +953,7 @@ If not specified, all call types are returned.
 </dl>
 </details>
 
-<details><summary><code>client.telephony.<a href="src/agoraio/telephony/client.py">initiate_outbound_call</a>(...)</code></summary>
+<details><summary><code>client.telephony.<a href="src/agoraio/telephony/client.py">call</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -974,24 +984,24 @@ Use this endpoint to initiate an outbound call to the specified number and creat
 ```python
 from agoraio import Agora
 from agoraio.telephony import (
-    InitiateOutboundCallRequestProperties,
-    InitiateOutboundCallRequestSip,
+    TelephonyCallRequestProperties,
+    TelephonyCallRequestSip,
 )
 
 client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.telephony.initiate_outbound_call(
+client.telephony.call(
     appid="appid",
     name="customer_service",
-    sip=InitiateOutboundCallRequestSip(
+    sip=TelephonyCallRequestSip(
         to_number="+19876543210",
         from_number="+11234567890",
         sip_rtc_uid="100",
         sip_rtc_token="<agora_sip_rtc_token>",
     ),
-    properties=InitiateOutboundCallRequestProperties(
+    properties=TelephonyCallRequestProperties(
         channel="<agora_channel>",
         token="<agora_channel_token>",
         agent_rtc_uid="111",
@@ -1028,7 +1038,7 @@ client.telephony.initiate_outbound_call(
 <dl>
 <dd>
 
-**sip:** `InitiateOutboundCallRequestSip` — SIP (Session Initiation Protocol) call configuration object.
+**sip:** `TelephonyCallRequestSip` — SIP (Session Initiation Protocol) call configuration object.
     
 </dd>
 </dl>
@@ -1036,7 +1046,7 @@ client.telephony.initiate_outbound_call(
 <dl>
 <dd>
 
-**properties:** `InitiateOutboundCallRequestProperties` 
+**properties:** `TelephonyCallRequestProperties` 
 
 Call attribute configuration. The content of this field varies depending on the invocation method:
 - **Using pipeline ID**: Simply pass in `channel`, `token`, and `agent_rtc_uid`.
@@ -1068,7 +1078,7 @@ Call attribute configuration. The content of this field varies depending on the 
 </dl>
 </details>
 
-<details><summary><code>client.telephony.<a href="src/agoraio/telephony/client.py">retrieve_call_status</a>(...)</code></summary>
+<details><summary><code>client.telephony.<a href="src/agoraio/telephony/client.py">get</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1101,7 +1111,7 @@ client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.telephony.retrieve_call_status(
+client.telephony.get(
     appid="appid",
     agent_id="agent_id",
 )
@@ -1148,7 +1158,7 @@ client.telephony.retrieve_call_status(
 </dl>
 </details>
 
-<details><summary><code>client.telephony.<a href="src/agoraio/telephony/client.py">hangup_call</a>(...)</code></summary>
+<details><summary><code>client.telephony.<a href="src/agoraio/telephony/client.py">hangup</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1181,7 +1191,7 @@ client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.telephony.hangup_call(
+client.telephony.hangup(
     appid="appid",
     agent_id="agent_id",
 )
@@ -1229,7 +1239,7 @@ client.telephony.hangup_call(
 </details>
 
 ## Phone Number Management
-<details><summary><code>client.phone_number_management.<a href="src/agoraio/phone_number_management/client.py">retrieve_number_list</a>()</code></summary>
+<details><summary><code>client.phone_number_management.<a href="src/agoraio/phone_number_management/client.py">list</a>()</code></summary>
 <dl>
 <dd>
 
@@ -1262,7 +1272,7 @@ client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.phone_number_management.retrieve_number_list()
+client.phone_number_management.list()
 
 ```
 </dd>
@@ -1290,7 +1300,7 @@ client.phone_number_management.retrieve_number_list()
 </dl>
 </details>
 
-<details><summary><code>client.phone_number_management.<a href="src/agoraio/phone_number_management/client.py">import_number</a>(...)</code></summary>
+<details><summary><code>client.phone_number_management.<a href="src/agoraio/phone_number_management/client.py">add</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1319,24 +1329,24 @@ Import a pre-configured phone number that can be used for inbound or outbound ca
 ```python
 from agoraio import Agora
 from agoraio.phone_number_management import (
-    ImportNumberRequestInboundConfig,
-    ImportNumberRequestOutboundConfig,
+    PhoneNumberManagementAddRequestInboundConfig,
+    PhoneNumberManagementAddRequestOutboundConfig,
 )
 
 client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.phone_number_management.import_number(
+client.phone_number_management.add(
     provider="byo",
     phone_number="+19876543210",
     label="Sales Hotline",
     inbound=True,
     outbound=True,
-    inbound_config=ImportNumberRequestInboundConfig(
+    inbound_config=PhoneNumberManagementAddRequestInboundConfig(
         allowed_addresses=["112.126.15.64/27"],
     ),
-    outbound_config=ImportNumberRequestOutboundConfig(
+    outbound_config=PhoneNumberManagementAddRequestOutboundConfig(
         address="xxx:xxx@sip.example.com",
         transport="tls",
     ),
@@ -1356,7 +1366,7 @@ client.phone_number_management.import_number(
 <dl>
 <dd>
 
-**provider:** `ImportNumberRequestProvider` 
+**provider:** `PhoneNumberManagementAddRequestProvider` 
 
 Number provider:
 - `byo`: BYO (Bring Your Own)
@@ -1384,7 +1394,7 @@ Number provider:
 <dl>
 <dd>
 
-**inbound_config:** `ImportNumberRequestInboundConfig` — SIP inbound call configuration.
+**inbound_config:** `PhoneNumberManagementAddRequestInboundConfig` — SIP inbound call configuration.
     
 </dd>
 </dl>
@@ -1392,7 +1402,7 @@ Number provider:
 <dl>
 <dd>
 
-**outbound_config:** `ImportNumberRequestOutboundConfig` — SIP outbound call configuration.
+**outbound_config:** `PhoneNumberManagementAddRequestOutboundConfig` — SIP outbound call configuration.
     
 </dd>
 </dl>
@@ -1428,7 +1438,7 @@ Number provider:
 </dl>
 </details>
 
-<details><summary><code>client.phone_number_management.<a href="src/agoraio/phone_number_management/client.py">retrieve_number_information</a>(...)</code></summary>
+<details><summary><code>client.phone_number_management.<a href="src/agoraio/phone_number_management/client.py">get</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1461,7 +1471,7 @@ client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.phone_number_management.retrieve_number_information(
+client.phone_number_management.get(
     phone_number="phone_number",
 )
 
@@ -1499,7 +1509,7 @@ client.phone_number_management.retrieve_number_information(
 </dl>
 </details>
 
-<details><summary><code>client.phone_number_management.<a href="src/agoraio/phone_number_management/client.py">delete_number</a>(...)</code></summary>
+<details><summary><code>client.phone_number_management.<a href="src/agoraio/phone_number_management/client.py">delete</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1534,7 +1544,7 @@ client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.phone_number_management.delete_number(
+client.phone_number_management.delete(
     phone_number="phone_number",
 )
 
@@ -1572,7 +1582,7 @@ client.phone_number_management.delete_number(
 </dl>
 </details>
 
-<details><summary><code>client.phone_number_management.<a href="src/agoraio/phone_number_management/client.py">update_number_configuration</a>(...)</code></summary>
+<details><summary><code>client.phone_number_management.<a href="src/agoraio/phone_number_management/client.py">update</a>(...)</code></summary>
 <dl>
 <dd>
 
@@ -1601,20 +1611,20 @@ Update the configuration for a phone number.
 ```python
 from agoraio import Agora
 from agoraio.phone_number_management import (
-    UpdateNumberConfigurationRequestInboundConfig,
-    UpdateNumberConfigurationRequestOutboundConfig,
+    PhoneNumberManagementUpdateRequestInboundConfig,
+    PhoneNumberManagementUpdateRequestOutboundConfig,
 )
 
 client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.phone_number_management.update_number_configuration(
+client.phone_number_management.update(
     phone_number="phone_number",
-    inbound_config=UpdateNumberConfigurationRequestInboundConfig(
+    inbound_config=PhoneNumberManagementUpdateRequestInboundConfig(
         pipeline_id="xxxxx",
     ),
-    outbound_config=UpdateNumberConfigurationRequestOutboundConfig(
+    outbound_config=PhoneNumberManagementUpdateRequestOutboundConfig(
         pipeline_id="xxxxx",
     ),
 )
@@ -1641,7 +1651,7 @@ client.phone_number_management.update_number_configuration(
 <dl>
 <dd>
 
-**inbound_config:** `typing.Optional[UpdateNumberConfigurationRequestInboundConfig]` — Update inbound call configuration. Passing `null` will clear the configuration.
+**inbound_config:** `typing.Optional[PhoneNumberManagementUpdateRequestInboundConfig]` — Update inbound call configuration. Passing `null` will clear the configuration.
     
 </dd>
 </dl>
@@ -1649,7 +1659,7 @@ client.phone_number_management.update_number_configuration(
 <dl>
 <dd>
 
-**outbound_config:** `typing.Optional[UpdateNumberConfigurationRequestOutboundConfig]` — Update outbound call configuration. Passing `null` will clear the configuration.
+**outbound_config:** `typing.Optional[PhoneNumberManagementUpdateRequestOutboundConfig]` — Update outbound call configuration. Passing `null` will clear the configuration.
     
 </dd>
 </dl>

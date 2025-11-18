@@ -7,6 +7,22 @@ The Agoraio Python library provides convenient access to the Agoraio APIs from P
 
 ## Table of Contents
 
+- [Table of Contents](#table-of-contents)
+- [Installation](#installation)
+- [Reference](#reference)
+- [Usage](#usage)
+- [Async Client](#async-client)
+- [Exception Handling](#exception-handling)
+- [Pagination](#pagination)
+- [Advanced](#advanced)
+  - [Access Raw Response Data](#access-raw-response-data)
+  - [Retries](#retries)
+  - [Timeouts](#timeouts)
+  - [Custom Client](#custom-client)
+- [Contributing](#contributing)
+
+## Table of Contents
+
 - [Installation](#installation)
 - [Reference](#reference)
 - [Usage](#usage)
@@ -36,33 +52,33 @@ Instantiate and use the client with the following:
 ```python
 from agoraio import Agora
 from agoraio.agent_management import (
-    StartAgentRequestProperties,
-    StartAgentRequestPropertiesAdvancedFeatures,
-    StartAgentRequestPropertiesAsr,
-    StartAgentRequestPropertiesLlm,
-    StartAgentRequestPropertiesTts,
+    AgentManagementStartRequestProperties,
+    AgentManagementStartRequestPropertiesAdvancedFeatures,
+    AgentManagementStartRequestPropertiesAsr,
+    AgentManagementStartRequestPropertiesLlm,
+    AgentManagementStartRequestPropertiesTts,
 )
 
 client = Agora(
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
-client.agent_management.start_agent(
+client.agent_management.start(
     appid="appid",
     name="unique_name",
-    properties=StartAgentRequestProperties(
+    properties=AgentManagementStartRequestProperties(
         channel="channel_name",
         token="token",
         agent_rtc_uid="1001",
         remote_rtc_uids=["1002"],
         idle_timeout=120,
-        advanced_features=StartAgentRequestPropertiesAdvancedFeatures(
+        advanced_features=AgentManagementStartRequestPropertiesAdvancedFeatures(
             enable_aivad=True,
         ),
-        asr=StartAgentRequestPropertiesAsr(
+        asr=AgentManagementStartRequestPropertiesAsr(
             language="en-US",
         ),
-        tts=StartAgentRequestPropertiesTts(
+        tts=AgentManagementStartRequestPropertiesTts(
             vendor="microsoft",
             params={
                 "key": "<your_tts_api_key>",
@@ -70,7 +86,7 @@ client.agent_management.start_agent(
                 "voice_name": "en-US-AndrewMultilingualNeural",
             },
         ),
-        llm=StartAgentRequestPropertiesLlm(
+        llm=AgentManagementStartRequestPropertiesLlm(
             url="https://api.openai.com/v1/chat/completions",
             api_key="<your_llm_key>",
             system_messages=[
@@ -94,11 +110,11 @@ import asyncio
 
 from agoraio import AsyncAgora
 from agoraio.agent_management import (
-    StartAgentRequestProperties,
-    StartAgentRequestPropertiesAdvancedFeatures,
-    StartAgentRequestPropertiesAsr,
-    StartAgentRequestPropertiesLlm,
-    StartAgentRequestPropertiesTts,
+    AgentManagementStartRequestProperties,
+    AgentManagementStartRequestPropertiesAdvancedFeatures,
+    AgentManagementStartRequestPropertiesAsr,
+    AgentManagementStartRequestPropertiesLlm,
+    AgentManagementStartRequestPropertiesTts,
 )
 
 client = AsyncAgora(
@@ -108,22 +124,22 @@ client = AsyncAgora(
 
 
 async def main() -> None:
-    await client.agent_management.start_agent(
+    await client.agent_management.start(
         appid="appid",
         name="unique_name",
-        properties=StartAgentRequestProperties(
+        properties=AgentManagementStartRequestProperties(
             channel="channel_name",
             token="token",
             agent_rtc_uid="1001",
             remote_rtc_uids=["1002"],
             idle_timeout=120,
-            advanced_features=StartAgentRequestPropertiesAdvancedFeatures(
+            advanced_features=AgentManagementStartRequestPropertiesAdvancedFeatures(
                 enable_aivad=True,
             ),
-            asr=StartAgentRequestPropertiesAsr(
+            asr=AgentManagementStartRequestPropertiesAsr(
                 language="en-US",
             ),
-            tts=StartAgentRequestPropertiesTts(
+            tts=AgentManagementStartRequestPropertiesTts(
                 vendor="microsoft",
                 params={
                     "key": "<your_tts_api_key>",
@@ -131,7 +147,7 @@ async def main() -> None:
                     "voice_name": "en-US-AndrewMultilingualNeural",
                 },
             ),
-            llm=StartAgentRequestPropertiesLlm(
+            llm=AgentManagementStartRequestPropertiesLlm(
                 url="https://api.openai.com/v1/chat/completions",
                 api_key="<your_llm_key>",
                 system_messages=[
@@ -158,10 +174,37 @@ will be thrown.
 from agoraio.core.api_error import ApiError
 
 try:
-    client.agent_management.start_agent(...)
+    client.agent_management.start(...)
 except ApiError as e:
     print(e.status_code)
     print(e.body)
+```
+
+## Pagination
+
+Paginated requests will return a `SyncPager` or `AsyncPager`, which can be used as generators for the underlying object.
+
+```python
+from agoraio import Agora
+
+client = Agora(
+    username="YOUR_USERNAME",
+    password="YOUR_PASSWORD",
+)
+response = client.agent_management.list(
+    appid="appid",
+    channel="channel",
+    from_time=1.1,
+    to_time=1.1,
+    state="0",
+    limit=1,
+    cursor="cursor",
+)
+for item in response:
+    yield item
+# alternatively, you can paginate page-by-page
+for page in response.iter_pages():
+    yield page
 ```
 
 ## Advanced
@@ -177,9 +220,17 @@ from agoraio import Agora
 client = Agora(
     ...,
 )
-response = client.agent_management.with_raw_response.start_agent(...)
+response = client.agent_management.with_raw_response.start(...)
 print(response.headers)  # access the response headers
 print(response.data)  # access the underlying object
+pager = client.agent_management.list(...)
+print(pager.response.headers)  # access the response headers for the first page
+for item in pager:
+    print(item)  # access the underlying object(s)
+for page in pager.iter_pages():
+    print(page.response.headers)  # access the response headers for each page
+    for item in page:
+        print(item)  # access the underlying object(s)
 ```
 
 ### Retries
@@ -197,7 +248,7 @@ A request is deemed retryable when any of the following HTTP status codes is ret
 Use the `max_retries` request option to configure this behavior.
 
 ```python
-client.agent_management.start_agent(..., request_options={
+client.agent_management.start(..., request_options={
     "max_retries": 1
 })
 ```
@@ -217,7 +268,7 @@ client = Agora(
 
 
 # Override timeout for a specific method
-client.agent_management.start_agent(..., request_options={
+client.agent_management.start(..., request_options={
     "timeout_in_seconds": 1
 })
 ```

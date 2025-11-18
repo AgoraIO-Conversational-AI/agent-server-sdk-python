@@ -10,15 +10,17 @@ from ..core.jsonable_encoder import jsonable_encoder
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
 from ..core.unchecked_base_model import construct_type
-from .types.import_number_request_inbound_config import ImportNumberRequestInboundConfig
-from .types.import_number_request_outbound_config import ImportNumberRequestOutboundConfig
-from .types.import_number_request_provider import ImportNumberRequestProvider
-from .types.import_number_response import ImportNumberResponse
-from .types.retrieve_number_information_response import RetrieveNumberInformationResponse
-from .types.retrieve_number_list_response_item import RetrieveNumberListResponseItem
-from .types.update_number_configuration_request_inbound_config import UpdateNumberConfigurationRequestInboundConfig
-from .types.update_number_configuration_request_outbound_config import UpdateNumberConfigurationRequestOutboundConfig
-from .types.update_number_configuration_response import UpdateNumberConfigurationResponse
+from .types.phone_number_management_add_request_inbound_config import PhoneNumberManagementAddRequestInboundConfig
+from .types.phone_number_management_add_request_outbound_config import PhoneNumberManagementAddRequestOutboundConfig
+from .types.phone_number_management_add_request_provider import PhoneNumberManagementAddRequestProvider
+from .types.phone_number_management_add_response import PhoneNumberManagementAddResponse
+from .types.phone_number_management_get_response import PhoneNumberManagementGetResponse
+from .types.phone_number_management_list_response_item import PhoneNumberManagementListResponseItem
+from .types.phone_number_management_update_request_inbound_config import PhoneNumberManagementUpdateRequestInboundConfig
+from .types.phone_number_management_update_request_outbound_config import (
+    PhoneNumberManagementUpdateRequestOutboundConfig,
+)
+from .types.phone_number_management_update_response import PhoneNumberManagementUpdateResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -28,9 +30,9 @@ class RawPhoneNumberManagementClient:
     def __init__(self, *, client_wrapper: SyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    def retrieve_number_list(
+    def list(
         self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[typing.List[RetrieveNumberListResponseItem]]:
+    ) -> HttpResponse[typing.List[PhoneNumberManagementListResponseItem]]:
         """
         Retrieve a list of all imported phone numbers under the current account.
 
@@ -41,7 +43,7 @@ class RawPhoneNumberManagementClient:
 
         Returns
         -------
-        HttpResponse[typing.List[RetrieveNumberListResponseItem]]
+        HttpResponse[typing.List[PhoneNumberManagementListResponseItem]]
             Request was successful. The response body contains a JSON array of phone number configurations.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -52,9 +54,9 @@ class RawPhoneNumberManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[RetrieveNumberListResponseItem],
+                    typing.List[PhoneNumberManagementListResponseItem],
                     construct_type(
-                        type_=typing.List[RetrieveNumberListResponseItem],  # type: ignore
+                        type_=typing.List[PhoneNumberManagementListResponseItem],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -64,24 +66,24 @@ class RawPhoneNumberManagementClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def import_number(
+    def add(
         self,
         *,
-        provider: ImportNumberRequestProvider,
+        provider: PhoneNumberManagementAddRequestProvider,
         phone_number: str,
         label: str,
-        inbound_config: ImportNumberRequestInboundConfig,
-        outbound_config: ImportNumberRequestOutboundConfig,
+        inbound_config: PhoneNumberManagementAddRequestInboundConfig,
+        outbound_config: PhoneNumberManagementAddRequestOutboundConfig,
         inbound: typing.Optional[bool] = OMIT,
         outbound: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[ImportNumberResponse]:
+    ) -> HttpResponse[PhoneNumberManagementAddResponse]:
         """
         Import a pre-configured phone number that can be used for inbound or outbound calls.
 
         Parameters
         ----------
-        provider : ImportNumberRequestProvider
+        provider : PhoneNumberManagementAddRequestProvider
             Number provider:
             - `byo`: BYO (Bring Your Own)
             - `twilio`: Twilio
@@ -92,10 +94,10 @@ class RawPhoneNumberManagementClient:
         label : str
             A label used to identify the number.
 
-        inbound_config : ImportNumberRequestInboundConfig
+        inbound_config : PhoneNumberManagementAddRequestInboundConfig
             SIP inbound call configuration.
 
-        outbound_config : ImportNumberRequestOutboundConfig
+        outbound_config : PhoneNumberManagementAddRequestOutboundConfig
             SIP outbound call configuration.
 
         inbound : typing.Optional[bool]
@@ -109,7 +111,7 @@ class RawPhoneNumberManagementClient:
 
         Returns
         -------
-        HttpResponse[ImportNumberResponse]
+        HttpResponse[PhoneNumberManagementAddResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -122,10 +124,10 @@ class RawPhoneNumberManagementClient:
                 "inbound": inbound,
                 "outbound": outbound,
                 "inbound_config": convert_and_respect_annotation_metadata(
-                    object_=inbound_config, annotation=ImportNumberRequestInboundConfig, direction="write"
+                    object_=inbound_config, annotation=PhoneNumberManagementAddRequestInboundConfig, direction="write"
                 ),
                 "outbound_config": convert_and_respect_annotation_metadata(
-                    object_=outbound_config, annotation=ImportNumberRequestOutboundConfig, direction="write"
+                    object_=outbound_config, annotation=PhoneNumberManagementAddRequestOutboundConfig, direction="write"
                 ),
             },
             headers={
@@ -137,9 +139,9 @@ class RawPhoneNumberManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    ImportNumberResponse,
+                    PhoneNumberManagementAddResponse,
                     construct_type(
-                        type_=ImportNumberResponse,  # type: ignore
+                        type_=PhoneNumberManagementAddResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -149,9 +151,9 @@ class RawPhoneNumberManagementClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def retrieve_number_information(
+    def get(
         self, phone_number: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[RetrieveNumberInformationResponse]:
+    ) -> HttpResponse[PhoneNumberManagementGetResponse]:
         """
         Retrieve detailed information for a specific phone number.
 
@@ -165,7 +167,7 @@ class RawPhoneNumberManagementClient:
 
         Returns
         -------
-        HttpResponse[RetrieveNumberInformationResponse]
+        HttpResponse[PhoneNumberManagementGetResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -176,9 +178,9 @@ class RawPhoneNumberManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    RetrieveNumberInformationResponse,
+                    PhoneNumberManagementGetResponse,
                     construct_type(
-                        type_=RetrieveNumberInformationResponse,  # type: ignore
+                        type_=PhoneNumberManagementGetResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -188,7 +190,7 @@ class RawPhoneNumberManagementClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def delete_number(
+    def delete(
         self, phone_number: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> HttpResponse[None]:
         """
@@ -221,14 +223,14 @@ class RawPhoneNumberManagementClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    def update_number_configuration(
+    def update(
         self,
         phone_number: str,
         *,
-        inbound_config: typing.Optional[UpdateNumberConfigurationRequestInboundConfig] = OMIT,
-        outbound_config: typing.Optional[UpdateNumberConfigurationRequestOutboundConfig] = OMIT,
+        inbound_config: typing.Optional[PhoneNumberManagementUpdateRequestInboundConfig] = OMIT,
+        outbound_config: typing.Optional[PhoneNumberManagementUpdateRequestOutboundConfig] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[UpdateNumberConfigurationResponse]:
+    ) -> HttpResponse[PhoneNumberManagementUpdateResponse]:
         """
         Update the configuration for a phone number.
 
@@ -237,10 +239,10 @@ class RawPhoneNumberManagementClient:
         phone_number : str
             Telephone number in E.164 format. For example, +11234567890.
 
-        inbound_config : typing.Optional[UpdateNumberConfigurationRequestInboundConfig]
+        inbound_config : typing.Optional[PhoneNumberManagementUpdateRequestInboundConfig]
             Update inbound call configuration. Passing `null` will clear the configuration.
 
-        outbound_config : typing.Optional[UpdateNumberConfigurationRequestOutboundConfig]
+        outbound_config : typing.Optional[PhoneNumberManagementUpdateRequestOutboundConfig]
             Update outbound call configuration. Passing `null` will clear the configuration.
 
         request_options : typing.Optional[RequestOptions]
@@ -248,7 +250,7 @@ class RawPhoneNumberManagementClient:
 
         Returns
         -------
-        HttpResponse[UpdateNumberConfigurationResponse]
+        HttpResponse[PhoneNumberManagementUpdateResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -256,11 +258,13 @@ class RawPhoneNumberManagementClient:
             method="PATCH",
             json={
                 "inbound_config": convert_and_respect_annotation_metadata(
-                    object_=inbound_config, annotation=UpdateNumberConfigurationRequestInboundConfig, direction="write"
+                    object_=inbound_config,
+                    annotation=PhoneNumberManagementUpdateRequestInboundConfig,
+                    direction="write",
                 ),
                 "outbound_config": convert_and_respect_annotation_metadata(
                     object_=outbound_config,
-                    annotation=UpdateNumberConfigurationRequestOutboundConfig,
+                    annotation=PhoneNumberManagementUpdateRequestOutboundConfig,
                     direction="write",
                 ),
             },
@@ -273,9 +277,9 @@ class RawPhoneNumberManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    UpdateNumberConfigurationResponse,
+                    PhoneNumberManagementUpdateResponse,
                     construct_type(
-                        type_=UpdateNumberConfigurationResponse,  # type: ignore
+                        type_=PhoneNumberManagementUpdateResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -290,9 +294,9 @@ class AsyncRawPhoneNumberManagementClient:
     def __init__(self, *, client_wrapper: AsyncClientWrapper):
         self._client_wrapper = client_wrapper
 
-    async def retrieve_number_list(
+    async def list(
         self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[typing.List[RetrieveNumberListResponseItem]]:
+    ) -> AsyncHttpResponse[typing.List[PhoneNumberManagementListResponseItem]]:
         """
         Retrieve a list of all imported phone numbers under the current account.
 
@@ -303,7 +307,7 @@ class AsyncRawPhoneNumberManagementClient:
 
         Returns
         -------
-        AsyncHttpResponse[typing.List[RetrieveNumberListResponseItem]]
+        AsyncHttpResponse[typing.List[PhoneNumberManagementListResponseItem]]
             Request was successful. The response body contains a JSON array of phone number configurations.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -314,9 +318,9 @@ class AsyncRawPhoneNumberManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    typing.List[RetrieveNumberListResponseItem],
+                    typing.List[PhoneNumberManagementListResponseItem],
                     construct_type(
-                        type_=typing.List[RetrieveNumberListResponseItem],  # type: ignore
+                        type_=typing.List[PhoneNumberManagementListResponseItem],  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -326,24 +330,24 @@ class AsyncRawPhoneNumberManagementClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def import_number(
+    async def add(
         self,
         *,
-        provider: ImportNumberRequestProvider,
+        provider: PhoneNumberManagementAddRequestProvider,
         phone_number: str,
         label: str,
-        inbound_config: ImportNumberRequestInboundConfig,
-        outbound_config: ImportNumberRequestOutboundConfig,
+        inbound_config: PhoneNumberManagementAddRequestInboundConfig,
+        outbound_config: PhoneNumberManagementAddRequestOutboundConfig,
         inbound: typing.Optional[bool] = OMIT,
         outbound: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[ImportNumberResponse]:
+    ) -> AsyncHttpResponse[PhoneNumberManagementAddResponse]:
         """
         Import a pre-configured phone number that can be used for inbound or outbound calls.
 
         Parameters
         ----------
-        provider : ImportNumberRequestProvider
+        provider : PhoneNumberManagementAddRequestProvider
             Number provider:
             - `byo`: BYO (Bring Your Own)
             - `twilio`: Twilio
@@ -354,10 +358,10 @@ class AsyncRawPhoneNumberManagementClient:
         label : str
             A label used to identify the number.
 
-        inbound_config : ImportNumberRequestInboundConfig
+        inbound_config : PhoneNumberManagementAddRequestInboundConfig
             SIP inbound call configuration.
 
-        outbound_config : ImportNumberRequestOutboundConfig
+        outbound_config : PhoneNumberManagementAddRequestOutboundConfig
             SIP outbound call configuration.
 
         inbound : typing.Optional[bool]
@@ -371,7 +375,7 @@ class AsyncRawPhoneNumberManagementClient:
 
         Returns
         -------
-        AsyncHttpResponse[ImportNumberResponse]
+        AsyncHttpResponse[PhoneNumberManagementAddResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -384,10 +388,10 @@ class AsyncRawPhoneNumberManagementClient:
                 "inbound": inbound,
                 "outbound": outbound,
                 "inbound_config": convert_and_respect_annotation_metadata(
-                    object_=inbound_config, annotation=ImportNumberRequestInboundConfig, direction="write"
+                    object_=inbound_config, annotation=PhoneNumberManagementAddRequestInboundConfig, direction="write"
                 ),
                 "outbound_config": convert_and_respect_annotation_metadata(
-                    object_=outbound_config, annotation=ImportNumberRequestOutboundConfig, direction="write"
+                    object_=outbound_config, annotation=PhoneNumberManagementAddRequestOutboundConfig, direction="write"
                 ),
             },
             headers={
@@ -399,9 +403,9 @@ class AsyncRawPhoneNumberManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    ImportNumberResponse,
+                    PhoneNumberManagementAddResponse,
                     construct_type(
-                        type_=ImportNumberResponse,  # type: ignore
+                        type_=PhoneNumberManagementAddResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -411,9 +415,9 @@ class AsyncRawPhoneNumberManagementClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def retrieve_number_information(
+    async def get(
         self, phone_number: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[RetrieveNumberInformationResponse]:
+    ) -> AsyncHttpResponse[PhoneNumberManagementGetResponse]:
         """
         Retrieve detailed information for a specific phone number.
 
@@ -427,7 +431,7 @@ class AsyncRawPhoneNumberManagementClient:
 
         Returns
         -------
-        AsyncHttpResponse[RetrieveNumberInformationResponse]
+        AsyncHttpResponse[PhoneNumberManagementGetResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -438,9 +442,9 @@ class AsyncRawPhoneNumberManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    RetrieveNumberInformationResponse,
+                    PhoneNumberManagementGetResponse,
                     construct_type(
-                        type_=RetrieveNumberInformationResponse,  # type: ignore
+                        type_=PhoneNumberManagementGetResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -450,7 +454,7 @@ class AsyncRawPhoneNumberManagementClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def delete_number(
+    async def delete(
         self, phone_number: str, *, request_options: typing.Optional[RequestOptions] = None
     ) -> AsyncHttpResponse[None]:
         """
@@ -483,14 +487,14 @@ class AsyncRawPhoneNumberManagementClient:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
         raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
 
-    async def update_number_configuration(
+    async def update(
         self,
         phone_number: str,
         *,
-        inbound_config: typing.Optional[UpdateNumberConfigurationRequestInboundConfig] = OMIT,
-        outbound_config: typing.Optional[UpdateNumberConfigurationRequestOutboundConfig] = OMIT,
+        inbound_config: typing.Optional[PhoneNumberManagementUpdateRequestInboundConfig] = OMIT,
+        outbound_config: typing.Optional[PhoneNumberManagementUpdateRequestOutboundConfig] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[UpdateNumberConfigurationResponse]:
+    ) -> AsyncHttpResponse[PhoneNumberManagementUpdateResponse]:
         """
         Update the configuration for a phone number.
 
@@ -499,10 +503,10 @@ class AsyncRawPhoneNumberManagementClient:
         phone_number : str
             Telephone number in E.164 format. For example, +11234567890.
 
-        inbound_config : typing.Optional[UpdateNumberConfigurationRequestInboundConfig]
+        inbound_config : typing.Optional[PhoneNumberManagementUpdateRequestInboundConfig]
             Update inbound call configuration. Passing `null` will clear the configuration.
 
-        outbound_config : typing.Optional[UpdateNumberConfigurationRequestOutboundConfig]
+        outbound_config : typing.Optional[PhoneNumberManagementUpdateRequestOutboundConfig]
             Update outbound call configuration. Passing `null` will clear the configuration.
 
         request_options : typing.Optional[RequestOptions]
@@ -510,7 +514,7 @@ class AsyncRawPhoneNumberManagementClient:
 
         Returns
         -------
-        AsyncHttpResponse[UpdateNumberConfigurationResponse]
+        AsyncHttpResponse[PhoneNumberManagementUpdateResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -518,11 +522,13 @@ class AsyncRawPhoneNumberManagementClient:
             method="PATCH",
             json={
                 "inbound_config": convert_and_respect_annotation_metadata(
-                    object_=inbound_config, annotation=UpdateNumberConfigurationRequestInboundConfig, direction="write"
+                    object_=inbound_config,
+                    annotation=PhoneNumberManagementUpdateRequestInboundConfig,
+                    direction="write",
                 ),
                 "outbound_config": convert_and_respect_annotation_metadata(
                     object_=outbound_config,
-                    annotation=UpdateNumberConfigurationRequestOutboundConfig,
+                    annotation=PhoneNumberManagementUpdateRequestOutboundConfig,
                     direction="write",
                 ),
             },
@@ -535,9 +541,9 @@ class AsyncRawPhoneNumberManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    UpdateNumberConfigurationResponse,
+                    PhoneNumberManagementUpdateResponse,
                     construct_type(
-                        type_=UpdateNumberConfigurationResponse,  # type: ignore
+                        type_=PhoneNumberManagementUpdateResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
