@@ -1,10 +1,9 @@
-## 0.0.5 - 2025-11-19
-* docs: improve README table of contents and remove changelog
-* Updated the README documentation to include a more comprehensive table of contents with proper navigation links for better user experience. Also removed the outdated changelog.md file to streamline the documentation structure.
+## 0.0.6 - 2025-11-19
+* docs: remove duplicate table of contents and changelog file
+* Clean up documentation by removing a duplicated table of contents section in the README and deleting the outdated changelog.md file. This streamlines the documentation structure and improves readability by eliminating redundant navigation elements.
 * Key changes:
-* Add detailed table of contents with nested structure for advanced topics
-* Include links to exception handling, pagination, and advanced features
-* Remove deprecated changelog.md file
-* Improve documentation navigation and discoverability
+* Remove duplicate table of contents section from README.md
+* Delete changelog.md file to consolidate documentation
+* Improve documentation clarity and navigation flow
 * 🌿 Generated with Fern
 
