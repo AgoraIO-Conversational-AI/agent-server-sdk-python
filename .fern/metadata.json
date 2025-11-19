@@ -1,0 +1,15 @@
+{
+  "cliVersion": "1.9.2",
+  "generatorName": "fernapi/fern-python-sdk",
+  "generatorVersion": "4.37.0",
+  "generatorConfig": {
+    "client": {
+      "class_name": "Agora",
+      "filename": "client.py"
+    },
+    "pydantic_config": {
+      "skip_validation": true
+    },
+    "exclude_types_from_init_exports": true
+  }
+}

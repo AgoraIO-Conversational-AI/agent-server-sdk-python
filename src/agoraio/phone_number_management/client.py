@@ -5,17 +5,17 @@ import typing
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawPhoneNumberManagementClient, RawPhoneNumberManagementClient
-from .types.phone_number_management_add_request_inbound_config import PhoneNumberManagementAddRequestInboundConfig
-from .types.phone_number_management_add_request_outbound_config import PhoneNumberManagementAddRequestOutboundConfig
-from .types.phone_number_management_add_request_provider import PhoneNumberManagementAddRequestProvider
-from .types.phone_number_management_add_response import PhoneNumberManagementAddResponse
-from .types.phone_number_management_get_response import PhoneNumberManagementGetResponse
-from .types.phone_number_management_list_response_item import PhoneNumberManagementListResponseItem
-from .types.phone_number_management_update_request_inbound_config import PhoneNumberManagementUpdateRequestInboundConfig
-from .types.phone_number_management_update_request_outbound_config import (
-    PhoneNumberManagementUpdateRequestOutboundConfig,
+from .types.add_phone_number_management_request_inbound_config import AddPhoneNumberManagementRequestInboundConfig
+from .types.add_phone_number_management_request_outbound_config import AddPhoneNumberManagementRequestOutboundConfig
+from .types.add_phone_number_management_request_provider import AddPhoneNumberManagementRequestProvider
+from .types.add_phone_number_management_response import AddPhoneNumberManagementResponse
+from .types.get_phone_number_management_response import GetPhoneNumberManagementResponse
+from .types.list_phone_number_management_response_item import ListPhoneNumberManagementResponseItem
+from .types.update_phone_number_management_request_inbound_config import UpdatePhoneNumberManagementRequestInboundConfig
+from .types.update_phone_number_management_request_outbound_config import (
+    UpdatePhoneNumberManagementRequestOutboundConfig,
 )
-from .types.phone_number_management_update_response import PhoneNumberManagementUpdateResponse
+from .types.update_phone_number_management_response import UpdatePhoneNumberManagementResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -38,7 +38,7 @@ class PhoneNumberManagementClient:
 
     def list(
         self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[PhoneNumberManagementListResponseItem]:
+    ) -> typing.List[ListPhoneNumberManagementResponseItem]:
         """
         Retrieve a list of all imported phone numbers under the current account.
 
@@ -49,7 +49,7 @@ class PhoneNumberManagementClient:
 
         Returns
         -------
-        typing.List[PhoneNumberManagementListResponseItem]
+        typing.List[ListPhoneNumberManagementResponseItem]
             Request was successful. The response body contains a JSON array of phone number configurations.
 
         Examples
@@ -68,21 +68,21 @@ class PhoneNumberManagementClient:
     def add(
         self,
         *,
-        provider: PhoneNumberManagementAddRequestProvider,
+        provider: AddPhoneNumberManagementRequestProvider,
         phone_number: str,
         label: str,
-        inbound_config: PhoneNumberManagementAddRequestInboundConfig,
-        outbound_config: PhoneNumberManagementAddRequestOutboundConfig,
+        inbound_config: AddPhoneNumberManagementRequestInboundConfig,
+        outbound_config: AddPhoneNumberManagementRequestOutboundConfig,
         inbound: typing.Optional[bool] = OMIT,
         outbound: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> PhoneNumberManagementAddResponse:
+    ) -> AddPhoneNumberManagementResponse:
         """
         Import a pre-configured phone number that can be used for inbound or outbound calls.
 
         Parameters
         ----------
-        provider : PhoneNumberManagementAddRequestProvider
+        provider : AddPhoneNumberManagementRequestProvider
             Number provider:
             - `byo`: BYO (Bring Your Own)
             - `twilio`: Twilio
@@ -93,10 +93,10 @@ class PhoneNumberManagementClient:
         label : str
             A label used to identify the number.
 
-        inbound_config : PhoneNumberManagementAddRequestInboundConfig
+        inbound_config : AddPhoneNumberManagementRequestInboundConfig
             SIP inbound call configuration.
 
-        outbound_config : PhoneNumberManagementAddRequestOutboundConfig
+        outbound_config : AddPhoneNumberManagementRequestOutboundConfig
             SIP outbound call configuration.
 
         inbound : typing.Optional[bool]
@@ -110,15 +110,15 @@ class PhoneNumberManagementClient:
 
         Returns
         -------
-        PhoneNumberManagementAddResponse
+        AddPhoneNumberManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
         --------
         from agoraio import Agora
         from agoraio.phone_number_management import (
-            PhoneNumberManagementAddRequestInboundConfig,
-            PhoneNumberManagementAddRequestOutboundConfig,
+            AddPhoneNumberManagementRequestInboundConfig,
+            AddPhoneNumberManagementRequestOutboundConfig,
         )
 
         client = Agora(
@@ -131,10 +131,10 @@ class PhoneNumberManagementClient:
             label="Sales Hotline",
             inbound=True,
             outbound=True,
-            inbound_config=PhoneNumberManagementAddRequestInboundConfig(
+            inbound_config=AddPhoneNumberManagementRequestInboundConfig(
                 allowed_addresses=["112.126.15.64/27"],
             ),
-            outbound_config=PhoneNumberManagementAddRequestOutboundConfig(
+            outbound_config=AddPhoneNumberManagementRequestOutboundConfig(
                 address="xxx:xxx@sip.example.com",
                 transport="tls",
             ),
@@ -154,7 +154,7 @@ class PhoneNumberManagementClient:
 
     def get(
         self, phone_number: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> PhoneNumberManagementGetResponse:
+    ) -> GetPhoneNumberManagementResponse:
         """
         Retrieve detailed information for a specific phone number.
 
@@ -168,7 +168,7 @@ class PhoneNumberManagementClient:
 
         Returns
         -------
-        PhoneNumberManagementGetResponse
+        GetPhoneNumberManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -223,10 +223,10 @@ class PhoneNumberManagementClient:
         self,
         phone_number: str,
         *,
-        inbound_config: typing.Optional[PhoneNumberManagementUpdateRequestInboundConfig] = OMIT,
-        outbound_config: typing.Optional[PhoneNumberManagementUpdateRequestOutboundConfig] = OMIT,
+        inbound_config: typing.Optional[UpdatePhoneNumberManagementRequestInboundConfig] = OMIT,
+        outbound_config: typing.Optional[UpdatePhoneNumberManagementRequestOutboundConfig] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> PhoneNumberManagementUpdateResponse:
+    ) -> UpdatePhoneNumberManagementResponse:
         """
         Update the configuration for a phone number.
 
@@ -235,10 +235,10 @@ class PhoneNumberManagementClient:
         phone_number : str
             Telephone number in E.164 format. For example, +11234567890.
 
-        inbound_config : typing.Optional[PhoneNumberManagementUpdateRequestInboundConfig]
+        inbound_config : typing.Optional[UpdatePhoneNumberManagementRequestInboundConfig]
             Update inbound call configuration. Passing `null` will clear the configuration.
 
-        outbound_config : typing.Optional[PhoneNumberManagementUpdateRequestOutboundConfig]
+        outbound_config : typing.Optional[UpdatePhoneNumberManagementRequestOutboundConfig]
             Update outbound call configuration. Passing `null` will clear the configuration.
 
         request_options : typing.Optional[RequestOptions]
@@ -246,15 +246,15 @@ class PhoneNumberManagementClient:
 
         Returns
         -------
-        PhoneNumberManagementUpdateResponse
+        UpdatePhoneNumberManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
         --------
         from agoraio import Agora
         from agoraio.phone_number_management import (
-            PhoneNumberManagementUpdateRequestInboundConfig,
-            PhoneNumberManagementUpdateRequestOutboundConfig,
+            UpdatePhoneNumberManagementRequestInboundConfig,
+            UpdatePhoneNumberManagementRequestOutboundConfig,
         )
 
         client = Agora(
@@ -263,10 +263,10 @@ class PhoneNumberManagementClient:
         )
         client.phone_number_management.update(
             phone_number="phone_number",
-            inbound_config=PhoneNumberManagementUpdateRequestInboundConfig(
+            inbound_config=UpdatePhoneNumberManagementRequestInboundConfig(
                 pipeline_id="xxxxx",
             ),
-            outbound_config=PhoneNumberManagementUpdateRequestOutboundConfig(
+            outbound_config=UpdatePhoneNumberManagementRequestOutboundConfig(
                 pipeline_id="xxxxx",
             ),
         )
@@ -297,7 +297,7 @@ class AsyncPhoneNumberManagementClient:
 
     async def list(
         self, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> typing.List[PhoneNumberManagementListResponseItem]:
+    ) -> typing.List[ListPhoneNumberManagementResponseItem]:
         """
         Retrieve a list of all imported phone numbers under the current account.
 
@@ -308,7 +308,7 @@ class AsyncPhoneNumberManagementClient:
 
         Returns
         -------
-        typing.List[PhoneNumberManagementListResponseItem]
+        typing.List[ListPhoneNumberManagementResponseItem]
             Request was successful. The response body contains a JSON array of phone number configurations.
 
         Examples
@@ -335,21 +335,21 @@ class AsyncPhoneNumberManagementClient:
     async def add(
         self,
         *,
-        provider: PhoneNumberManagementAddRequestProvider,
+        provider: AddPhoneNumberManagementRequestProvider,
         phone_number: str,
         label: str,
-        inbound_config: PhoneNumberManagementAddRequestInboundConfig,
-        outbound_config: PhoneNumberManagementAddRequestOutboundConfig,
+        inbound_config: AddPhoneNumberManagementRequestInboundConfig,
+        outbound_config: AddPhoneNumberManagementRequestOutboundConfig,
         inbound: typing.Optional[bool] = OMIT,
         outbound: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> PhoneNumberManagementAddResponse:
+    ) -> AddPhoneNumberManagementResponse:
         """
         Import a pre-configured phone number that can be used for inbound or outbound calls.
 
         Parameters
         ----------
-        provider : PhoneNumberManagementAddRequestProvider
+        provider : AddPhoneNumberManagementRequestProvider
             Number provider:
             - `byo`: BYO (Bring Your Own)
             - `twilio`: Twilio
@@ -360,10 +360,10 @@ class AsyncPhoneNumberManagementClient:
         label : str
             A label used to identify the number.
 
-        inbound_config : PhoneNumberManagementAddRequestInboundConfig
+        inbound_config : AddPhoneNumberManagementRequestInboundConfig
             SIP inbound call configuration.
 
-        outbound_config : PhoneNumberManagementAddRequestOutboundConfig
+        outbound_config : AddPhoneNumberManagementRequestOutboundConfig
             SIP outbound call configuration.
 
         inbound : typing.Optional[bool]
@@ -377,7 +377,7 @@ class AsyncPhoneNumberManagementClient:
 
         Returns
         -------
-        PhoneNumberManagementAddResponse
+        AddPhoneNumberManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -386,8 +386,8 @@ class AsyncPhoneNumberManagementClient:
 
         from agoraio import AsyncAgora
         from agoraio.phone_number_management import (
-            PhoneNumberManagementAddRequestInboundConfig,
-            PhoneNumberManagementAddRequestOutboundConfig,
+            AddPhoneNumberManagementRequestInboundConfig,
+            AddPhoneNumberManagementRequestOutboundConfig,
         )
 
         client = AsyncAgora(
@@ -403,10 +403,10 @@ class AsyncPhoneNumberManagementClient:
                 label="Sales Hotline",
                 inbound=True,
                 outbound=True,
-                inbound_config=PhoneNumberManagementAddRequestInboundConfig(
+                inbound_config=AddPhoneNumberManagementRequestInboundConfig(
                     allowed_addresses=["112.126.15.64/27"],
                 ),
-                outbound_config=PhoneNumberManagementAddRequestOutboundConfig(
+                outbound_config=AddPhoneNumberManagementRequestOutboundConfig(
                     address="xxx:xxx@sip.example.com",
                     transport="tls",
                 ),
@@ -429,7 +429,7 @@ class AsyncPhoneNumberManagementClient:
 
     async def get(
         self, phone_number: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> PhoneNumberManagementGetResponse:
+    ) -> GetPhoneNumberManagementResponse:
         """
         Retrieve detailed information for a specific phone number.
 
@@ -443,7 +443,7 @@ class AsyncPhoneNumberManagementClient:
 
         Returns
         -------
-        PhoneNumberManagementGetResponse
+        GetPhoneNumberManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -514,10 +514,10 @@ class AsyncPhoneNumberManagementClient:
         self,
         phone_number: str,
         *,
-        inbound_config: typing.Optional[PhoneNumberManagementUpdateRequestInboundConfig] = OMIT,
-        outbound_config: typing.Optional[PhoneNumberManagementUpdateRequestOutboundConfig] = OMIT,
+        inbound_config: typing.Optional[UpdatePhoneNumberManagementRequestInboundConfig] = OMIT,
+        outbound_config: typing.Optional[UpdatePhoneNumberManagementRequestOutboundConfig] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> PhoneNumberManagementUpdateResponse:
+    ) -> UpdatePhoneNumberManagementResponse:
         """
         Update the configuration for a phone number.
 
@@ -526,10 +526,10 @@ class AsyncPhoneNumberManagementClient:
         phone_number : str
             Telephone number in E.164 format. For example, +11234567890.
 
-        inbound_config : typing.Optional[PhoneNumberManagementUpdateRequestInboundConfig]
+        inbound_config : typing.Optional[UpdatePhoneNumberManagementRequestInboundConfig]
             Update inbound call configuration. Passing `null` will clear the configuration.
 
-        outbound_config : typing.Optional[PhoneNumberManagementUpdateRequestOutboundConfig]
+        outbound_config : typing.Optional[UpdatePhoneNumberManagementRequestOutboundConfig]
             Update outbound call configuration. Passing `null` will clear the configuration.
 
         request_options : typing.Optional[RequestOptions]
@@ -537,7 +537,7 @@ class AsyncPhoneNumberManagementClient:
 
         Returns
         -------
-        PhoneNumberManagementUpdateResponse
+        UpdatePhoneNumberManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -546,8 +546,8 @@ class AsyncPhoneNumberManagementClient:
 
         from agoraio import AsyncAgora
         from agoraio.phone_number_management import (
-            PhoneNumberManagementUpdateRequestInboundConfig,
-            PhoneNumberManagementUpdateRequestOutboundConfig,
+            UpdatePhoneNumberManagementRequestInboundConfig,
+            UpdatePhoneNumberManagementRequestOutboundConfig,
         )
 
         client = AsyncAgora(
@@ -559,10 +559,10 @@ class AsyncPhoneNumberManagementClient:
         async def main() -> None:
             await client.phone_number_management.update(
                 phone_number="phone_number",
-                inbound_config=PhoneNumberManagementUpdateRequestInboundConfig(
+                inbound_config=UpdatePhoneNumberManagementRequestInboundConfig(
                     pipeline_id="xxxxx",
                 ),
-                outbound_config=PhoneNumberManagementUpdateRequestOutboundConfig(
+                outbound_config=UpdatePhoneNumberManagementRequestOutboundConfig(
                     pipeline_id="xxxxx",
                 ),
             )

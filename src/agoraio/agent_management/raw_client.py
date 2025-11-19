@@ -7,22 +7,22 @@ from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
 from ..core.jsonable_encoder import jsonable_encoder
-from ..core.pagination import AsyncPager, BaseHttpResponse, SyncPager
+from ..core.pagination import AsyncPager, SyncPager
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
 from ..core.unchecked_base_model import construct_type
-from .types.agent_management_get_history_response import AgentManagementGetHistoryResponse
-from .types.agent_management_get_response import AgentManagementGetResponse
-from .types.agent_management_interrupt_response import AgentManagementInterruptResponse
-from .types.agent_management_list_request_state import AgentManagementListRequestState
-from .types.agent_management_list_response import AgentManagementListResponse
-from .types.agent_management_list_response_data_list_item import AgentManagementListResponseDataListItem
-from .types.agent_management_speak_request_priority import AgentManagementSpeakRequestPriority
-from .types.agent_management_speak_response import AgentManagementSpeakResponse
-from .types.agent_management_start_request_properties import AgentManagementStartRequestProperties
-from .types.agent_management_start_response import AgentManagementStartResponse
-from .types.agent_management_update_request_properties import AgentManagementUpdateRequestProperties
-from .types.agent_management_update_response import AgentManagementUpdateResponse
+from .types.get_agent_management_response import GetAgentManagementResponse
+from .types.get_history_agent_management_response import GetHistoryAgentManagementResponse
+from .types.interrupt_agent_management_response import InterruptAgentManagementResponse
+from .types.list_agent_management_request_state import ListAgentManagementRequestState
+from .types.list_agent_management_response import ListAgentManagementResponse
+from .types.list_agent_management_response_data_list_item import ListAgentManagementResponseDataListItem
+from .types.speak_agent_management_request_priority import SpeakAgentManagementRequestPriority
+from .types.speak_agent_management_response import SpeakAgentManagementResponse
+from .types.start_agent_management_request_properties import StartAgentManagementRequestProperties
+from .types.start_agent_management_response import StartAgentManagementResponse
+from .types.update_agent_management_request_properties import UpdateAgentManagementRequestProperties
+from .types.update_agent_management_response import UpdateAgentManagementResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -37,9 +37,9 @@ class RawAgentManagementClient:
         appid: str,
         *,
         name: str,
-        properties: AgentManagementStartRequestProperties,
+        properties: StartAgentManagementRequestProperties,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[AgentManagementStartResponse]:
+    ) -> HttpResponse[StartAgentManagementResponse]:
         """
         Create and start a Conversational AI agent instance.
 
@@ -51,7 +51,7 @@ class RawAgentManagementClient:
         name : str
             The unique identifier of the agent. The same identifier cannot be used repeatedly.
 
-        properties : AgentManagementStartRequestProperties
+        properties : StartAgentManagementRequestProperties
             Configuration details of the agent.
 
         request_options : typing.Optional[RequestOptions]
@@ -59,7 +59,7 @@ class RawAgentManagementClient:
 
         Returns
         -------
-        HttpResponse[AgentManagementStartResponse]
+        HttpResponse[StartAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -68,7 +68,7 @@ class RawAgentManagementClient:
             json={
                 "name": name,
                 "properties": convert_and_respect_annotation_metadata(
-                    object_=properties, annotation=AgentManagementStartRequestProperties, direction="write"
+                    object_=properties, annotation=StartAgentManagementRequestProperties, direction="write"
                 ),
             },
             headers={
@@ -80,9 +80,9 @@ class RawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentManagementStartResponse,
+                    StartAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementStartResponse,  # type: ignore
+                        type_=StartAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -99,11 +99,11 @@ class RawAgentManagementClient:
         channel: typing.Optional[str] = None,
         from_time: typing.Optional[float] = None,
         to_time: typing.Optional[float] = None,
-        state: typing.Optional[AgentManagementListRequestState] = None,
+        state: typing.Optional[ListAgentManagementRequestState] = None,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> SyncPager[AgentManagementListResponseDataListItem]:
+    ) -> SyncPager[ListAgentManagementResponseDataListItem, ListAgentManagementResponse]:
         """
         Retrieve a list of agents that meet the specified conditions.
 
@@ -121,7 +121,7 @@ class RawAgentManagementClient:
         to_time : typing.Optional[float]
             The end timestamp (in seconds) for the query. Default is current time.
 
-        state : typing.Optional[AgentManagementListRequestState]
+        state : typing.Optional[ListAgentManagementRequestState]
             The agent state to filter by. Only one state can be specified per query:
             - `IDLE` (0): Agent is idle.
             - `STARTING` (1): The agent is being started.
@@ -142,7 +142,7 @@ class RawAgentManagementClient:
 
         Returns
         -------
-        SyncPager[AgentManagementListResponseDataListItem]
+        SyncPager[ListAgentManagementResponseDataListItem, ListAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -161,9 +161,9 @@ class RawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _parsed_response = typing.cast(
-                    AgentManagementListResponse,
+                    ListAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementListResponse,  # type: ignore
+                        type_=ListAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -184,9 +184,7 @@ class RawAgentManagementClient:
                         cursor=_parsed_next,
                         request_options=request_options,
                     )
-                return SyncPager(
-                    has_next=_has_next, items=_items, get_next=_get_next, response=BaseHttpResponse(response=_response)
-                )
+                return SyncPager(has_next=_has_next, items=_items, get_next=_get_next, response=_parsed_response)
             _response_json = _response.json()
         except JSONDecodeError:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
@@ -194,7 +192,7 @@ class RawAgentManagementClient:
 
     def get(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[AgentManagementGetResponse]:
+    ) -> HttpResponse[GetAgentManagementResponse]:
         """
         Get the current state information of the specified agent instance.
 
@@ -211,7 +209,7 @@ class RawAgentManagementClient:
 
         Returns
         -------
-        HttpResponse[AgentManagementGetResponse]
+        HttpResponse[GetAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -222,9 +220,9 @@ class RawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentManagementGetResponse,
+                    GetAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementGetResponse,  # type: ignore
+                        type_=GetAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -236,7 +234,7 @@ class RawAgentManagementClient:
 
     def get_history(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[AgentManagementGetHistoryResponse]:
+    ) -> HttpResponse[GetHistoryAgentManagementResponse]:
         """
         Get the history of the conversation between the user and the agent.
 
@@ -255,7 +253,7 @@ class RawAgentManagementClient:
 
         Returns
         -------
-        HttpResponse[AgentManagementGetHistoryResponse]
+        HttpResponse[GetHistoryAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -266,9 +264,9 @@ class RawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentManagementGetHistoryResponse,
+                    GetHistoryAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementGetHistoryResponse,  # type: ignore
+                        type_=GetHistoryAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -317,9 +315,9 @@ class RawAgentManagementClient:
         appid: str,
         agent_id: str,
         *,
-        properties: typing.Optional[AgentManagementUpdateRequestProperties] = OMIT,
+        properties: typing.Optional[UpdateAgentManagementRequestProperties] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[AgentManagementUpdateResponse]:
+    ) -> HttpResponse[UpdateAgentManagementResponse]:
         """
         Adjust Conversation AI Engine parameters at runtime.
 
@@ -331,7 +329,7 @@ class RawAgentManagementClient:
         agent_id : str
             The agent instance ID you obtained after successfully calling `join` to start a conversational AI agent.
 
-        properties : typing.Optional[AgentManagementUpdateRequestProperties]
+        properties : typing.Optional[UpdateAgentManagementRequestProperties]
             Configuration properties to update.
 
         request_options : typing.Optional[RequestOptions]
@@ -339,7 +337,7 @@ class RawAgentManagementClient:
 
         Returns
         -------
-        HttpResponse[AgentManagementUpdateResponse]
+        HttpResponse[UpdateAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -347,7 +345,7 @@ class RawAgentManagementClient:
             method="POST",
             json={
                 "properties": convert_and_respect_annotation_metadata(
-                    object_=properties, annotation=AgentManagementUpdateRequestProperties, direction="write"
+                    object_=properties, annotation=UpdateAgentManagementRequestProperties, direction="write"
                 ),
             },
             headers={
@@ -359,9 +357,9 @@ class RawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentManagementUpdateResponse,
+                    UpdateAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementUpdateResponse,  # type: ignore
+                        type_=UpdateAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -377,10 +375,10 @@ class RawAgentManagementClient:
         agent_id: str,
         *,
         text: str,
-        priority: typing.Optional[AgentManagementSpeakRequestPriority] = OMIT,
+        priority: typing.Optional[SpeakAgentManagementRequestPriority] = OMIT,
         interruptable: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[AgentManagementSpeakResponse]:
+    ) -> HttpResponse[SpeakAgentManagementResponse]:
         """
         Broadcast a custom message using the TTS module.
 
@@ -399,7 +397,7 @@ class RawAgentManagementClient:
         text : str
             The broadcast message text. The maximum length of the text content is 512 bytes.
 
-        priority : typing.Optional[AgentManagementSpeakRequestPriority]
+        priority : typing.Optional[SpeakAgentManagementRequestPriority]
             Sets the priority of the message broadcast:
             - `INTERRUPT`: High priority. The agent immediately interrupts the current interaction to announce the message.
             - `APPEND`: Medium priority. The agent announces the message after the current interaction ends.
@@ -415,7 +413,7 @@ class RawAgentManagementClient:
 
         Returns
         -------
-        HttpResponse[AgentManagementSpeakResponse]
+        HttpResponse[SpeakAgentManagementResponse]
             Request was successful. The agent starts to broadcast the specified message.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -435,9 +433,9 @@ class RawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentManagementSpeakResponse,
+                    SpeakAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementSpeakResponse,  # type: ignore
+                        type_=SpeakAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -449,7 +447,7 @@ class RawAgentManagementClient:
 
     def interrupt(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[AgentManagementInterruptResponse]:
+    ) -> HttpResponse[InterruptAgentManagementResponse]:
         """
         Interrupt the specified agent while speaking or thinking.
 
@@ -466,7 +464,7 @@ class RawAgentManagementClient:
 
         Returns
         -------
-        HttpResponse[AgentManagementInterruptResponse]
+        HttpResponse[InterruptAgentManagementResponse]
             Request was successful. The response body contains agent information and the agent stops talking and thinking immediately.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -482,9 +480,9 @@ class RawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentManagementInterruptResponse,
+                    InterruptAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementInterruptResponse,  # type: ignore
+                        type_=InterruptAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -504,9 +502,9 @@ class AsyncRawAgentManagementClient:
         appid: str,
         *,
         name: str,
-        properties: AgentManagementStartRequestProperties,
+        properties: StartAgentManagementRequestProperties,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[AgentManagementStartResponse]:
+    ) -> AsyncHttpResponse[StartAgentManagementResponse]:
         """
         Create and start a Conversational AI agent instance.
 
@@ -518,7 +516,7 @@ class AsyncRawAgentManagementClient:
         name : str
             The unique identifier of the agent. The same identifier cannot be used repeatedly.
 
-        properties : AgentManagementStartRequestProperties
+        properties : StartAgentManagementRequestProperties
             Configuration details of the agent.
 
         request_options : typing.Optional[RequestOptions]
@@ -526,7 +524,7 @@ class AsyncRawAgentManagementClient:
 
         Returns
         -------
-        AsyncHttpResponse[AgentManagementStartResponse]
+        AsyncHttpResponse[StartAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -535,7 +533,7 @@ class AsyncRawAgentManagementClient:
             json={
                 "name": name,
                 "properties": convert_and_respect_annotation_metadata(
-                    object_=properties, annotation=AgentManagementStartRequestProperties, direction="write"
+                    object_=properties, annotation=StartAgentManagementRequestProperties, direction="write"
                 ),
             },
             headers={
@@ -547,9 +545,9 @@ class AsyncRawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentManagementStartResponse,
+                    StartAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementStartResponse,  # type: ignore
+                        type_=StartAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -566,11 +564,11 @@ class AsyncRawAgentManagementClient:
         channel: typing.Optional[str] = None,
         from_time: typing.Optional[float] = None,
         to_time: typing.Optional[float] = None,
-        state: typing.Optional[AgentManagementListRequestState] = None,
+        state: typing.Optional[ListAgentManagementRequestState] = None,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncPager[AgentManagementListResponseDataListItem]:
+    ) -> AsyncPager[ListAgentManagementResponseDataListItem, ListAgentManagementResponse]:
         """
         Retrieve a list of agents that meet the specified conditions.
 
@@ -588,7 +586,7 @@ class AsyncRawAgentManagementClient:
         to_time : typing.Optional[float]
             The end timestamp (in seconds) for the query. Default is current time.
 
-        state : typing.Optional[AgentManagementListRequestState]
+        state : typing.Optional[ListAgentManagementRequestState]
             The agent state to filter by. Only one state can be specified per query:
             - `IDLE` (0): Agent is idle.
             - `STARTING` (1): The agent is being started.
@@ -609,7 +607,7 @@ class AsyncRawAgentManagementClient:
 
         Returns
         -------
-        AsyncPager[AgentManagementListResponseDataListItem]
+        AsyncPager[ListAgentManagementResponseDataListItem, ListAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -628,9 +626,9 @@ class AsyncRawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _parsed_response = typing.cast(
-                    AgentManagementListResponse,
+                    ListAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementListResponse,  # type: ignore
+                        type_=ListAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -654,9 +652,7 @@ class AsyncRawAgentManagementClient:
                             request_options=request_options,
                         )
 
-                return AsyncPager(
-                    has_next=_has_next, items=_items, get_next=_get_next, response=BaseHttpResponse(response=_response)
-                )
+                return AsyncPager(has_next=_has_next, items=_items, get_next=_get_next, response=_parsed_response)
             _response_json = _response.json()
         except JSONDecodeError:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
@@ -664,7 +660,7 @@ class AsyncRawAgentManagementClient:
 
     async def get(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[AgentManagementGetResponse]:
+    ) -> AsyncHttpResponse[GetAgentManagementResponse]:
         """
         Get the current state information of the specified agent instance.
 
@@ -681,7 +677,7 @@ class AsyncRawAgentManagementClient:
 
         Returns
         -------
-        AsyncHttpResponse[AgentManagementGetResponse]
+        AsyncHttpResponse[GetAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -692,9 +688,9 @@ class AsyncRawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentManagementGetResponse,
+                    GetAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementGetResponse,  # type: ignore
+                        type_=GetAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -706,7 +702,7 @@ class AsyncRawAgentManagementClient:
 
     async def get_history(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[AgentManagementGetHistoryResponse]:
+    ) -> AsyncHttpResponse[GetHistoryAgentManagementResponse]:
         """
         Get the history of the conversation between the user and the agent.
 
@@ -725,7 +721,7 @@ class AsyncRawAgentManagementClient:
 
         Returns
         -------
-        AsyncHttpResponse[AgentManagementGetHistoryResponse]
+        AsyncHttpResponse[GetHistoryAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -736,9 +732,9 @@ class AsyncRawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentManagementGetHistoryResponse,
+                    GetHistoryAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementGetHistoryResponse,  # type: ignore
+                        type_=GetHistoryAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -787,9 +783,9 @@ class AsyncRawAgentManagementClient:
         appid: str,
         agent_id: str,
         *,
-        properties: typing.Optional[AgentManagementUpdateRequestProperties] = OMIT,
+        properties: typing.Optional[UpdateAgentManagementRequestProperties] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[AgentManagementUpdateResponse]:
+    ) -> AsyncHttpResponse[UpdateAgentManagementResponse]:
         """
         Adjust Conversation AI Engine parameters at runtime.
 
@@ -801,7 +797,7 @@ class AsyncRawAgentManagementClient:
         agent_id : str
             The agent instance ID you obtained after successfully calling `join` to start a conversational AI agent.
 
-        properties : typing.Optional[AgentManagementUpdateRequestProperties]
+        properties : typing.Optional[UpdateAgentManagementRequestProperties]
             Configuration properties to update.
 
         request_options : typing.Optional[RequestOptions]
@@ -809,7 +805,7 @@ class AsyncRawAgentManagementClient:
 
         Returns
         -------
-        AsyncHttpResponse[AgentManagementUpdateResponse]
+        AsyncHttpResponse[UpdateAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -817,7 +813,7 @@ class AsyncRawAgentManagementClient:
             method="POST",
             json={
                 "properties": convert_and_respect_annotation_metadata(
-                    object_=properties, annotation=AgentManagementUpdateRequestProperties, direction="write"
+                    object_=properties, annotation=UpdateAgentManagementRequestProperties, direction="write"
                 ),
             },
             headers={
@@ -829,9 +825,9 @@ class AsyncRawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentManagementUpdateResponse,
+                    UpdateAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementUpdateResponse,  # type: ignore
+                        type_=UpdateAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -847,10 +843,10 @@ class AsyncRawAgentManagementClient:
         agent_id: str,
         *,
         text: str,
-        priority: typing.Optional[AgentManagementSpeakRequestPriority] = OMIT,
+        priority: typing.Optional[SpeakAgentManagementRequestPriority] = OMIT,
         interruptable: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[AgentManagementSpeakResponse]:
+    ) -> AsyncHttpResponse[SpeakAgentManagementResponse]:
         """
         Broadcast a custom message using the TTS module.
 
@@ -869,7 +865,7 @@ class AsyncRawAgentManagementClient:
         text : str
             The broadcast message text. The maximum length of the text content is 512 bytes.
 
-        priority : typing.Optional[AgentManagementSpeakRequestPriority]
+        priority : typing.Optional[SpeakAgentManagementRequestPriority]
             Sets the priority of the message broadcast:
             - `INTERRUPT`: High priority. The agent immediately interrupts the current interaction to announce the message.
             - `APPEND`: Medium priority. The agent announces the message after the current interaction ends.
@@ -885,7 +881,7 @@ class AsyncRawAgentManagementClient:
 
         Returns
         -------
-        AsyncHttpResponse[AgentManagementSpeakResponse]
+        AsyncHttpResponse[SpeakAgentManagementResponse]
             Request was successful. The agent starts to broadcast the specified message.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -905,9 +901,9 @@ class AsyncRawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentManagementSpeakResponse,
+                    SpeakAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementSpeakResponse,  # type: ignore
+                        type_=SpeakAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -919,7 +915,7 @@ class AsyncRawAgentManagementClient:
 
     async def interrupt(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[AgentManagementInterruptResponse]:
+    ) -> AsyncHttpResponse[InterruptAgentManagementResponse]:
         """
         Interrupt the specified agent while speaking or thinking.
 
@@ -936,7 +932,7 @@ class AsyncRawAgentManagementClient:
 
         Returns
         -------
-        AsyncHttpResponse[AgentManagementInterruptResponse]
+        AsyncHttpResponse[InterruptAgentManagementResponse]
             Request was successful. The response body contains agent information and the agent stops talking and thinking immediately.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -952,9 +948,9 @@ class AsyncRawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentManagementInterruptResponse,
+                    InterruptAgentManagementResponse,
                     construct_type(
-                        type_=AgentManagementInterruptResponse,  # type: ignore
+                        type_=InterruptAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

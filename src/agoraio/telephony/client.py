@@ -6,13 +6,14 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.pagination import AsyncPager, SyncPager
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawTelephonyClient, RawTelephonyClient
-from .types.telephony_call_request_properties import TelephonyCallRequestProperties
-from .types.telephony_call_request_sip import TelephonyCallRequestSip
-from .types.telephony_call_response import TelephonyCallResponse
-from .types.telephony_get_response import TelephonyGetResponse
-from .types.telephony_hangup_response import TelephonyHangupResponse
-from .types.telephony_list_request_type import TelephonyListRequestType
-from .types.telephony_list_response_data_list_item import TelephonyListResponseDataListItem
+from .types.call_telephony_request_properties import CallTelephonyRequestProperties
+from .types.call_telephony_request_sip import CallTelephonyRequestSip
+from .types.call_telephony_response import CallTelephonyResponse
+from .types.get_telephony_response import GetTelephonyResponse
+from .types.hangup_telephony_response import HangupTelephonyResponse
+from .types.list_telephony_request_type import ListTelephonyRequestType
+from .types.list_telephony_response import ListTelephonyResponse
+from .types.list_telephony_response_data_list_item import ListTelephonyResponseDataListItem
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -40,11 +41,11 @@ class TelephonyClient:
         number: typing.Optional[str] = None,
         from_time: typing.Optional[int] = None,
         to_time: typing.Optional[int] = None,
-        type: typing.Optional[TelephonyListRequestType] = None,
+        type: typing.Optional[ListTelephonyRequestType] = None,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> SyncPager[TelephonyListResponseDataListItem]:
+    ) -> SyncPager[ListTelephonyResponseDataListItem, ListTelephonyResponse]:
         """
         Query historical call records for a specified appid based on the filter criteria.
 
@@ -62,7 +63,7 @@ class TelephonyClient:
         to_time : typing.Optional[int]
             Query list end timestamp (in seconds). Default is current time.
 
-        type : typing.Optional[TelephonyListRequestType]
+        type : typing.Optional[ListTelephonyRequestType]
             Call type filter:
             - `inbound`: Inbound call.
             - `outbound`: Outbound call.
@@ -80,7 +81,7 @@ class TelephonyClient:
 
         Returns
         -------
-        SyncPager[TelephonyListResponseDataListItem]
+        SyncPager[ListTelephonyResponseDataListItem, ListTelephonyResponse]
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -93,12 +94,6 @@ class TelephonyClient:
         )
         response = client.telephony.list(
             appid="appid",
-            number="number",
-            from_time=1,
-            to_time=1,
-            type="inbound",
-            limit=1,
-            cursor="cursor",
         )
         for item in response:
             yield item
@@ -122,11 +117,11 @@ class TelephonyClient:
         appid: str,
         *,
         name: str,
-        sip: TelephonyCallRequestSip,
-        properties: TelephonyCallRequestProperties,
+        sip: CallTelephonyRequestSip,
+        properties: CallTelephonyRequestProperties,
         pipeline_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> TelephonyCallResponse:
+    ) -> CallTelephonyResponse:
         """
         Initiate an outbound call to a specified number and create an agent to join the specified RTC channel.
 
@@ -140,10 +135,10 @@ class TelephonyClient:
         name : str
             The name identifier of the call session.
 
-        sip : TelephonyCallRequestSip
+        sip : CallTelephonyRequestSip
             SIP (Session Initiation Protocol) call configuration object.
 
-        properties : TelephonyCallRequestProperties
+        properties : CallTelephonyRequestProperties
             Call attribute configuration. The content of this field varies depending on the invocation method:
             - **Using pipeline ID**: Simply pass in `channel`, `token`, and `agent_rtc_uid`.
             - **Using complete configuration**: Pass in the complete parameters of the [Start a conversational AI agent](https://docs.agora.io/en/conversational-ai/rest-api/agent/join) `properties`, including all required fields such as `channel`, `token`, `agent_rtc_uid`, `remote_rtc_uids`, `tts`, and `llm`.
@@ -156,15 +151,15 @@ class TelephonyClient:
 
         Returns
         -------
-        TelephonyCallResponse
+        CallTelephonyResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
         --------
         from agoraio import Agora
         from agoraio.telephony import (
-            TelephonyCallRequestProperties,
-            TelephonyCallRequestSip,
+            CallTelephonyRequestProperties,
+            CallTelephonyRequestSip,
         )
 
         client = Agora(
@@ -174,14 +169,14 @@ class TelephonyClient:
         client.telephony.call(
             appid="appid",
             name="customer_service",
-            sip=TelephonyCallRequestSip(
+            sip=CallTelephonyRequestSip(
                 to_number="+19876543210",
                 from_number="+11234567890",
                 sip_rtc_uid="100",
                 sip_rtc_token="<agora_sip_rtc_token>",
             ),
             pipeline_id="fzufjlweixxxxnlp",
-            properties=TelephonyCallRequestProperties(
+            properties=CallTelephonyRequestProperties(
                 channel="<agora_channel>",
                 token="<agora_channel_token>",
                 agent_rtc_uid="111",
@@ -195,7 +190,7 @@ class TelephonyClient:
 
     def get(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> TelephonyGetResponse:
+    ) -> GetTelephonyResponse:
         """
         Retrieve the call status and related information of a specified agent.
 
@@ -212,7 +207,7 @@ class TelephonyClient:
 
         Returns
         -------
-        TelephonyGetResponse
+        GetTelephonyResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -233,7 +228,7 @@ class TelephonyClient:
 
     def hangup(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> TelephonyHangupResponse:
+    ) -> HangupTelephonyResponse:
         """
         Instruct the agent to proactively hang up the ongoing call and leave the RTC channel.
 
@@ -250,7 +245,7 @@ class TelephonyClient:
 
         Returns
         -------
-        TelephonyHangupResponse
+        HangupTelephonyResponse
             Request was successful. The response body is empty.
 
         Examples
@@ -292,11 +287,11 @@ class AsyncTelephonyClient:
         number: typing.Optional[str] = None,
         from_time: typing.Optional[int] = None,
         to_time: typing.Optional[int] = None,
-        type: typing.Optional[TelephonyListRequestType] = None,
+        type: typing.Optional[ListTelephonyRequestType] = None,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncPager[TelephonyListResponseDataListItem]:
+    ) -> AsyncPager[ListTelephonyResponseDataListItem, ListTelephonyResponse]:
         """
         Query historical call records for a specified appid based on the filter criteria.
 
@@ -314,7 +309,7 @@ class AsyncTelephonyClient:
         to_time : typing.Optional[int]
             Query list end timestamp (in seconds). Default is current time.
 
-        type : typing.Optional[TelephonyListRequestType]
+        type : typing.Optional[ListTelephonyRequestType]
             Call type filter:
             - `inbound`: Inbound call.
             - `outbound`: Outbound call.
@@ -332,7 +327,7 @@ class AsyncTelephonyClient:
 
         Returns
         -------
-        AsyncPager[TelephonyListResponseDataListItem]
+        AsyncPager[ListTelephonyResponseDataListItem, ListTelephonyResponse]
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -350,12 +345,6 @@ class AsyncTelephonyClient:
         async def main() -> None:
             response = await client.telephony.list(
                 appid="appid",
-                number="number",
-                from_time=1,
-                to_time=1,
-                type="inbound",
-                limit=1,
-                cursor="cursor",
             )
             async for item in response:
                 yield item
@@ -383,11 +372,11 @@ class AsyncTelephonyClient:
         appid: str,
         *,
         name: str,
-        sip: TelephonyCallRequestSip,
-        properties: TelephonyCallRequestProperties,
+        sip: CallTelephonyRequestSip,
+        properties: CallTelephonyRequestProperties,
         pipeline_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> TelephonyCallResponse:
+    ) -> CallTelephonyResponse:
         """
         Initiate an outbound call to a specified number and create an agent to join the specified RTC channel.
 
@@ -401,10 +390,10 @@ class AsyncTelephonyClient:
         name : str
             The name identifier of the call session.
 
-        sip : TelephonyCallRequestSip
+        sip : CallTelephonyRequestSip
             SIP (Session Initiation Protocol) call configuration object.
 
-        properties : TelephonyCallRequestProperties
+        properties : CallTelephonyRequestProperties
             Call attribute configuration. The content of this field varies depending on the invocation method:
             - **Using pipeline ID**: Simply pass in `channel`, `token`, and `agent_rtc_uid`.
             - **Using complete configuration**: Pass in the complete parameters of the [Start a conversational AI agent](https://docs.agora.io/en/conversational-ai/rest-api/agent/join) `properties`, including all required fields such as `channel`, `token`, `agent_rtc_uid`, `remote_rtc_uids`, `tts`, and `llm`.
@@ -417,7 +406,7 @@ class AsyncTelephonyClient:
 
         Returns
         -------
-        TelephonyCallResponse
+        CallTelephonyResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -426,8 +415,8 @@ class AsyncTelephonyClient:
 
         from agoraio import AsyncAgora
         from agoraio.telephony import (
-            TelephonyCallRequestProperties,
-            TelephonyCallRequestSip,
+            CallTelephonyRequestProperties,
+            CallTelephonyRequestSip,
         )
 
         client = AsyncAgora(
@@ -440,14 +429,14 @@ class AsyncTelephonyClient:
             await client.telephony.call(
                 appid="appid",
                 name="customer_service",
-                sip=TelephonyCallRequestSip(
+                sip=CallTelephonyRequestSip(
                     to_number="+19876543210",
                     from_number="+11234567890",
                     sip_rtc_uid="100",
                     sip_rtc_token="<agora_sip_rtc_token>",
                 ),
                 pipeline_id="fzufjlweixxxxnlp",
-                properties=TelephonyCallRequestProperties(
+                properties=CallTelephonyRequestProperties(
                     channel="<agora_channel>",
                     token="<agora_channel_token>",
                     agent_rtc_uid="111",
@@ -464,7 +453,7 @@ class AsyncTelephonyClient:
 
     async def get(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> TelephonyGetResponse:
+    ) -> GetTelephonyResponse:
         """
         Retrieve the call status and related information of a specified agent.
 
@@ -481,7 +470,7 @@ class AsyncTelephonyClient:
 
         Returns
         -------
-        TelephonyGetResponse
+        GetTelephonyResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -510,7 +499,7 @@ class AsyncTelephonyClient:
 
     async def hangup(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> TelephonyHangupResponse:
+    ) -> HangupTelephonyResponse:
         """
         Instruct the agent to proactively hang up the ongoing call and leave the RTC channel.
 
@@ -527,7 +516,7 @@ class AsyncTelephonyClient:
 
         Returns
         -------
-        TelephonyHangupResponse
+        HangupTelephonyResponse
             Request was successful. The response body is empty.
 
         Examples

@@ -27,7 +27,7 @@ class BaseClientWrapper:
             "User-Agent": "agoraio-sdk/AUTO",
             "X-Fern-Language": "Python",
             "X-Fern-SDK-Name": "agoraio-sdk",
-            "X-Fern-SDK-Version": "0.0.3",
+            "X-Fern-SDK-Version": "0.0.4",
             **(self.get_custom_headers() or {}),
         }
         headers["Authorization"] = httpx.BasicAuth(self._get_username(), self._get_password())._auth_header

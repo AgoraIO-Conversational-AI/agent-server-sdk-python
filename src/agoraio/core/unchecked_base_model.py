@@ -175,7 +175,42 @@ def _convert_undiscriminated_union_type(union_type: typing.Type[typing.Any], obj
         except Exception:
             continue
 
-    # If none of the types work, just return the first successful cast
+    # If none of the types work, try matching literal fields first, then fall back
+    # First pass: try types where all literal fields match the object's values
+    for inner_type in inner_types:
+        if inspect.isclass(inner_type) and issubclass(inner_type, pydantic.BaseModel):
+            fields = _get_model_fields(inner_type)
+            literal_fields_match = True
+
+            for field_name, field in fields.items():
+                # Check if this field has a Literal type
+                if IS_PYDANTIC_V2:
+                    field_type = field.annotation  # type: ignore # Pydantic v2
+                else:
+                    field_type = field.outer_type_  # type: ignore # Pydantic v1
+
+                if is_literal_type(field_type):  # type: ignore[arg-type]
+                    field_default = _get_field_default(field)
+                    name_or_alias = get_field_to_alias_mapping(inner_type).get(field_name, field_name)
+                    # Get the value from the object
+                    if isinstance(object_, dict):
+                        object_value = object_.get(name_or_alias)
+                    else:
+                        object_value = getattr(object_, name_or_alias, None)
+
+                    # If the literal field value doesn't match, this type is not a match
+                    if object_value is not None and field_default != object_value:
+                        literal_fields_match = False
+                        break
+
+            # If all literal fields match, try to construct this type
+            if literal_fields_match:
+                try:
+                    return construct_type(object_=object_, type_=inner_type)
+                except Exception:
+                    continue
+
+    # Second pass: if no literal matches, just return the first successful cast
     for inner_type in inner_types:
         try:
             return construct_type(object_=object_, type_=inner_type)
@@ -186,7 +221,7 @@ def _convert_undiscriminated_union_type(union_type: typing.Type[typing.Any], obj
 def _convert_union_type(type_: typing.Type[typing.Any], object_: typing.Any) -> typing.Any:
     base_type = get_origin(type_) or type_
     union_type = type_
-    if base_type == typing_extensions.Annotated:
+    if base_type == typing_extensions.Annotated:  # type: ignore[comparison-overlap]
         union_type = get_args(type_)[0]
         annotated_metadata = get_args(type_)[1:]
         for metadata in annotated_metadata:
@@ -217,11 +252,11 @@ def construct_type(*, type_: typing.Type[typing.Any], object_: typing.Any) -> ty
         return None
 
     base_type = get_origin(type_) or type_
-    is_annotated = base_type == typing_extensions.Annotated
+    is_annotated = base_type == typing_extensions.Annotated  # type: ignore[comparison-overlap]
     maybe_annotation_members = get_args(type_)
     is_annotated_union = is_annotated and is_union(get_origin(maybe_annotation_members[0]))
 
-    if base_type == typing.Any:
+    if base_type == typing.Any:  # type: ignore[comparison-overlap]
         return object_
 
     if base_type == dict:

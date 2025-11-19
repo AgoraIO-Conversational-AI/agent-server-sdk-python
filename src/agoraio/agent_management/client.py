@@ -6,17 +6,18 @@ from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.pagination import AsyncPager, SyncPager
 from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawAgentManagementClient, RawAgentManagementClient
-from .types.agent_management_get_history_response import AgentManagementGetHistoryResponse
-from .types.agent_management_get_response import AgentManagementGetResponse
-from .types.agent_management_interrupt_response import AgentManagementInterruptResponse
-from .types.agent_management_list_request_state import AgentManagementListRequestState
-from .types.agent_management_list_response_data_list_item import AgentManagementListResponseDataListItem
-from .types.agent_management_speak_request_priority import AgentManagementSpeakRequestPriority
-from .types.agent_management_speak_response import AgentManagementSpeakResponse
-from .types.agent_management_start_request_properties import AgentManagementStartRequestProperties
-from .types.agent_management_start_response import AgentManagementStartResponse
-from .types.agent_management_update_request_properties import AgentManagementUpdateRequestProperties
-from .types.agent_management_update_response import AgentManagementUpdateResponse
+from .types.get_agent_management_response import GetAgentManagementResponse
+from .types.get_history_agent_management_response import GetHistoryAgentManagementResponse
+from .types.interrupt_agent_management_response import InterruptAgentManagementResponse
+from .types.list_agent_management_request_state import ListAgentManagementRequestState
+from .types.list_agent_management_response import ListAgentManagementResponse
+from .types.list_agent_management_response_data_list_item import ListAgentManagementResponseDataListItem
+from .types.speak_agent_management_request_priority import SpeakAgentManagementRequestPriority
+from .types.speak_agent_management_response import SpeakAgentManagementResponse
+from .types.start_agent_management_request_properties import StartAgentManagementRequestProperties
+from .types.start_agent_management_response import StartAgentManagementResponse
+from .types.update_agent_management_request_properties import UpdateAgentManagementRequestProperties
+from .types.update_agent_management_response import UpdateAgentManagementResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -42,9 +43,9 @@ class AgentManagementClient:
         appid: str,
         *,
         name: str,
-        properties: AgentManagementStartRequestProperties,
+        properties: StartAgentManagementRequestProperties,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AgentManagementStartResponse:
+    ) -> StartAgentManagementResponse:
         """
         Create and start a Conversational AI agent instance.
 
@@ -56,7 +57,7 @@ class AgentManagementClient:
         name : str
             The unique identifier of the agent. The same identifier cannot be used repeatedly.
 
-        properties : AgentManagementStartRequestProperties
+        properties : StartAgentManagementRequestProperties
             Configuration details of the agent.
 
         request_options : typing.Optional[RequestOptions]
@@ -64,18 +65,18 @@ class AgentManagementClient:
 
         Returns
         -------
-        AgentManagementStartResponse
+        StartAgentManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
         --------
         from agoraio import Agora
         from agoraio.agent_management import (
-            AgentManagementStartRequestProperties,
-            AgentManagementStartRequestPropertiesAdvancedFeatures,
-            AgentManagementStartRequestPropertiesAsr,
-            AgentManagementStartRequestPropertiesLlm,
-            AgentManagementStartRequestPropertiesTts,
+            StartAgentManagementRequestProperties,
+            StartAgentManagementRequestPropertiesAdvancedFeatures,
+            StartAgentManagementRequestPropertiesAsr,
+            StartAgentManagementRequestPropertiesLlm,
+            StartAgentManagementRequestPropertiesTts,
         )
 
         client = Agora(
@@ -85,19 +86,19 @@ class AgentManagementClient:
         client.agent_management.start(
             appid="appid",
             name="unique_name",
-            properties=AgentManagementStartRequestProperties(
+            properties=StartAgentManagementRequestProperties(
                 channel="channel_name",
                 token="token",
                 agent_rtc_uid="1001",
                 remote_rtc_uids=["1002"],
                 idle_timeout=120,
-                advanced_features=AgentManagementStartRequestPropertiesAdvancedFeatures(
+                advanced_features=StartAgentManagementRequestPropertiesAdvancedFeatures(
                     enable_aivad=True,
                 ),
-                asr=AgentManagementStartRequestPropertiesAsr(
+                asr=StartAgentManagementRequestPropertiesAsr(
                     language="en-US",
                 ),
-                tts=AgentManagementStartRequestPropertiesTts(
+                tts=StartAgentManagementRequestPropertiesTts(
                     vendor="microsoft",
                     params={
                         "key": "<your_tts_api_key>",
@@ -105,7 +106,7 @@ class AgentManagementClient:
                         "voice_name": "en-US-AndrewMultilingualNeural",
                     },
                 ),
-                llm=AgentManagementStartRequestPropertiesLlm(
+                llm=StartAgentManagementRequestPropertiesLlm(
                     url="https://api.openai.com/v1/chat/completions",
                     api_key="<your_llm_key>",
                     system_messages=[
@@ -129,11 +130,11 @@ class AgentManagementClient:
         channel: typing.Optional[str] = None,
         from_time: typing.Optional[float] = None,
         to_time: typing.Optional[float] = None,
-        state: typing.Optional[AgentManagementListRequestState] = None,
+        state: typing.Optional[ListAgentManagementRequestState] = None,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> SyncPager[AgentManagementListResponseDataListItem]:
+    ) -> SyncPager[ListAgentManagementResponseDataListItem, ListAgentManagementResponse]:
         """
         Retrieve a list of agents that meet the specified conditions.
 
@@ -151,7 +152,7 @@ class AgentManagementClient:
         to_time : typing.Optional[float]
             The end timestamp (in seconds) for the query. Default is current time.
 
-        state : typing.Optional[AgentManagementListRequestState]
+        state : typing.Optional[ListAgentManagementRequestState]
             The agent state to filter by. Only one state can be specified per query:
             - `IDLE` (0): Agent is idle.
             - `STARTING` (1): The agent is being started.
@@ -172,7 +173,7 @@ class AgentManagementClient:
 
         Returns
         -------
-        SyncPager[AgentManagementListResponseDataListItem]
+        SyncPager[ListAgentManagementResponseDataListItem, ListAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -185,12 +186,6 @@ class AgentManagementClient:
         )
         response = client.agent_management.list(
             appid="appid",
-            channel="channel",
-            from_time=1.1,
-            to_time=1.1,
-            state="0",
-            limit=1,
-            cursor="cursor",
         )
         for item in response:
             yield item
@@ -211,7 +206,7 @@ class AgentManagementClient:
 
     def get(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AgentManagementGetResponse:
+    ) -> GetAgentManagementResponse:
         """
         Get the current state information of the specified agent instance.
 
@@ -228,7 +223,7 @@ class AgentManagementClient:
 
         Returns
         -------
-        AgentManagementGetResponse
+        GetAgentManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -249,7 +244,7 @@ class AgentManagementClient:
 
     def get_history(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AgentManagementGetHistoryResponse:
+    ) -> GetHistoryAgentManagementResponse:
         """
         Get the history of the conversation between the user and the agent.
 
@@ -268,7 +263,7 @@ class AgentManagementClient:
 
         Returns
         -------
-        AgentManagementGetHistoryResponse
+        GetHistoryAgentManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -327,9 +322,9 @@ class AgentManagementClient:
         appid: str,
         agent_id: str,
         *,
-        properties: typing.Optional[AgentManagementUpdateRequestProperties] = OMIT,
+        properties: typing.Optional[UpdateAgentManagementRequestProperties] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AgentManagementUpdateResponse:
+    ) -> UpdateAgentManagementResponse:
         """
         Adjust Conversation AI Engine parameters at runtime.
 
@@ -341,7 +336,7 @@ class AgentManagementClient:
         agent_id : str
             The agent instance ID you obtained after successfully calling `join` to start a conversational AI agent.
 
-        properties : typing.Optional[AgentManagementUpdateRequestProperties]
+        properties : typing.Optional[UpdateAgentManagementRequestProperties]
             Configuration properties to update.
 
         request_options : typing.Optional[RequestOptions]
@@ -349,15 +344,15 @@ class AgentManagementClient:
 
         Returns
         -------
-        AgentManagementUpdateResponse
+        UpdateAgentManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
         --------
         from agoraio import Agora
         from agoraio.agent_management import (
-            AgentManagementUpdateRequestProperties,
-            AgentManagementUpdateRequestPropertiesLlm,
+            UpdateAgentManagementRequestProperties,
+            UpdateAgentManagementRequestPropertiesLlm,
         )
 
         client = Agora(
@@ -367,9 +362,9 @@ class AgentManagementClient:
         client.agent_management.update(
             appid="appid",
             agent_id="agentId",
-            properties=AgentManagementUpdateRequestProperties(
+            properties=UpdateAgentManagementRequestProperties(
                 token="007eJxTYxxxxxxxxxxIaHMLAAAA0ex66",
-                llm=AgentManagementUpdateRequestPropertiesLlm(
+                llm=UpdateAgentManagementRequestPropertiesLlm(
                     system_messages=[
                         {
                             "role": "system",
@@ -394,10 +389,10 @@ class AgentManagementClient:
         agent_id: str,
         *,
         text: str,
-        priority: typing.Optional[AgentManagementSpeakRequestPriority] = OMIT,
+        priority: typing.Optional[SpeakAgentManagementRequestPriority] = OMIT,
         interruptable: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AgentManagementSpeakResponse:
+    ) -> SpeakAgentManagementResponse:
         """
         Broadcast a custom message using the TTS module.
 
@@ -416,7 +411,7 @@ class AgentManagementClient:
         text : str
             The broadcast message text. The maximum length of the text content is 512 bytes.
 
-        priority : typing.Optional[AgentManagementSpeakRequestPriority]
+        priority : typing.Optional[SpeakAgentManagementRequestPriority]
             Sets the priority of the message broadcast:
             - `INTERRUPT`: High priority. The agent immediately interrupts the current interaction to announce the message.
             - `APPEND`: Medium priority. The agent announces the message after the current interaction ends.
@@ -432,7 +427,7 @@ class AgentManagementClient:
 
         Returns
         -------
-        AgentManagementSpeakResponse
+        SpeakAgentManagementResponse
             Request was successful. The agent starts to broadcast the specified message.
 
         Examples
@@ -458,7 +453,7 @@ class AgentManagementClient:
 
     def interrupt(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AgentManagementInterruptResponse:
+    ) -> InterruptAgentManagementResponse:
         """
         Interrupt the specified agent while speaking or thinking.
 
@@ -475,7 +470,7 @@ class AgentManagementClient:
 
         Returns
         -------
-        AgentManagementInterruptResponse
+        InterruptAgentManagementResponse
             Request was successful. The response body contains agent information and the agent stops talking and thinking immediately.
 
         Examples
@@ -515,9 +510,9 @@ class AsyncAgentManagementClient:
         appid: str,
         *,
         name: str,
-        properties: AgentManagementStartRequestProperties,
+        properties: StartAgentManagementRequestProperties,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AgentManagementStartResponse:
+    ) -> StartAgentManagementResponse:
         """
         Create and start a Conversational AI agent instance.
 
@@ -529,7 +524,7 @@ class AsyncAgentManagementClient:
         name : str
             The unique identifier of the agent. The same identifier cannot be used repeatedly.
 
-        properties : AgentManagementStartRequestProperties
+        properties : StartAgentManagementRequestProperties
             Configuration details of the agent.
 
         request_options : typing.Optional[RequestOptions]
@@ -537,7 +532,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        AgentManagementStartResponse
+        StartAgentManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -546,11 +541,11 @@ class AsyncAgentManagementClient:
 
         from agoraio import AsyncAgora
         from agoraio.agent_management import (
-            AgentManagementStartRequestProperties,
-            AgentManagementStartRequestPropertiesAdvancedFeatures,
-            AgentManagementStartRequestPropertiesAsr,
-            AgentManagementStartRequestPropertiesLlm,
-            AgentManagementStartRequestPropertiesTts,
+            StartAgentManagementRequestProperties,
+            StartAgentManagementRequestPropertiesAdvancedFeatures,
+            StartAgentManagementRequestPropertiesAsr,
+            StartAgentManagementRequestPropertiesLlm,
+            StartAgentManagementRequestPropertiesTts,
         )
 
         client = AsyncAgora(
@@ -563,19 +558,19 @@ class AsyncAgentManagementClient:
             await client.agent_management.start(
                 appid="appid",
                 name="unique_name",
-                properties=AgentManagementStartRequestProperties(
+                properties=StartAgentManagementRequestProperties(
                     channel="channel_name",
                     token="token",
                     agent_rtc_uid="1001",
                     remote_rtc_uids=["1002"],
                     idle_timeout=120,
-                    advanced_features=AgentManagementStartRequestPropertiesAdvancedFeatures(
+                    advanced_features=StartAgentManagementRequestPropertiesAdvancedFeatures(
                         enable_aivad=True,
                     ),
-                    asr=AgentManagementStartRequestPropertiesAsr(
+                    asr=StartAgentManagementRequestPropertiesAsr(
                         language="en-US",
                     ),
-                    tts=AgentManagementStartRequestPropertiesTts(
+                    tts=StartAgentManagementRequestPropertiesTts(
                         vendor="microsoft",
                         params={
                             "key": "<your_tts_api_key>",
@@ -583,7 +578,7 @@ class AsyncAgentManagementClient:
                             "voice_name": "en-US-AndrewMultilingualNeural",
                         },
                     ),
-                    llm=AgentManagementStartRequestPropertiesLlm(
+                    llm=StartAgentManagementRequestPropertiesLlm(
                         url="https://api.openai.com/v1/chat/completions",
                         api_key="<your_llm_key>",
                         system_messages=[
@@ -612,11 +607,11 @@ class AsyncAgentManagementClient:
         channel: typing.Optional[str] = None,
         from_time: typing.Optional[float] = None,
         to_time: typing.Optional[float] = None,
-        state: typing.Optional[AgentManagementListRequestState] = None,
+        state: typing.Optional[ListAgentManagementRequestState] = None,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncPager[AgentManagementListResponseDataListItem]:
+    ) -> AsyncPager[ListAgentManagementResponseDataListItem, ListAgentManagementResponse]:
         """
         Retrieve a list of agents that meet the specified conditions.
 
@@ -634,7 +629,7 @@ class AsyncAgentManagementClient:
         to_time : typing.Optional[float]
             The end timestamp (in seconds) for the query. Default is current time.
 
-        state : typing.Optional[AgentManagementListRequestState]
+        state : typing.Optional[ListAgentManagementRequestState]
             The agent state to filter by. Only one state can be specified per query:
             - `IDLE` (0): Agent is idle.
             - `STARTING` (1): The agent is being started.
@@ -655,7 +650,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        AsyncPager[AgentManagementListResponseDataListItem]
+        AsyncPager[ListAgentManagementResponseDataListItem, ListAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -673,12 +668,6 @@ class AsyncAgentManagementClient:
         async def main() -> None:
             response = await client.agent_management.list(
                 appid="appid",
-                channel="channel",
-                from_time=1.1,
-                to_time=1.1,
-                state="0",
-                limit=1,
-                cursor="cursor",
             )
             async for item in response:
                 yield item
@@ -703,7 +692,7 @@ class AsyncAgentManagementClient:
 
     async def get(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AgentManagementGetResponse:
+    ) -> GetAgentManagementResponse:
         """
         Get the current state information of the specified agent instance.
 
@@ -720,7 +709,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        AgentManagementGetResponse
+        GetAgentManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -749,7 +738,7 @@ class AsyncAgentManagementClient:
 
     async def get_history(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AgentManagementGetHistoryResponse:
+    ) -> GetHistoryAgentManagementResponse:
         """
         Get the history of the conversation between the user and the agent.
 
@@ -768,7 +757,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        AgentManagementGetHistoryResponse
+        GetHistoryAgentManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -843,9 +832,9 @@ class AsyncAgentManagementClient:
         appid: str,
         agent_id: str,
         *,
-        properties: typing.Optional[AgentManagementUpdateRequestProperties] = OMIT,
+        properties: typing.Optional[UpdateAgentManagementRequestProperties] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AgentManagementUpdateResponse:
+    ) -> UpdateAgentManagementResponse:
         """
         Adjust Conversation AI Engine parameters at runtime.
 
@@ -857,7 +846,7 @@ class AsyncAgentManagementClient:
         agent_id : str
             The agent instance ID you obtained after successfully calling `join` to start a conversational AI agent.
 
-        properties : typing.Optional[AgentManagementUpdateRequestProperties]
+        properties : typing.Optional[UpdateAgentManagementRequestProperties]
             Configuration properties to update.
 
         request_options : typing.Optional[RequestOptions]
@@ -865,7 +854,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        AgentManagementUpdateResponse
+        UpdateAgentManagementResponse
             Request was successful. The response body contains the result of the request.
 
         Examples
@@ -874,8 +863,8 @@ class AsyncAgentManagementClient:
 
         from agoraio import AsyncAgora
         from agoraio.agent_management import (
-            AgentManagementUpdateRequestProperties,
-            AgentManagementUpdateRequestPropertiesLlm,
+            UpdateAgentManagementRequestProperties,
+            UpdateAgentManagementRequestPropertiesLlm,
         )
 
         client = AsyncAgora(
@@ -888,9 +877,9 @@ class AsyncAgentManagementClient:
             await client.agent_management.update(
                 appid="appid",
                 agent_id="agentId",
-                properties=AgentManagementUpdateRequestProperties(
+                properties=UpdateAgentManagementRequestProperties(
                     token="007eJxTYxxxxxxxxxxIaHMLAAAA0ex66",
-                    llm=AgentManagementUpdateRequestPropertiesLlm(
+                    llm=UpdateAgentManagementRequestPropertiesLlm(
                         system_messages=[
                             {
                                 "role": "system",
@@ -920,10 +909,10 @@ class AsyncAgentManagementClient:
         agent_id: str,
         *,
         text: str,
-        priority: typing.Optional[AgentManagementSpeakRequestPriority] = OMIT,
+        priority: typing.Optional[SpeakAgentManagementRequestPriority] = OMIT,
         interruptable: typing.Optional[bool] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AgentManagementSpeakResponse:
+    ) -> SpeakAgentManagementResponse:
         """
         Broadcast a custom message using the TTS module.
 
@@ -942,7 +931,7 @@ class AsyncAgentManagementClient:
         text : str
             The broadcast message text. The maximum length of the text content is 512 bytes.
 
-        priority : typing.Optional[AgentManagementSpeakRequestPriority]
+        priority : typing.Optional[SpeakAgentManagementRequestPriority]
             Sets the priority of the message broadcast:
             - `INTERRUPT`: High priority. The agent immediately interrupts the current interaction to announce the message.
             - `APPEND`: Medium priority. The agent announces the message after the current interaction ends.
@@ -958,7 +947,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        AgentManagementSpeakResponse
+        SpeakAgentManagementResponse
             Request was successful. The agent starts to broadcast the specified message.
 
         Examples
@@ -992,7 +981,7 @@ class AsyncAgentManagementClient:
 
     async def interrupt(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AgentManagementInterruptResponse:
+    ) -> InterruptAgentManagementResponse:
         """
         Interrupt the specified agent while speaking or thinking.
 
@@ -1009,7 +998,7 @@ class AsyncAgentManagementClient:
 
         Returns
         -------
-        AgentManagementInterruptResponse
+        InterruptAgentManagementResponse
             Request was successful. The response body contains agent information and the agent stops talking and thinking immediately.
 
         Examples

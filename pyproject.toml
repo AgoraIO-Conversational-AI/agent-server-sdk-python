@@ -3,7 +3,7 @@ name = "agoraio-sdk"
 
 [tool.poetry]
 name = "agoraio-sdk"
-version = "0.0.3"
+version = "0.0.4"
 description = ""
 readme = "README.md"
 authors = []
@@ -30,7 +30,7 @@ packages = [
     { include = "agoraio", from = "src"}
 ]
 
-[project.urls]
+[tool.poetry.urls]
 Repository = 'https://github.com/fern-demo/agoraio-python-sdk'
 
 [tool.poetry.dependencies]

@@ -7,18 +7,18 @@ from ..core.api_error import ApiError
 from ..core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from ..core.http_response import AsyncHttpResponse, HttpResponse
 from ..core.jsonable_encoder import jsonable_encoder
-from ..core.pagination import AsyncPager, BaseHttpResponse, SyncPager
+from ..core.pagination import AsyncPager, SyncPager
 from ..core.request_options import RequestOptions
 from ..core.serialization import convert_and_respect_annotation_metadata
 from ..core.unchecked_base_model import construct_type
-from .types.telephony_call_request_properties import TelephonyCallRequestProperties
-from .types.telephony_call_request_sip import TelephonyCallRequestSip
-from .types.telephony_call_response import TelephonyCallResponse
-from .types.telephony_get_response import TelephonyGetResponse
-from .types.telephony_hangup_response import TelephonyHangupResponse
-from .types.telephony_list_request_type import TelephonyListRequestType
-from .types.telephony_list_response import TelephonyListResponse
-from .types.telephony_list_response_data_list_item import TelephonyListResponseDataListItem
+from .types.call_telephony_request_properties import CallTelephonyRequestProperties
+from .types.call_telephony_request_sip import CallTelephonyRequestSip
+from .types.call_telephony_response import CallTelephonyResponse
+from .types.get_telephony_response import GetTelephonyResponse
+from .types.hangup_telephony_response import HangupTelephonyResponse
+from .types.list_telephony_request_type import ListTelephonyRequestType
+from .types.list_telephony_response import ListTelephonyResponse
+from .types.list_telephony_response_data_list_item import ListTelephonyResponseDataListItem
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -35,11 +35,11 @@ class RawTelephonyClient:
         number: typing.Optional[str] = None,
         from_time: typing.Optional[int] = None,
         to_time: typing.Optional[int] = None,
-        type: typing.Optional[TelephonyListRequestType] = None,
+        type: typing.Optional[ListTelephonyRequestType] = None,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> SyncPager[TelephonyListResponseDataListItem]:
+    ) -> SyncPager[ListTelephonyResponseDataListItem, ListTelephonyResponse]:
         """
         Query historical call records for a specified appid based on the filter criteria.
 
@@ -57,7 +57,7 @@ class RawTelephonyClient:
         to_time : typing.Optional[int]
             Query list end timestamp (in seconds). Default is current time.
 
-        type : typing.Optional[TelephonyListRequestType]
+        type : typing.Optional[ListTelephonyRequestType]
             Call type filter:
             - `inbound`: Inbound call.
             - `outbound`: Outbound call.
@@ -75,7 +75,7 @@ class RawTelephonyClient:
 
         Returns
         -------
-        SyncPager[TelephonyListResponseDataListItem]
+        SyncPager[ListTelephonyResponseDataListItem, ListTelephonyResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -94,9 +94,9 @@ class RawTelephonyClient:
         try:
             if 200 <= _response.status_code < 300:
                 _parsed_response = typing.cast(
-                    TelephonyListResponse,
+                    ListTelephonyResponse,
                     construct_type(
-                        type_=TelephonyListResponse,  # type: ignore
+                        type_=ListTelephonyResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -117,9 +117,7 @@ class RawTelephonyClient:
                         cursor=_parsed_next,
                         request_options=request_options,
                     )
-                return SyncPager(
-                    has_next=_has_next, items=_items, get_next=_get_next, response=BaseHttpResponse(response=_response)
-                )
+                return SyncPager(has_next=_has_next, items=_items, get_next=_get_next, response=_parsed_response)
             _response_json = _response.json()
         except JSONDecodeError:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
@@ -130,11 +128,11 @@ class RawTelephonyClient:
         appid: str,
         *,
         name: str,
-        sip: TelephonyCallRequestSip,
-        properties: TelephonyCallRequestProperties,
+        sip: CallTelephonyRequestSip,
+        properties: CallTelephonyRequestProperties,
         pipeline_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[TelephonyCallResponse]:
+    ) -> HttpResponse[CallTelephonyResponse]:
         """
         Initiate an outbound call to a specified number and create an agent to join the specified RTC channel.
 
@@ -148,10 +146,10 @@ class RawTelephonyClient:
         name : str
             The name identifier of the call session.
 
-        sip : TelephonyCallRequestSip
+        sip : CallTelephonyRequestSip
             SIP (Session Initiation Protocol) call configuration object.
 
-        properties : TelephonyCallRequestProperties
+        properties : CallTelephonyRequestProperties
             Call attribute configuration. The content of this field varies depending on the invocation method:
             - **Using pipeline ID**: Simply pass in `channel`, `token`, and `agent_rtc_uid`.
             - **Using complete configuration**: Pass in the complete parameters of the [Start a conversational AI agent](https://docs.agora.io/en/conversational-ai/rest-api/agent/join) `properties`, including all required fields such as `channel`, `token`, `agent_rtc_uid`, `remote_rtc_uids`, `tts`, and `llm`.
@@ -164,7 +162,7 @@ class RawTelephonyClient:
 
         Returns
         -------
-        HttpResponse[TelephonyCallResponse]
+        HttpResponse[CallTelephonyResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -173,11 +171,11 @@ class RawTelephonyClient:
             json={
                 "name": name,
                 "sip": convert_and_respect_annotation_metadata(
-                    object_=sip, annotation=TelephonyCallRequestSip, direction="write"
+                    object_=sip, annotation=CallTelephonyRequestSip, direction="write"
                 ),
                 "pipeline_id": pipeline_id,
                 "properties": convert_and_respect_annotation_metadata(
-                    object_=properties, annotation=TelephonyCallRequestProperties, direction="write"
+                    object_=properties, annotation=CallTelephonyRequestProperties, direction="write"
                 ),
             },
             headers={
@@ -189,9 +187,9 @@ class RawTelephonyClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    TelephonyCallResponse,
+                    CallTelephonyResponse,
                     construct_type(
-                        type_=TelephonyCallResponse,  # type: ignore
+                        type_=CallTelephonyResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -203,7 +201,7 @@ class RawTelephonyClient:
 
     def get(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[TelephonyGetResponse]:
+    ) -> HttpResponse[GetTelephonyResponse]:
         """
         Retrieve the call status and related information of a specified agent.
 
@@ -220,7 +218,7 @@ class RawTelephonyClient:
 
         Returns
         -------
-        HttpResponse[TelephonyGetResponse]
+        HttpResponse[GetTelephonyResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -231,9 +229,9 @@ class RawTelephonyClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    TelephonyGetResponse,
+                    GetTelephonyResponse,
                     construct_type(
-                        type_=TelephonyGetResponse,  # type: ignore
+                        type_=GetTelephonyResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -245,7 +243,7 @@ class RawTelephonyClient:
 
     def hangup(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> HttpResponse[TelephonyHangupResponse]:
+    ) -> HttpResponse[HangupTelephonyResponse]:
         """
         Instruct the agent to proactively hang up the ongoing call and leave the RTC channel.
 
@@ -262,7 +260,7 @@ class RawTelephonyClient:
 
         Returns
         -------
-        HttpResponse[TelephonyHangupResponse]
+        HttpResponse[HangupTelephonyResponse]
             Request was successful. The response body is empty.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -278,9 +276,9 @@ class RawTelephonyClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    TelephonyHangupResponse,
+                    HangupTelephonyResponse,
                     construct_type(
-                        type_=TelephonyHangupResponse,  # type: ignore
+                        type_=HangupTelephonyResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -302,11 +300,11 @@ class AsyncRawTelephonyClient:
         number: typing.Optional[str] = None,
         from_time: typing.Optional[int] = None,
         to_time: typing.Optional[int] = None,
-        type: typing.Optional[TelephonyListRequestType] = None,
+        type: typing.Optional[ListTelephonyRequestType] = None,
         limit: typing.Optional[int] = None,
         cursor: typing.Optional[str] = None,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncPager[TelephonyListResponseDataListItem]:
+    ) -> AsyncPager[ListTelephonyResponseDataListItem, ListTelephonyResponse]:
         """
         Query historical call records for a specified appid based on the filter criteria.
 
@@ -324,7 +322,7 @@ class AsyncRawTelephonyClient:
         to_time : typing.Optional[int]
             Query list end timestamp (in seconds). Default is current time.
 
-        type : typing.Optional[TelephonyListRequestType]
+        type : typing.Optional[ListTelephonyRequestType]
             Call type filter:
             - `inbound`: Inbound call.
             - `outbound`: Outbound call.
@@ -342,7 +340,7 @@ class AsyncRawTelephonyClient:
 
         Returns
         -------
-        AsyncPager[TelephonyListResponseDataListItem]
+        AsyncPager[ListTelephonyResponseDataListItem, ListTelephonyResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -361,9 +359,9 @@ class AsyncRawTelephonyClient:
         try:
             if 200 <= _response.status_code < 300:
                 _parsed_response = typing.cast(
-                    TelephonyListResponse,
+                    ListTelephonyResponse,
                     construct_type(
-                        type_=TelephonyListResponse,  # type: ignore
+                        type_=ListTelephonyResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -387,9 +385,7 @@ class AsyncRawTelephonyClient:
                             request_options=request_options,
                         )
 
-                return AsyncPager(
-                    has_next=_has_next, items=_items, get_next=_get_next, response=BaseHttpResponse(response=_response)
-                )
+                return AsyncPager(has_next=_has_next, items=_items, get_next=_get_next, response=_parsed_response)
             _response_json = _response.json()
         except JSONDecodeError:
             raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
@@ -400,11 +396,11 @@ class AsyncRawTelephonyClient:
         appid: str,
         *,
         name: str,
-        sip: TelephonyCallRequestSip,
-        properties: TelephonyCallRequestProperties,
+        sip: CallTelephonyRequestSip,
+        properties: CallTelephonyRequestProperties,
         pipeline_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[TelephonyCallResponse]:
+    ) -> AsyncHttpResponse[CallTelephonyResponse]:
         """
         Initiate an outbound call to a specified number and create an agent to join the specified RTC channel.
 
@@ -418,10 +414,10 @@ class AsyncRawTelephonyClient:
         name : str
             The name identifier of the call session.
 
-        sip : TelephonyCallRequestSip
+        sip : CallTelephonyRequestSip
             SIP (Session Initiation Protocol) call configuration object.
 
-        properties : TelephonyCallRequestProperties
+        properties : CallTelephonyRequestProperties
             Call attribute configuration. The content of this field varies depending on the invocation method:
             - **Using pipeline ID**: Simply pass in `channel`, `token`, and `agent_rtc_uid`.
             - **Using complete configuration**: Pass in the complete parameters of the [Start a conversational AI agent](https://docs.agora.io/en/conversational-ai/rest-api/agent/join) `properties`, including all required fields such as `channel`, `token`, `agent_rtc_uid`, `remote_rtc_uids`, `tts`, and `llm`.
@@ -434,7 +430,7 @@ class AsyncRawTelephonyClient:
 
         Returns
         -------
-        AsyncHttpResponse[TelephonyCallResponse]
+        AsyncHttpResponse[CallTelephonyResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -443,11 +439,11 @@ class AsyncRawTelephonyClient:
             json={
                 "name": name,
                 "sip": convert_and_respect_annotation_metadata(
-                    object_=sip, annotation=TelephonyCallRequestSip, direction="write"
+                    object_=sip, annotation=CallTelephonyRequestSip, direction="write"
                 ),
                 "pipeline_id": pipeline_id,
                 "properties": convert_and_respect_annotation_metadata(
-                    object_=properties, annotation=TelephonyCallRequestProperties, direction="write"
+                    object_=properties, annotation=CallTelephonyRequestProperties, direction="write"
                 ),
             },
             headers={
@@ -459,9 +455,9 @@ class AsyncRawTelephonyClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    TelephonyCallResponse,
+                    CallTelephonyResponse,
                     construct_type(
-                        type_=TelephonyCallResponse,  # type: ignore
+                        type_=CallTelephonyResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -473,7 +469,7 @@ class AsyncRawTelephonyClient:
 
     async def get(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[TelephonyGetResponse]:
+    ) -> AsyncHttpResponse[GetTelephonyResponse]:
         """
         Retrieve the call status and related information of a specified agent.
 
@@ -490,7 +486,7 @@ class AsyncRawTelephonyClient:
 
         Returns
         -------
-        AsyncHttpResponse[TelephonyGetResponse]
+        AsyncHttpResponse[GetTelephonyResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -501,9 +497,9 @@ class AsyncRawTelephonyClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    TelephonyGetResponse,
+                    GetTelephonyResponse,
                     construct_type(
-                        type_=TelephonyGetResponse,  # type: ignore
+                        type_=GetTelephonyResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -515,7 +511,7 @@ class AsyncRawTelephonyClient:
 
     async def hangup(
         self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
-    ) -> AsyncHttpResponse[TelephonyHangupResponse]:
+    ) -> AsyncHttpResponse[HangupTelephonyResponse]:
         """
         Instruct the agent to proactively hang up the ongoing call and leave the RTC channel.
 
@@ -532,7 +528,7 @@ class AsyncRawTelephonyClient:
 
         Returns
         -------
-        AsyncHttpResponse[TelephonyHangupResponse]
+        AsyncHttpResponse[HangupTelephonyResponse]
             Request was successful. The response body is empty.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -548,9 +544,9 @@ class AsyncRawTelephonyClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    TelephonyHangupResponse,
+                    HangupTelephonyResponse,
                     construct_type(
-                        type_=TelephonyHangupResponse,  # type: ignore
+                        type_=HangupTelephonyResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
