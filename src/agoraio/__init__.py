@@ -6,15 +6,15 @@ import typing
 from importlib import import_module
 
 if typing.TYPE_CHECKING:
-    from . import agent_management, phone_number_management, telephony
+    from . import agents, phone_numbers, telephony
     from .client import Agora, AsyncAgora
     from .version import __version__
 _dynamic_imports: typing.Dict[str, str] = {
     "Agora": ".client",
     "AsyncAgora": ".client",
     "__version__": ".version",
-    "agent_management": ".agent_management",
-    "phone_number_management": ".phone_number_management",
+    "agents": ".agents",
+    "phone_numbers": ".phone_numbers",
     "telephony": ".telephony",
 }
 
@@ -40,4 +40,4 @@ def __dir__():
     return sorted(lazy_attrs)
 
 
-__all__ = ["Agora", "AsyncAgora", "__version__", "agent_management", "phone_number_management", "telephony"]
+__all__ = ["Agora", "AsyncAgora", "__version__", "agents", "phone_numbers", "telephony"]

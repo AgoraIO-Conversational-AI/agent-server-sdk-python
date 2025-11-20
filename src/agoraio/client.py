@@ -9,8 +9,8 @@ from .core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from .environment import AgoraEnvironment
 
 if typing.TYPE_CHECKING:
-    from .agent_management.client import AgentManagementClient, AsyncAgentManagementClient
-    from .phone_number_management.client import AsyncPhoneNumberManagementClient, PhoneNumberManagementClient
+    from .agents.client import AgentsClient, AsyncAgentsClient
+    from .phone_numbers.client import AsyncPhoneNumbersClient, PhoneNumbersClient
     from .telephony.client import AsyncTelephonyClient, TelephonyClient
 
 
@@ -83,17 +83,17 @@ class Agora:
             else httpx.Client(timeout=_defaulted_timeout),
             timeout=_defaulted_timeout,
         )
-        self._agent_management: typing.Optional[AgentManagementClient] = None
+        self._agents: typing.Optional[AgentsClient] = None
         self._telephony: typing.Optional[TelephonyClient] = None
-        self._phone_number_management: typing.Optional[PhoneNumberManagementClient] = None
+        self._phone_numbers: typing.Optional[PhoneNumbersClient] = None
 
     @property
-    def agent_management(self):
-        if self._agent_management is None:
-            from .agent_management.client import AgentManagementClient  # noqa: E402
+    def agents(self):
+        if self._agents is None:
+            from .agents.client import AgentsClient  # noqa: E402
 
-            self._agent_management = AgentManagementClient(client_wrapper=self._client_wrapper)
-        return self._agent_management
+            self._agents = AgentsClient(client_wrapper=self._client_wrapper)
+        return self._agents
 
     @property
     def telephony(self):
@@ -104,12 +104,12 @@ class Agora:
         return self._telephony
 
     @property
-    def phone_number_management(self):
-        if self._phone_number_management is None:
-            from .phone_number_management.client import PhoneNumberManagementClient  # noqa: E402
+    def phone_numbers(self):
+        if self._phone_numbers is None:
+            from .phone_numbers.client import PhoneNumbersClient  # noqa: E402
 
-            self._phone_number_management = PhoneNumberManagementClient(client_wrapper=self._client_wrapper)
-        return self._phone_number_management
+            self._phone_numbers = PhoneNumbersClient(client_wrapper=self._client_wrapper)
+        return self._phone_numbers
 
 
 class AsyncAgora:
@@ -181,17 +181,17 @@ class AsyncAgora:
             else httpx.AsyncClient(timeout=_defaulted_timeout),
             timeout=_defaulted_timeout,
         )
-        self._agent_management: typing.Optional[AsyncAgentManagementClient] = None
+        self._agents: typing.Optional[AsyncAgentsClient] = None
         self._telephony: typing.Optional[AsyncTelephonyClient] = None
-        self._phone_number_management: typing.Optional[AsyncPhoneNumberManagementClient] = None
+        self._phone_numbers: typing.Optional[AsyncPhoneNumbersClient] = None
 
     @property
-    def agent_management(self):
-        if self._agent_management is None:
-            from .agent_management.client import AsyncAgentManagementClient  # noqa: E402
+    def agents(self):
+        if self._agents is None:
+            from .agents.client import AsyncAgentsClient  # noqa: E402
 
-            self._agent_management = AsyncAgentManagementClient(client_wrapper=self._client_wrapper)
-        return self._agent_management
+            self._agents = AsyncAgentsClient(client_wrapper=self._client_wrapper)
+        return self._agents
 
     @property
     def telephony(self):
@@ -202,12 +202,12 @@ class AsyncAgora:
         return self._telephony
 
     @property
-    def phone_number_management(self):
-        if self._phone_number_management is None:
-            from .phone_number_management.client import AsyncPhoneNumberManagementClient  # noqa: E402
+    def phone_numbers(self):
+        if self._phone_numbers is None:
+            from .phone_numbers.client import AsyncPhoneNumbersClient  # noqa: E402
 
-            self._phone_number_management = AsyncPhoneNumberManagementClient(client_wrapper=self._client_wrapper)
-        return self._phone_number_management
+            self._phone_numbers = AsyncPhoneNumbersClient(client_wrapper=self._client_wrapper)
+        return self._phone_numbers
 
 
 def _get_base_url(*, base_url: typing.Optional[str] = None, environment: AgoraEnvironment) -> str:
