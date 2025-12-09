@@ -181,7 +181,7 @@ class RegionalEndpointPool:
         with self._lock:
             current_region = self._current_region_prefixes[0]
             current_domain = self._current_domain
-            return f"https://{current_region}.{current_domain}"
+            return f"https://{current_region}.{current_domain}/api/conversational-ai-agent"
 
     @property
     def gateway_area(self) -> GatewayArea:
