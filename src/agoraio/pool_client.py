@@ -6,19 +6,15 @@ import typing
 
 import httpx
 
-from .core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
+from .client import Agora as BaseAgora
+from .client import AsyncAgora as BaseAsyncAgora
 from .core.domain import Area, Pool
 
-if typing.TYPE_CHECKING:
-    from .agents.client import AgentsClient, AsyncAgentsClient
-    from .phone_numbers.client import AsyncPhoneNumbersClient, PhoneNumbersClient
-    from .telephony.client import AsyncTelephonyClient, TelephonyClient
 
-
-class AgoraPool:
+class Agora(BaseAgora):
     """
-    AgoraPool is a wrapper around Agora that uses a domain pool
-    for regional URL cycling and automatic domain selection.
+    Agora extends the base client with domain pool support for
+    regional URL cycling and automatic domain selection.
 
     This client automatically:
     - Selects the best domain based on DNS resolution
@@ -46,9 +42,9 @@ class AgoraPool:
 
     Examples
     --------
-    from agoraio import AgoraPool, Area
+    from agoraio import Agora, Area
 
-    client = AgoraPool(
+    client = Agora(
         area=Area.US,
         username="YOUR_USERNAME",
         password="YOUR_PASSWORD",
@@ -67,24 +63,15 @@ class AgoraPool:
         httpx_client: typing.Optional[httpx.Client] = None,
     ):
         self._pool = Pool(area)
-        _defaulted_timeout = (
-            timeout if timeout is not None else 60 if httpx_client is None else httpx_client.timeout.read
-        )
-        self._client_wrapper = SyncClientWrapper(
+        super().__init__(
             base_url=self._pool.get_current_url(),
             username=username,
             password=password,
             headers=headers,
-            httpx_client=httpx_client
-            if httpx_client is not None
-            else httpx.Client(timeout=_defaulted_timeout, follow_redirects=follow_redirects)
-            if follow_redirects is not None
-            else httpx.Client(timeout=_defaulted_timeout),
-            timeout=_defaulted_timeout,
+            timeout=timeout,
+            follow_redirects=follow_redirects,
+            httpx_client=httpx_client,
         )
-        self._agents: typing.Optional[AgentsClient] = None
-        self._telephony: typing.Optional[TelephonyClient] = None
-        self._phone_numbers: typing.Optional[PhoneNumbersClient] = None
 
     @property
     def pool(self) -> Pool:
@@ -122,35 +109,11 @@ class AgoraPool:
         """
         self._client_wrapper._base_url = self._pool.get_current_url()
 
-    @property
-    def agents(self):
-        if self._agents is None:
-            from .agents.client import AgentsClient  # noqa: E402
 
-            self._agents = AgentsClient(client_wrapper=self._client_wrapper)
-        return self._agents
-
-    @property
-    def telephony(self):
-        if self._telephony is None:
-            from .telephony.client import TelephonyClient  # noqa: E402
-
-            self._telephony = TelephonyClient(client_wrapper=self._client_wrapper)
-        return self._telephony
-
-    @property
-    def phone_numbers(self):
-        if self._phone_numbers is None:
-            from .phone_numbers.client import PhoneNumbersClient  # noqa: E402
-
-            self._phone_numbers = PhoneNumbersClient(client_wrapper=self._client_wrapper)
-        return self._phone_numbers
-
-
-class AsyncAgoraPool:
+class AsyncAgora(BaseAsyncAgora):
     """
-    AsyncAgoraPool is a wrapper around AsyncAgora that uses a domain pool
-    for regional URL cycling and automatic domain selection.
+    AsyncAgora extends the base async client with domain pool support for
+    regional URL cycling and automatic domain selection.
 
     This client automatically:
     - Selects the best domain based on DNS resolution
@@ -178,9 +141,9 @@ class AsyncAgoraPool:
 
     Examples
     --------
-    from agoraio import AsyncAgoraPool, Area
+    from agoraio import AsyncAgora, Area
 
-    client = AsyncAgoraPool(
+    client = AsyncAgora(
         area=Area.US,
         username="YOUR_USERNAME",
         password="YOUR_PASSWORD",
@@ -199,24 +162,15 @@ class AsyncAgoraPool:
         httpx_client: typing.Optional[httpx.AsyncClient] = None,
     ):
         self._pool = Pool(area)
-        _defaulted_timeout = (
-            timeout if timeout is not None else 60 if httpx_client is None else httpx_client.timeout.read
-        )
-        self._client_wrapper = AsyncClientWrapper(
+        super().__init__(
             base_url=self._pool.get_current_url(),
             username=username,
             password=password,
             headers=headers,
-            httpx_client=httpx_client
-            if httpx_client is not None
-            else httpx.AsyncClient(timeout=_defaulted_timeout, follow_redirects=follow_redirects)
-            if follow_redirects is not None
-            else httpx.AsyncClient(timeout=_defaulted_timeout),
-            timeout=_defaulted_timeout,
+            timeout=timeout,
+            follow_redirects=follow_redirects,
+            httpx_client=httpx_client,
         )
-        self._agents: typing.Optional[AsyncAgentsClient] = None
-        self._telephony: typing.Optional[AsyncTelephonyClient] = None
-        self._phone_numbers: typing.Optional[AsyncPhoneNumbersClient] = None
 
     @property
     def pool(self) -> Pool:
@@ -253,27 +207,3 @@ class AsyncAgoraPool:
         Update the base URL in the client wrapper to match the pool's current URL.
         """
         self._client_wrapper._base_url = self._pool.get_current_url()
-
-    @property
-    def agents(self):
-        if self._agents is None:
-            from .agents.client import AsyncAgentsClient  # noqa: E402
-
-            self._agents = AsyncAgentsClient(client_wrapper=self._client_wrapper)
-        return self._agents
-
-    @property
-    def telephony(self):
-        if self._telephony is None:
-            from .telephony.client import AsyncTelephonyClient  # noqa: E402
-
-            self._telephony = AsyncTelephonyClient(client_wrapper=self._client_wrapper)
-        return self._telephony
-
-    @property
-    def phone_numbers(self):
-        if self._phone_numbers is None:
-            from .phone_numbers.client import AsyncPhoneNumbersClient  # noqa: E402
-
-            self._phone_numbers = AsyncPhoneNumbersClient(client_wrapper=self._client_wrapper)
-        return self._phone_numbers

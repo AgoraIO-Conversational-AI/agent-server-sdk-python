@@ -7,16 +7,13 @@ from importlib import import_module
 
 if typing.TYPE_CHECKING:
     from . import agents, core, phone_numbers, telephony
-    from .client import Agora, AsyncAgora
     from .core.domain import Area, Pool, create_pool
-    from .pool_client import AgoraPool, AsyncAgoraPool
+    from .pool_client import Agora, AsyncAgora
     from .version import __version__
 _dynamic_imports: typing.Dict[str, str] = {
-    "Agora": ".client",
-    "AgoraPool": ".pool_client",
+    "Agora": ".pool_client",
     "Area": ".core.domain",
-    "AsyncAgora": ".client",
-    "AsyncAgoraPool": ".pool_client",
+    "AsyncAgora": ".pool_client",
     "Pool": ".core.domain",
     "__version__": ".version",
     "agents": ".agents",
@@ -48,4 +45,4 @@ def __dir__():
     return sorted(lazy_attrs)
 
 
-__all__ = ["Agora", "AgoraPool", "Area", "AsyncAgora", "AsyncAgoraPool", "Pool", "__version__", "agents", "core", "create_pool", "phone_numbers", "telephony"]
+__all__ = ["Agora", "Area", "AsyncAgora", "Pool", "__version__", "agents", "core", "create_pool", "phone_numbers", "telephony"]
