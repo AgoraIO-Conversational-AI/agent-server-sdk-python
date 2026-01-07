@@ -6,8 +6,15 @@ import typing
 from importlib import import_module
 
 if typing.TYPE_CHECKING:
+    from .domain import Area, Pool, create_pool
     from .file import File, with_content_type
-_dynamic_imports: typing.Dict[str, str] = {"File": ".file", "with_content_type": ".file"}
+_dynamic_imports: typing.Dict[str, str] = {
+    "Area": ".domain",
+    "Pool": ".domain",
+    "create_pool": ".domain",
+    "File": ".file",
+    "with_content_type": ".file",
+}
 
 
 def __getattr__(attr_name: str) -> typing.Any:
@@ -31,4 +38,4 @@ def __dir__():
     return sorted(lazy_attrs)
 
 
-__all__ = ["File", "with_content_type"]
+__all__ = ["Area", "Pool", "create_pool", "File", "with_content_type"]
