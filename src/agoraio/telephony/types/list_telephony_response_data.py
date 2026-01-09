@@ -20,9 +20,9 @@ class ListTelephonyResponseData(UncheckedBaseModel):
     The number of calls returned in this response.
     """
 
-    list_: typing_extensions.Annotated[
-        typing.Optional[typing.List[ListTelephonyResponseDataListItem]], FieldMetadata(alias="list")
-    ] = pydantic.Field(default=None)
+    list_: typing_extensions.Annotated[typing.List[ListTelephonyResponseDataListItem], FieldMetadata(alias="list")] = (
+        pydantic.Field()
+    )
     """
     A list of calls that meet the criteria.
     """

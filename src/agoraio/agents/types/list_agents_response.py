@@ -10,7 +10,7 @@ from .list_agents_response_meta import ListAgentsResponseMeta
 
 
 class ListAgentsResponse(UncheckedBaseModel):
-    data: typing.Optional[ListAgentsResponseData] = pydantic.Field(default=None)
+    data: ListAgentsResponseData = pydantic.Field()
     """
     Agent data.
     """

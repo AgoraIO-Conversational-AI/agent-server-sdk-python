@@ -10,7 +10,7 @@ from .list_telephony_response_meta import ListTelephonyResponseMeta
 
 
 class ListTelephonyResponse(UncheckedBaseModel):
-    data: typing.Optional[ListTelephonyResponseData] = pydantic.Field(default=None)
+    data: ListTelephonyResponseData = pydantic.Field()
     """
     Call data object.
     """

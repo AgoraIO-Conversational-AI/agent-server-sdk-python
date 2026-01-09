@@ -3,12 +3,17 @@
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Ffern-demo%2Fagoraio-python-sdk)
 [![pypi](https://img.shields.io/pypi/v/agoraio-sdk)](https://pypi.python.org/pypi/agoraio-sdk)
 
-The Agoraio Python library provides convenient access to the Agoraio APIs from Python.
+The Agora Conversational AI SDK provides convenient access to the Agora Conversational AI APIs, 
+enabling you to build voice-powered AI agents with support for both cascading flows (ASR -> LLM -> TTS) 
+and multimodal flows (MLLM) for real-time audio processing.
+
 
 ## Table of Contents
 
+- [Documentation](#documentation)
 - [Installation](#installation)
 - [Reference](#reference)
+- [Mllm Flow Multimodal](#mllm-flow-multimodal)
 - [Usage](#usage)
 - [Async Client](#async-client)
 - [Exception Handling](#exception-handling)
@@ -20,6 +25,10 @@ The Agoraio Python library provides convenient access to the Agoraio APIs from P
   - [Custom Client](#custom-client)
 - [Contributing](#contributing)
 
+## Documentation
+
+API reference documentation is available [here](https://docs.agora.io/en/conversational-ai/overview).
+
 ## Installation
 
 ```sh
@@ -29,6 +38,71 @@ pip install agoraio-sdk
 ## Reference
 
 A full reference for this library is available [here](https://github.com/fern-demo/agoraio-python-sdk/blob/HEAD/./reference.md).
+
+## MLLM Flow (Multimodal)
+
+For real-time audio processing using OpenAI's Realtime API or Google Gemini Live, use the MLLM (Multimodal Large Language Model) flow instead of the cascading ASR -> LLM -> TTS flow. See the [MLLM Overview](https://docs.agora.io/en/conversational-ai/models/mllm/overview) for more details.
+
+```python
+from agoraio-sdk import Agora
+from agoraio-sdk.agents import (
+    StartAgentsRequestProperties,
+    StartAgentsRequestPropertiesAdvancedFeatures,
+    StartAgentsRequestPropertiesMllm,
+    StartAgentsRequestPropertiesMllmVendor,
+    StartAgentsRequestPropertiesTts,
+    StartAgentsRequestPropertiesTtsVendor,
+    StartAgentsRequestPropertiesLlm,
+    StartAgentsRequestPropertiesTurnDetection,
+    StartAgentsRequestPropertiesTurnDetectionType,
+)
+
+client = Agora(
+    username="YOUR_APP_ID",
+    password="YOUR_APP_CERTIFICATE",
+)
+
+client.agents.start(
+    appid="your_app_id",
+    name="mllm_agent",
+    properties=StartAgentsRequestProperties(
+        channel="channel_name",
+        token="your_token",
+        agent_rtc_uid="1001",
+        remote_rtc_uids=["1002"],
+        idle_timeout=120,
+        advanced_features=StartAgentsRequestPropertiesAdvancedFeatures(
+            enable_mllm=True,
+        ),
+        mllm=StartAgentsRequestPropertiesMllm(
+            url="wss://api.openai.com/v1/realtime",
+            api_key="<your_openai_api_key>",
+            vendor=StartAgentsRequestPropertiesMllmVendor.OPENAI,
+            params={
+                "model": "gpt-4o-realtime-preview",
+                "voice": "alloy",
+            },
+            input_modalities=["audio"],
+            output_modalities=["text", "audio"],
+            greeting_message="Hello! I'm ready to chat in real-time.",
+        ),
+        turn_detection=StartAgentsRequestPropertiesTurnDetection(
+            type=StartAgentsRequestPropertiesTurnDetectionType.SERVER_VAD,
+            threshold=0.5,
+            silence_duration_ms=500,
+        ),
+        # TTS and LLM are still required but not used when MLLM is enabled
+        tts=StartAgentsRequestPropertiesTts(
+            vendor=StartAgentsRequestPropertiesTtsVendor.MICROSOFT,
+            params={},
+        ),
+        llm=StartAgentsRequestPropertiesLlm(
+            url="https://api.openai.com/v1/chat/completions",
+        ),
+    ),
+)
+```
+
 
 ## Usage
 

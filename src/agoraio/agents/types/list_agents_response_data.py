@@ -20,9 +20,9 @@ class ListAgentsResponseData(UncheckedBaseModel):
     The number of agents returned.
     """
 
-    list_: typing_extensions.Annotated[
-        typing.Optional[typing.List[ListAgentsResponseDataListItem]], FieldMetadata(alias="list")
-    ] = pydantic.Field(default=None)
+    list_: typing_extensions.Annotated[typing.List[ListAgentsResponseDataListItem], FieldMetadata(alias="list")] = (
+        pydantic.Field()
+    )
     """
     A list of agents that meets the criteria.
     """
