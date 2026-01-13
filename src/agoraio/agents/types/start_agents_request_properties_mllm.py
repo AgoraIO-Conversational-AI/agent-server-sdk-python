@@ -5,6 +5,7 @@ import typing
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.unchecked_base_model import UncheckedBaseModel
+from .start_agents_request_properties_mllm_style import StartAgentsRequestPropertiesMllmStyle
 from .start_agents_request_properties_mllm_vendor import StartAgentsRequestPropertiesMllmVendor
 
 
@@ -58,7 +59,7 @@ class StartAgentsRequestPropertiesMllm(UncheckedBaseModel):
     - `vertexai`: Use this for Google Gemini Live
     """
 
-    style: typing.Optional[typing.Literal["openai"]] = pydantic.Field(default=None)
+    style: typing.Optional[StartAgentsRequestPropertiesMllmStyle] = pydantic.Field(default=None)
     """
     The request style for MLLM completion:
     - `openai`: For OpenAI Realtime API format
