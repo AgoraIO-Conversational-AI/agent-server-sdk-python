@@ -5,6 +5,7 @@ import typing
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.unchecked_base_model import UncheckedBaseModel
+from ...types.tts import Tts
 from .start_agents_request_properties_advanced_features import StartAgentsRequestPropertiesAdvancedFeatures
 from .start_agents_request_properties_asr import StartAgentsRequestPropertiesAsr
 from .start_agents_request_properties_avatar import StartAgentsRequestPropertiesAvatar
@@ -12,7 +13,6 @@ from .start_agents_request_properties_llm import StartAgentsRequestPropertiesLlm
 from .start_agents_request_properties_mllm import StartAgentsRequestPropertiesMllm
 from .start_agents_request_properties_parameters import StartAgentsRequestPropertiesParameters
 from .start_agents_request_properties_sal import StartAgentsRequestPropertiesSal
-from .start_agents_request_properties_tts import StartAgentsRequestPropertiesTts
 from .start_agents_request_properties_turn_detection import StartAgentsRequestPropertiesTurnDetection
 
 
@@ -63,11 +63,7 @@ class StartAgentsRequestProperties(UncheckedBaseModel):
     Automatic Speech Recognition (ASR) configuration.
     """
 
-    tts: StartAgentsRequestPropertiesTts = pydantic.Field()
-    """
-    Text-to-speech (TTS) module configuration.
-    """
-
+    tts: Tts
     llm: StartAgentsRequestPropertiesLlm = pydantic.Field()
     """
     Large language model (LLM) configuration.

@@ -70,13 +70,12 @@ class AgentsClient:
 
         Examples
         --------
-        from agoraio import Agora
+        from agoraio import Agora, MicrosoftTtsParams, Tts_Microsoft
         from agoraio.agents import (
             StartAgentsRequestProperties,
             StartAgentsRequestPropertiesAdvancedFeatures,
             StartAgentsRequestPropertiesAsr,
             StartAgentsRequestPropertiesLlm,
-            StartAgentsRequestPropertiesTts,
         )
 
         client = Agora(
@@ -98,13 +97,12 @@ class AgentsClient:
                 asr=StartAgentsRequestPropertiesAsr(
                     language="en-US",
                 ),
-                tts=StartAgentsRequestPropertiesTts(
-                    vendor="microsoft",
-                    params={
-                        "key": "<your_tts_api_key>",
-                        "region": "eastus",
-                        "voice_name": "en-US-AndrewMultilingualNeural",
-                    },
+                tts=Tts_Microsoft(
+                    params=MicrosoftTtsParams(
+                        key="key",
+                        region="region",
+                        voice_name="voice_name",
+                    ),
                 ),
                 llm=StartAgentsRequestPropertiesLlm(
                     url="https://api.openai.com/v1/chat/completions",
@@ -539,13 +537,12 @@ class AsyncAgentsClient:
         --------
         import asyncio
 
-        from agoraio import AsyncAgora
+        from agoraio import AsyncAgora, MicrosoftTtsParams, Tts_Microsoft
         from agoraio.agents import (
             StartAgentsRequestProperties,
             StartAgentsRequestPropertiesAdvancedFeatures,
             StartAgentsRequestPropertiesAsr,
             StartAgentsRequestPropertiesLlm,
-            StartAgentsRequestPropertiesTts,
         )
 
         client = AsyncAgora(
@@ -570,13 +567,12 @@ class AsyncAgentsClient:
                     asr=StartAgentsRequestPropertiesAsr(
                         language="en-US",
                     ),
-                    tts=StartAgentsRequestPropertiesTts(
-                        vendor="microsoft",
-                        params={
-                            "key": "<your_tts_api_key>",
-                            "region": "eastus",
-                            "voice_name": "en-US-AndrewMultilingualNeural",
-                        },
+                    tts=Tts_Microsoft(
+                        params=MicrosoftTtsParams(
+                            key="key",
+                            region="region",
+                            voice_name="voice_name",
+                        ),
                     ),
                     llm=StartAgentsRequestPropertiesLlm(
                         url="https://api.openai.com/v1/chat/completions",

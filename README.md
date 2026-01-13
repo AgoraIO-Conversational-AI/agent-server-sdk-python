@@ -14,6 +14,7 @@ and multimodal flows (MLLM) for real-time audio processing.
 - [Installation](#installation)
 - [Reference](#reference)
 - [Mllm Flow Multimodal](#mllm-flow-multimodal)
+- [Mllm Flow Multimodal](#mllm-flow-multimodal)
 - [Usage](#usage)
 - [Async Client](#async-client)
 - [Exception Handling](#exception-handling)
@@ -104,18 +105,82 @@ client.agents.start(
 ```
 
 
+## MLLM Flow (Multimodal)
+
+For real-time audio processing using OpenAI's Realtime API or Google Gemini Live, use the MLLM (Multimodal Large Language Model) flow instead of the cascading ASR -> LLM -> TTS flow. See the [MLLM Overview](https://docs.agora.io/en/conversational-ai/models/mllm/overview) for more details.
+
+```python
+from agoraio-sdk import Agora
+from agoraio-sdk.agents import (
+    StartAgentsRequestProperties,
+    StartAgentsRequestPropertiesAdvancedFeatures,
+    StartAgentsRequestPropertiesMllm,
+    StartAgentsRequestPropertiesMllmVendor,
+    StartAgentsRequestPropertiesTts,
+    StartAgentsRequestPropertiesTtsVendor,
+    StartAgentsRequestPropertiesLlm,
+    StartAgentsRequestPropertiesTurnDetection,
+    StartAgentsRequestPropertiesTurnDetectionType,
+)
+
+client = Agora(
+    username="YOUR_APP_ID",
+    password="YOUR_APP_CERTIFICATE",
+)
+
+client.agents.start(
+    appid="your_app_id",
+    name="mllm_agent",
+    properties=StartAgentsRequestProperties(
+        channel="channel_name",
+        token="your_token",
+        agent_rtc_uid="1001",
+        remote_rtc_uids=["1002"],
+        idle_timeout=120,
+        advanced_features=StartAgentsRequestPropertiesAdvancedFeatures(
+            enable_mllm=True,
+        ),
+        mllm=StartAgentsRequestPropertiesMllm(
+            url="wss://api.openai.com/v1/realtime",
+            api_key="<your_openai_api_key>",
+            vendor=StartAgentsRequestPropertiesMllmVendor.OPENAI,
+            params={
+                "model": "gpt-4o-realtime-preview",
+                "voice": "alloy",
+            },
+            input_modalities=["audio"],
+            output_modalities=["text", "audio"],
+            greeting_message="Hello! I'm ready to chat in real-time.",
+        ),
+        turn_detection=StartAgentsRequestPropertiesTurnDetection(
+            type=StartAgentsRequestPropertiesTurnDetectionType.SERVER_VAD,
+            threshold=0.5,
+            silence_duration_ms=500,
+        ),
+        # TTS and LLM are still required but not used when MLLM is enabled
+        tts=StartAgentsRequestPropertiesTts(
+            vendor=StartAgentsRequestPropertiesTtsVendor.MICROSOFT,
+            params={},
+        ),
+        llm=StartAgentsRequestPropertiesLlm(
+            url="https://api.openai.com/v1/chat/completions",
+        ),
+    ),
+)
+```
+
+
 ## Usage
 
 Instantiate and use the client with the following:
 
 ```python
-from agoraio import Agora
+from agoraio import Agora, MicrosoftTtsParams, Tts_Microsoft
 from agoraio.agents import (
     StartAgentsRequestProperties,
     StartAgentsRequestPropertiesAdvancedFeatures,
     StartAgentsRequestPropertiesAsr,
     StartAgentsRequestPropertiesLlm,
-    StartAgentsRequestPropertiesTts,
 )
 
 client = Agora(
@@ -137,13 +202,12 @@ client.agents.start(
         asr=StartAgentsRequestPropertiesAsr(
             language="en-US",
         ),
-        tts=StartAgentsRequestPropertiesTts(
-            vendor="microsoft",
-            params={
-                "key": "<your_tts_api_key>",
-                "region": "eastus",
-                "voice_name": "en-US-AndrewMultilingualNeural",
-            },
+        tts=Tts_Microsoft(
+            params=MicrosoftTtsParams(
+                key="key",
+                region="region",
+                voice_name="voice_name",
+            ),
         ),
         llm=StartAgentsRequestPropertiesLlm(
             url="https://api.openai.com/v1/chat/completions",
@@ -167,13 +231,12 @@ The SDK also exports an `async` client so that you can make non-blocking calls t
 ```python
 import asyncio
 
-from agoraio import AsyncAgora
+from agoraio import AsyncAgora, MicrosoftTtsParams, Tts_Microsoft
 from agoraio.agents import (
     StartAgentsRequestProperties,
     StartAgentsRequestPropertiesAdvancedFeatures,
     StartAgentsRequestPropertiesAsr,
     StartAgentsRequestPropertiesLlm,
-    StartAgentsRequestPropertiesTts,
 )
 
 client = AsyncAgora(
@@ -198,13 +261,12 @@ async def main() -> None:
             asr=StartAgentsRequestPropertiesAsr(
                 language="en-US",
             ),
-            tts=StartAgentsRequestPropertiesTts(
-                vendor="microsoft",
-                params={
-                    "key": "<your_tts_api_key>",
-                    "region": "eastus",
-                    "voice_name": "en-US-AndrewMultilingualNeural",
-                },
+            tts=Tts_Microsoft(
+                params=MicrosoftTtsParams(
+                    key="key",
+                    region="region",
+                    voice_name="voice_name",
+                ),
             ),
             llm=StartAgentsRequestPropertiesLlm(
                 url="https://api.openai.com/v1/chat/completions",
