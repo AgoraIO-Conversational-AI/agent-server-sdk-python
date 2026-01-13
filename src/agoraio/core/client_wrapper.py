@@ -24,10 +24,10 @@ class BaseClientWrapper:
 
     def get_headers(self) -> typing.Dict[str, str]:
         headers: typing.Dict[str, str] = {
-            "User-Agent": "agoraio-sdk/0.1.0",
+            "User-Agent": "agoraio-sdk/0.1.1",
             "X-Fern-Language": "Python",
             "X-Fern-SDK-Name": "agoraio-sdk",
-            "X-Fern-SDK-Version": "0.1.0",
+            "X-Fern-SDK-Version": "0.1.1",
             **(self.get_custom_headers() or {}),
         }
         headers["Authorization"] = httpx.BasicAuth(self._get_username(), self._get_password())._auth_header
