@@ -115,7 +115,7 @@ def generate_rtc_token(
         The generated RTC token.
     """
     try:
-        from agora_token_builder import RtcTokenBuilder
+        from agora_token_builder import RtcTokenBuilder  # type: ignore[import-not-found]
 
         privilege_expire_ts = int(time.time()) + expiry_seconds
         return RtcTokenBuilder.buildTokenWithUid(

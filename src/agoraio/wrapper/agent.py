@@ -1,4 +1,9 @@
+from __future__ import annotations
+
 import typing
+
+if typing.TYPE_CHECKING:
+    from .agent_session import AgentSession
 
 from ..agents.types.start_agents_request_properties import StartAgentsRequestProperties
 from ..agents.types.start_agents_request_properties_asr import StartAgentsRequestPropertiesAsr
