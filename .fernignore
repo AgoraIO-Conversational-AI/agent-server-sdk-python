@@ -3,3 +3,6 @@ src/agoraio/pool_client.py
 src/agoraio/__init__.py
 src/agoraio/core/domain.py
 changelog.md
+
+# Wrapper layer - custom code that should not be overwritten
+src/agoraio/wrapper/
