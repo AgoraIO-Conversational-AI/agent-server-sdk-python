@@ -6,21 +6,46 @@ import typing
 from importlib import import_module
 
 if typing.TYPE_CHECKING:
-    from . import agents, core, phone_numbers, telephony
+    from . import agents, core, phone_numbers, telephony, wrapper
     from .core.domain import Area, Pool, create_pool
     from .pool_client import Agora, AsyncAgora
     from .version import __version__
+    from .wrapper import (
+        Agent,
+        AgentOptions,
+        AgentSession,
+        AgentSessionOptions,
+        generate_rtc_token,
+        GenerateTokenOptions,
+        is_heygen_avatar,
+        is_akool_avatar,
+        validate_avatar_config,
+        validate_tts_sample_rate,
+    )
+    from .wrapper.agent_session import AsyncAgentSession
 _dynamic_imports: typing.Dict[str, str] = {
     "Agora": ".pool_client",
+    "Agent": ".wrapper",
+    "AgentOptions": ".wrapper",
+    "AgentSession": ".wrapper",
+    "AgentSessionOptions": ".wrapper",
     "Area": ".core.domain",
+    "AsyncAgentSession": ".wrapper.agent_session",
     "AsyncAgora": ".pool_client",
+    "GenerateTokenOptions": ".wrapper",
     "Pool": ".core.domain",
     "__version__": ".version",
     "agents": ".agents",
     "core": ".core",
     "create_pool": ".core.domain",
+    "generate_rtc_token": ".wrapper",
+    "is_akool_avatar": ".wrapper",
+    "is_heygen_avatar": ".wrapper",
     "phone_numbers": ".phone_numbers",
     "telephony": ".telephony",
+    "validate_avatar_config": ".wrapper",
+    "validate_tts_sample_rate": ".wrapper",
+    "wrapper": ".wrapper",
 }
 
 
@@ -45,4 +70,27 @@ def __dir__():
     return sorted(lazy_attrs)
 
 
-__all__ = ["Agora", "Area", "AsyncAgora", "Pool", "__version__", "agents", "core", "create_pool", "phone_numbers", "telephony"]
+__all__ = [
+    "Agora",
+    "Agent",
+    "AgentOptions",
+    "AgentSession",
+    "AgentSessionOptions",
+    "Area",
+    "AsyncAgentSession",
+    "AsyncAgora",
+    "GenerateTokenOptions",
+    "Pool",
+    "__version__",
+    "agents",
+    "core",
+    "create_pool",
+    "generate_rtc_token",
+    "is_akool_avatar",
+    "is_heygen_avatar",
+    "phone_numbers",
+    "telephony",
+    "validate_avatar_config",
+    "validate_tts_sample_rate",
+    "wrapper",
+]
