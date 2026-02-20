@@ -1,9 +1,9 @@
 [project]
-name = "agoraio-sdk"
+name = "agora-agent-sdk"
 
 [tool.poetry]
-name = "agoraio-sdk"
-version = "0.0.14"
+name = "agora-agent-sdk"
+version = "1.0.0"
 description = ""
 readme = "README.md"
 authors = []

@@ -63,12 +63,12 @@ class StartAgentsRequestProperties(UncheckedBaseModel):
     Automatic Speech Recognition (ASR) configuration.
     """
 
-    tts: Tts = pydantic.Field()
+    tts: typing.Optional[Tts] = pydantic.Field(default=None)
     """
     Text-to-speech (TTS) module configuration.
     """
 
-    llm: StartAgentsRequestPropertiesLlm = pydantic.Field()
+    llm: typing.Optional[StartAgentsRequestPropertiesLlm] = pydantic.Field(default=None)
     """
     Large language model (LLM) configuration.
     """
