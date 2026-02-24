@@ -3,7 +3,6 @@ import warnings
 
 from ..core.api_error import ApiError
 from .agent import Agent
-from .avatar_types import is_akool_avatar, is_heygen_avatar, validate_avatar_config, validate_tts_sample_rate
 
 
 class AgentSessionOptions(typing.TypedDict, total=False):
@@ -36,7 +35,8 @@ class AgentSession:
     >>>
     >>> client = Agora(area=Area.US, username="...", password="...")
     >>> agent = Agent(name="assistant", instructions="You are a helpful voice assistant.")
-    >>> agent = agent.with_llm("openai/gpt-4").with_tts({"vendor": "elevenlabs", ...})
+    >>> from agoraio.wrapper.vendors import OpenAI, ElevenLabsTTS
+    >>> agent = agent.with_llm(OpenAI(api_key="...", model="gpt-4")).with_tts(ElevenLabsTTS(key="...", model_id="...", voice_id="..."))
     >>> session = agent.create_session(client, channel="room-123", agent_uid="1", remote_uids=["100"])
     >>> agent_id = session.start()
     >>> session.say("Hello!")
@@ -98,45 +98,18 @@ class AgentSession:
         return self._client.agents
 
     def _validate_avatar_config(self) -> None:
-        agent_config = self._agent.config
-        avatar = agent_config.get("avatar")
-        tts = agent_config.get("tts")
-
-        if not avatar:
-            return
-
-        avatar_dict = avatar if isinstance(avatar, dict) else (avatar.dict() if hasattr(avatar, "dict") else {})
-
-        if avatar_dict.get("enable") is False:
-            return
-
-        if is_heygen_avatar(avatar_dict) or is_akool_avatar(avatar_dict):
-            validate_avatar_config(avatar_dict)
-
-        tts_params = None
-        if tts and isinstance(tts, dict):
-            tts_params = tts.get("params")
-        elif tts and hasattr(tts, "params"):
-            tts_params = tts.params if hasattr(tts, "params") else None
-
-        sample_rate = None
-        if tts_params and isinstance(tts_params, dict):
-            sample_rate = tts_params.get("sample_rate")
-        elif tts_params and hasattr(tts_params, "sample_rate"):
-            sample_rate = getattr(tts_params, "sample_rate", None)
-
-        if isinstance(sample_rate, int):
-            if is_heygen_avatar(avatar_dict) or is_akool_avatar(avatar_dict):
-                validate_tts_sample_rate(avatar_dict, sample_rate)
-        elif is_heygen_avatar(avatar_dict):
-            warnings.warn(
-                "HeyGen avatar detected but TTS sample_rate is not explicitly set. "
-                "HeyGen requires 24,000 Hz. Please ensure your TTS provider is configured for 24kHz."
+        avatar_sr = self._agent._avatar_required_sample_rate
+        tts_sr = self._agent._tts_sample_rate
+        if avatar_sr is not None and tts_sr is not None and tts_sr != avatar_sr:
+            raise ValueError(
+                f"Avatar requires TTS sample rate of {avatar_sr} Hz, "
+                f"but TTS is configured with {tts_sr} Hz."
             )
-        elif is_akool_avatar(avatar_dict):
+        if avatar_sr is not None and tts_sr is None:
             warnings.warn(
-                "Akool avatar detected but TTS sample_rate is not explicitly set. "
-                "Akool requires 16,000 Hz. Please ensure your TTS provider is configured for 16kHz."
+                f"Avatar requires TTS sample rate of {avatar_sr} Hz, "
+                f"but TTS sample_rate is not explicitly set. "
+                f"Please ensure your TTS provider is configured for {avatar_sr} Hz."
             )
 
     def start(self) -> str:
@@ -326,7 +299,8 @@ class AsyncAgentSession:
     >>>
     >>> client = AsyncAgora(area=Area.US, username="...", password="...")
     >>> agent = Agent(name="assistant", instructions="You are helpful.")
-    >>> agent = agent.with_llm("openai/gpt-4").with_tts({"vendor": "elevenlabs", ...})
+    >>> from agoraio.wrapper.vendors import OpenAI, ElevenLabsTTS
+    >>> agent = agent.with_llm(OpenAI(api_key="...", model="gpt-4")).with_tts(ElevenLabsTTS(key="...", model_id="...", voice_id="..."))
     >>> session = AsyncAgentSession(client=client, agent=agent, ...)
     >>> agent_id = await session.start()
     >>> await session.say("Hello!")
@@ -384,45 +358,18 @@ class AsyncAgentSession:
         return self._client.agents
 
     def _validate_avatar_config(self) -> None:
-        agent_config = self._agent.config
-        avatar = agent_config.get("avatar")
-        tts = agent_config.get("tts")
-
-        if not avatar:
-            return
-
-        avatar_dict = avatar if isinstance(avatar, dict) else (avatar.dict() if hasattr(avatar, "dict") else {})
-
-        if avatar_dict.get("enable") is False:
-            return
-
-        if is_heygen_avatar(avatar_dict) or is_akool_avatar(avatar_dict):
-            validate_avatar_config(avatar_dict)
-
-        tts_params = None
-        if tts and isinstance(tts, dict):
-            tts_params = tts.get("params")
-        elif tts and hasattr(tts, "params"):
-            tts_params = tts.params if hasattr(tts, "params") else None
-
-        sample_rate = None
-        if tts_params and isinstance(tts_params, dict):
-            sample_rate = tts_params.get("sample_rate")
-        elif tts_params and hasattr(tts_params, "sample_rate"):
-            sample_rate = getattr(tts_params, "sample_rate", None)
-
-        if isinstance(sample_rate, int):
-            if is_heygen_avatar(avatar_dict) or is_akool_avatar(avatar_dict):
-                validate_tts_sample_rate(avatar_dict, sample_rate)
-        elif is_heygen_avatar(avatar_dict):
-            warnings.warn(
-                "HeyGen avatar detected but TTS sample_rate is not explicitly set. "
-                "HeyGen requires 24,000 Hz."
+        avatar_sr = self._agent._avatar_required_sample_rate
+        tts_sr = self._agent._tts_sample_rate
+        if avatar_sr is not None and tts_sr is not None and tts_sr != avatar_sr:
+            raise ValueError(
+                f"Avatar requires TTS sample rate of {avatar_sr} Hz, "
+                f"but TTS is configured with {tts_sr} Hz."
             )
-        elif is_akool_avatar(avatar_dict):
+        if avatar_sr is not None and tts_sr is None:
             warnings.warn(
-                "Akool avatar detected but TTS sample_rate is not explicitly set. "
-                "Akool requires 16,000 Hz."
+                f"Avatar requires TTS sample rate of {avatar_sr} Hz, "
+                f"but TTS sample_rate is not explicitly set. "
+                f"Please ensure your TTS provider is configured for {avatar_sr} Hz."
             )
 
     async def start(self) -> str:
