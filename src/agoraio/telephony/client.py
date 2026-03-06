@@ -89,6 +89,7 @@ class TelephonyClient:
         from agoraio import Agora
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -140,7 +141,7 @@ class TelephonyClient:
 
         properties : CallTelephonyRequestProperties
             Call attribute configuration. The content of this field varies depending on the invocation method:
-            - **Using pipeline ID**: Simply pass in `channel`, `token`, and `agent_rtc_uid`.
+            - **Using pipeline ID**: Simply pass in `channel`, `token`, `agent_rtc_uid`, and `remote_rtc_uids`.
             - **Using complete configuration**: Pass in the complete parameters of the [Start a conversational AI agent](https://docs.agora.io/en/conversational-ai/rest-api/agent/join) `properties`, including all required fields such as `channel`, `token`, `agent_rtc_uid`, `remote_rtc_uids`, `tts`, and `llm`.
 
         pipeline_id : typing.Optional[str]
@@ -163,6 +164,7 @@ class TelephonyClient:
         )
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -172,14 +174,15 @@ class TelephonyClient:
             sip=CallTelephonyRequestSip(
                 to_number="+19876543210",
                 from_number="+11234567890",
-                sip_rtc_uid="100",
-                sip_rtc_token="<agora_sip_rtc_token>",
+                rtc_uid="100",
+                rtc_token="<agora_sip_rtc_token>",
             ),
             pipeline_id="fzufjlweixxxxnlp",
             properties=CallTelephonyRequestProperties(
                 channel="<agora_channel>",
                 token="<agora_channel_token>",
                 agent_rtc_uid="111",
+                remote_rtc_uids=["100"],
             ),
         )
         """
@@ -215,6 +218,7 @@ class TelephonyClient:
         from agoraio import Agora
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -253,6 +257,7 @@ class TelephonyClient:
         from agoraio import Agora
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -337,6 +342,7 @@ class AsyncTelephonyClient:
         from agoraio import AsyncAgora
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -395,7 +401,7 @@ class AsyncTelephonyClient:
 
         properties : CallTelephonyRequestProperties
             Call attribute configuration. The content of this field varies depending on the invocation method:
-            - **Using pipeline ID**: Simply pass in `channel`, `token`, and `agent_rtc_uid`.
+            - **Using pipeline ID**: Simply pass in `channel`, `token`, `agent_rtc_uid`, and `remote_rtc_uids`.
             - **Using complete configuration**: Pass in the complete parameters of the [Start a conversational AI agent](https://docs.agora.io/en/conversational-ai/rest-api/agent/join) `properties`, including all required fields such as `channel`, `token`, `agent_rtc_uid`, `remote_rtc_uids`, `tts`, and `llm`.
 
         pipeline_id : typing.Optional[str]
@@ -420,6 +426,7 @@ class AsyncTelephonyClient:
         )
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -432,14 +439,15 @@ class AsyncTelephonyClient:
                 sip=CallTelephonyRequestSip(
                     to_number="+19876543210",
                     from_number="+11234567890",
-                    sip_rtc_uid="100",
-                    sip_rtc_token="<agora_sip_rtc_token>",
+                    rtc_uid="100",
+                    rtc_token="<agora_sip_rtc_token>",
                 ),
                 pipeline_id="fzufjlweixxxxnlp",
                 properties=CallTelephonyRequestProperties(
                     channel="<agora_channel>",
                     token="<agora_channel_token>",
                     agent_rtc_uid="111",
+                    remote_rtc_uids=["100"],
                 ),
             )
 
@@ -480,6 +488,7 @@ class AsyncTelephonyClient:
         from agoraio import AsyncAgora
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -526,6 +535,7 @@ class AsyncTelephonyClient:
         from agoraio import AsyncAgora
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )

@@ -5,21 +5,18 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 from ..core.unchecked_base_model import UncheckedBaseModel
+from .sarvam_tts_params import SarvamTtsParams
 
 
-class GroqTtsParams(UncheckedBaseModel):
+class SarvamTts(UncheckedBaseModel):
     """
-    Groq TTS configuration parameters.
-    """
-
-    key: str = pydantic.Field()
-    """
-    Groq API key
+    Sarvam Text-to-Speech configuration (Beta).
     """
 
-    model: typing.Optional[str] = pydantic.Field(default=None)
+    params: SarvamTtsParams
+    skip_patterns: typing.Optional[typing.List[int]] = pydantic.Field(default=None)
     """
-    Model name
+    Controls whether the TTS module skips bracketed content when reading LLM response text.
     """
 
     if IS_PYDANTIC_V2:

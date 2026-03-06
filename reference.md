@@ -30,12 +30,12 @@ Create and start a Conversational AI agent instance.
 from agoraio import Agora, MicrosoftTtsParams, Tts_Microsoft
 from agoraio.agents import (
     StartAgentsRequestProperties,
-    StartAgentsRequestPropertiesAdvancedFeatures,
     StartAgentsRequestPropertiesAsr,
     StartAgentsRequestPropertiesLlm,
 )
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -48,9 +48,6 @@ client.agents.start(
         agent_rtc_uid="1001",
         remote_rtc_uids=["1002"],
         idle_timeout=120,
-        advanced_features=StartAgentsRequestPropertiesAdvancedFeatures(
-            enable_aivad=True,
-        ),
         asr=StartAgentsRequestPropertiesAsr(
             language="en-US",
         ),
@@ -155,6 +152,7 @@ Retrieve a list of agents that meet the specified conditions.
 from agoraio import Agora
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -288,6 +286,7 @@ Get the current state information of the specified agent instance.
 from agoraio import Agora
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -370,6 +369,7 @@ Call this endpoint while the agent is running to retrieve the conversation histo
 from agoraio import Agora
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -450,6 +450,7 @@ Stop the specified conversational agent instance.
 from agoraio import Agora
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -534,6 +535,7 @@ from agoraio.agents import (
 )
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -642,6 +644,7 @@ Note: The speak API is not supported when using `mllm` configuration.
 from agoraio import Agora
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -758,6 +761,7 @@ Interrupt the specified agent while speaking or thinking.
 from agoraio import Agora
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -839,6 +843,7 @@ Query historical call records for a specified appid based on the filter criteria
 from agoraio import Agora
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -975,6 +980,7 @@ from agoraio.telephony import (
 )
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -984,13 +990,14 @@ client.telephony.call(
     sip=CallTelephonyRequestSip(
         to_number="+19876543210",
         from_number="+11234567890",
-        sip_rtc_uid="100",
-        sip_rtc_token="<agora_sip_rtc_token>",
+        rtc_uid="100",
+        rtc_token="<agora_sip_rtc_token>",
     ),
     properties=CallTelephonyRequestProperties(
         channel="<agora_channel>",
         token="<agora_channel_token>",
         agent_rtc_uid="111",
+        remote_rtc_uids=["100"],
     ),
 )
 
@@ -1035,7 +1042,7 @@ client.telephony.call(
 **properties:** `CallTelephonyRequestProperties` 
 
 Call attribute configuration. The content of this field varies depending on the invocation method:
-- **Using pipeline ID**: Simply pass in `channel`, `token`, and `agent_rtc_uid`.
+- **Using pipeline ID**: Simply pass in `channel`, `token`, `agent_rtc_uid`, and `remote_rtc_uids`.
 - **Using complete configuration**: Pass in the complete parameters of the [Start a conversational AI agent](https://docs.agora.io/en/conversational-ai/rest-api/agent/join) `properties`, including all required fields such as `channel`, `token`, `agent_rtc_uid`, `remote_rtc_uids`, `tts`, and `llm`.
     
 </dd>
@@ -1094,6 +1101,7 @@ Retrieve the call status and related information of a specified agent.
 from agoraio import Agora
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1174,6 +1182,7 @@ Instruct the agent to proactively hang up the ongoing call and leave the RTC cha
 from agoraio import Agora
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1255,6 +1264,7 @@ Retrieve a list of all imported phone numbers under the current account.
 from agoraio import Agora
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1320,6 +1330,7 @@ from agoraio.phone_numbers import (
 )
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1454,6 +1465,7 @@ Retrieve detailed information for a specific phone number.
 from agoraio import Agora
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1509,7 +1521,8 @@ client.phone_numbers.get(
 
 Remove an imported phone number from the system.
 
-Note: This operation only removes the number configuration from the Agora system; the number stored with the phone service provider is not deleted. After calling this endpoint, the number stops receiving calls routed through this system. To delete the number from the service provider, remove it in the service provider's console.
+After calling this endpoint, the number stops receiving calls routed through this system. To delete the number from the service provider, remove it in the service provider's console.
+> This operation only removes the number configuration from the Agora system; the number stored with the phone service provider is not deleted.
 </dd>
 </dl>
 </dd>
@@ -1527,6 +1540,7 @@ Note: This operation only removes the number configuration from the Agora system
 from agoraio import Agora
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1602,6 +1616,7 @@ from agoraio.phone_numbers import (
 )
 
 client = Agora(
+    authorization="YOUR_AUTHORIZATION",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )

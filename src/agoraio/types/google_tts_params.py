@@ -27,6 +27,11 @@ class GoogleTtsParams(UncheckedBaseModel):
     Language code (e.g., "en-US")
     """
 
+    sample_rate_hertz: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Sample rate in Hz (default depends on selected voice)
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

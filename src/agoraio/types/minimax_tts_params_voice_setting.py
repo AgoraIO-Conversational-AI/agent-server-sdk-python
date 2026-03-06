@@ -7,29 +7,10 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2
 from ..core.unchecked_base_model import UncheckedBaseModel
 
 
-class MicrosoftTtsParams(UncheckedBaseModel):
+class MinimaxTtsParamsVoiceSetting(UncheckedBaseModel):
+    voice_id: str = pydantic.Field()
     """
-    Microsoft Azure TTS configuration parameters.
-    """
-
-    key: str = pydantic.Field()
-    """
-    Microsoft Azure API key
-    """
-
-    region: str = pydantic.Field()
-    """
-    Azure region (e.g., "eastus")
-    """
-
-    voice_name: str = pydantic.Field()
-    """
-    Voice name (e.g., "en-US-AndrewMultilingualNeural")
-    """
-
-    sample_rate: typing.Optional[int] = pydantic.Field(default=None)
-    """
-    Audio sampling rate in Hz
+    Voice style identifier (e.g., English_captivating_female1)
     """
 
     if IS_PYDANTIC_V2:

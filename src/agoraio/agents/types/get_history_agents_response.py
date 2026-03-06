@@ -6,7 +6,6 @@ import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.unchecked_base_model import UncheckedBaseModel
 from .get_history_agents_response_contents_item import GetHistoryAgentsResponseContentsItem
-from .get_history_agents_response_status import GetHistoryAgentsResponseStatus
 
 
 class GetHistoryAgentsResponse(UncheckedBaseModel):
@@ -20,7 +19,7 @@ class GetHistoryAgentsResponse(UncheckedBaseModel):
     Agent creation timestamp.
     """
 
-    status: typing.Optional[GetHistoryAgentsResponseStatus] = pydantic.Field(default=None)
+    status: typing.Optional[typing.Literal["RUNNING"]] = pydantic.Field(default=None)
     """
     Agent status. Only supports querying the running agent.
     """

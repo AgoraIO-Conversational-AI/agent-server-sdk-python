@@ -55,6 +55,7 @@ class PhoneNumbersClient:
         from agoraio import Agora
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -120,6 +121,7 @@ class PhoneNumbersClient:
         )
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -174,6 +176,7 @@ class PhoneNumbersClient:
         from agoraio import Agora
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -188,7 +191,8 @@ class PhoneNumbersClient:
         """
         Remove an imported phone number from the system.
 
-        Note: This operation only removes the number configuration from the Agora system; the number stored with the phone service provider is not deleted. After calling this endpoint, the number stops receiving calls routed through this system. To delete the number from the service provider, remove it in the service provider's console.
+        After calling this endpoint, the number stops receiving calls routed through this system. To delete the number from the service provider, remove it in the service provider's console.
+        > This operation only removes the number configuration from the Agora system; the number stored with the phone service provider is not deleted.
 
         Parameters
         ----------
@@ -207,6 +211,7 @@ class PhoneNumbersClient:
         from agoraio import Agora
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -256,6 +261,7 @@ class PhoneNumbersClient:
         )
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -316,6 +322,7 @@ class AsyncPhoneNumbersClient:
         from agoraio import AsyncAgora
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -389,6 +396,7 @@ class AsyncPhoneNumbersClient:
         )
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -451,6 +459,7 @@ class AsyncPhoneNumbersClient:
         from agoraio import AsyncAgora
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -471,7 +480,8 @@ class AsyncPhoneNumbersClient:
         """
         Remove an imported phone number from the system.
 
-        Note: This operation only removes the number configuration from the Agora system; the number stored with the phone service provider is not deleted. After calling this endpoint, the number stops receiving calls routed through this system. To delete the number from the service provider, remove it in the service provider's console.
+        After calling this endpoint, the number stops receiving calls routed through this system. To delete the number from the service provider, remove it in the service provider's console.
+        > This operation only removes the number configuration from the Agora system; the number stored with the phone service provider is not deleted.
 
         Parameters
         ----------
@@ -492,6 +502,7 @@ class AsyncPhoneNumbersClient:
         from agoraio import AsyncAgora
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -549,6 +560,7 @@ class AsyncPhoneNumbersClient:
         )
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )

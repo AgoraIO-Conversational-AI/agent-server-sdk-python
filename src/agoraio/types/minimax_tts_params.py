@@ -5,31 +5,33 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 from ..core.unchecked_base_model import UncheckedBaseModel
+from .minimax_tts_params_voice_setting import MinimaxTtsParamsVoiceSetting
 
 
-class MicrosoftTtsParams(UncheckedBaseModel):
+class MinimaxTtsParams(UncheckedBaseModel):
     """
-    Microsoft Azure TTS configuration parameters.
+    MiniMax TTS configuration parameters.
     """
 
     key: str = pydantic.Field()
     """
-    Microsoft Azure API key
+    MiniMax API key
     """
 
-    region: str = pydantic.Field()
+    group_id: str = pydantic.Field()
     """
-    Azure region (e.g., "eastus")
-    """
-
-    voice_name: str = pydantic.Field()
-    """
-    Voice name (e.g., "en-US-AndrewMultilingualNeural")
+    MiniMax group identifier
     """
 
-    sample_rate: typing.Optional[int] = pydantic.Field(default=None)
+    model: str = pydantic.Field()
     """
-    Audio sampling rate in Hz
+    TTS model (e.g., speech-02-turbo)
+    """
+
+    voice_setting: MinimaxTtsParamsVoiceSetting
+    url: str = pydantic.Field()
+    """
+    WebSocket endpoint (e.g., wss://api-uw.minimax.io/ws/v1/t2a_v2)
     """
 
     if IS_PYDANTIC_V2:

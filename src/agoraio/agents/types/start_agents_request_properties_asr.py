@@ -29,6 +29,7 @@ class StartAgentsRequestPropertiesAsr(UncheckedBaseModel):
     - `assemblyai`: AssemblyAI (Beta)
     - `amazon`: Amazon Transcribe (Beta)
     - `google`: Google (Beta)
+    - `sarvam`: Sarvam (Beta)
     """
 
     params: typing.Optional[typing.Dict[str, typing.Any]] = pydantic.Field(default=None)

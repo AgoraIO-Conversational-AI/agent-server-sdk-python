@@ -151,7 +151,7 @@ class RawTelephonyClient:
 
         properties : CallTelephonyRequestProperties
             Call attribute configuration. The content of this field varies depending on the invocation method:
-            - **Using pipeline ID**: Simply pass in `channel`, `token`, and `agent_rtc_uid`.
+            - **Using pipeline ID**: Simply pass in `channel`, `token`, `agent_rtc_uid`, and `remote_rtc_uids`.
             - **Using complete configuration**: Pass in the complete parameters of the [Start a conversational AI agent](https://docs.agora.io/en/conversational-ai/rest-api/agent/join) `properties`, including all required fields such as `channel`, `token`, `agent_rtc_uid`, `remote_rtc_uids`, `tts`, and `llm`.
 
         pipeline_id : typing.Optional[str]
@@ -419,7 +419,7 @@ class AsyncRawTelephonyClient:
 
         properties : CallTelephonyRequestProperties
             Call attribute configuration. The content of this field varies depending on the invocation method:
-            - **Using pipeline ID**: Simply pass in `channel`, `token`, and `agent_rtc_uid`.
+            - **Using pipeline ID**: Simply pass in `channel`, `token`, `agent_rtc_uid`, and `remote_rtc_uids`.
             - **Using complete configuration**: Pass in the complete parameters of the [Start a conversational AI agent](https://docs.agora.io/en/conversational-ai/rest-api/agent/join) `properties`, including all required fields such as `channel`, `token`, `agent_rtc_uid`, `remote_rtc_uids`, `tts`, and `llm`.
 
         pipeline_id : typing.Optional[str]

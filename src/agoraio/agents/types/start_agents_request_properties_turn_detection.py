@@ -5,6 +5,7 @@ import typing
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.unchecked_base_model import UncheckedBaseModel
+from .start_agents_request_properties_turn_detection_config import StartAgentsRequestPropertiesTurnDetectionConfig
 from .start_agents_request_properties_turn_detection_eagerness import StartAgentsRequestPropertiesTurnDetectionEagerness
 from .start_agents_request_properties_turn_detection_interrupt_mode import (
     StartAgentsRequestPropertiesTurnDetectionInterruptMode,
@@ -14,11 +15,23 @@ from .start_agents_request_properties_turn_detection_type import StartAgentsRequ
 
 class StartAgentsRequestPropertiesTurnDetection(UncheckedBaseModel):
     """
-    Conversation turn detection settings.
+    Conversation turn detection settings. Controls the logic for voice activity detection and conversation turn determination.
+    """
+
+    mode: typing.Optional[typing.Literal["default"]] = pydantic.Field(default=None)
+    """
+    Conversation turn detection mode:
+    - `default`: Uses standard conversation turn detection configuration.
+    """
+
+    config: typing.Optional[StartAgentsRequestPropertiesTurnDetectionConfig] = pydantic.Field(default=None)
+    """
+    Detailed configuration for conversation turn detection.
     """
 
     type: typing.Optional[StartAgentsRequestPropertiesTurnDetectionType] = pydantic.Field(default=None)
     """
+    Deprecated. Use `turn_detection.mode` and `turn_detection.config` instead.
     Turn detection mechanism:
     - `agora_vad`: Agora VAD
     - `server_vad`: The model detects the start and end of speech based on audio volume. Only available when `mllm` is enabled and OpenAI is selected.
@@ -29,6 +42,7 @@ class StartAgentsRequestPropertiesTurnDetection(UncheckedBaseModel):
         default=None
     )
     """
+    Deprecated. Use `turn_detection.config.start_of_speech` instead.
     Sets the agent's behavior when human voice interrupts the agent while it is interacting (speaking or thinking):
     - `interrupt`: The agent immediately stops the current interaction and processes the human voice input.
     - `append`: The agent completes the current interaction, then processes the human voice input.
@@ -39,27 +53,27 @@ class StartAgentsRequestPropertiesTurnDetection(UncheckedBaseModel):
 
     interrupt_duration_ms: typing.Optional[float] = pydantic.Field(default=None)
     """
-    The amount of time in milliseconds that the user's voice must exceed the VAD threshold before an interruption is triggered.
+    Deprecated. Use `turn_detection.config.start_of_speech.vad_config.interrupt_duration_ms` instead. The amount of time in milliseconds that the user's voice must exceed the VAD threshold before an interruption is triggered.
     """
 
     interrupt_keywords: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
     """
-    Specifies the list of keywords that trigger an interruption when `interrupt_mode` is set to `keyword`. You can configure up to 128 keywords.
+    Deprecated. Use `turn_detection.config.start_of_speech.keywords_config.triggered_keywords` instead. Specifies the list of keywords that trigger an interruption when `interrupt_mode` is set to `keyword`. You can configure up to 128 keywords.
     """
 
     prefix_padding_ms: typing.Optional[int] = pydantic.Field(default=None)
     """
-    The extra forward padding time in milliseconds before the processing system starts to process the speech input. This padding helps capture the beginning of the speech.
+    Deprecated. Use `turn_detection.config.start_of_speech.vad_config.prefix_padding_ms` instead. The extra forward padding time in milliseconds before the processing system starts to process the speech input.
     """
 
     silence_duration_ms: typing.Optional[int] = pydantic.Field(default=None)
     """
-    The duration of audio silence in milliseconds. If no voice activity is detected during this period, the agent assumes that the user has stopped speaking.
+    Deprecated. Use `turn_detection.config.end_of_speech.vad_config.silence_duration_ms` instead. The duration of audio silence in milliseconds. If no voice activity is detected during this period, the agent assumes that the user has stopped speaking.
     """
 
     threshold: typing.Optional[float] = pydantic.Field(default=None)
     """
-    Identification sensitivity determines the level of sound in the audio signal that is considered voice activity. Lower values make it easier for the agent to detect speech, and higher values ignore weak sounds.
+    Deprecated. Use `turn_detection.config.speech_threshold` instead. Identification sensitivity determines the level of sound in the audio signal that is considered voice activity.
     """
 
     create_response: typing.Optional[bool] = pydantic.Field(default=None)
@@ -74,12 +88,11 @@ class StartAgentsRequestPropertiesTurnDetection(UncheckedBaseModel):
 
     eagerness: typing.Optional[StartAgentsRequestPropertiesTurnDetectionEagerness] = pydantic.Field(default=None)
     """
+    Deprecated. Only available in `semantic_vad` mode when using OpenAI Realtime API.
     The eagerness of the model to respond:
     - `auto`: Equivalent to medium
     - `low`: Wait longer for the user to continue speaking
     - `high`: Respond more quickly
-    
-    Only available in `semantic_vad` mode when using OpenAI Realtime API.
     """
 
     if IS_PYDANTIC_V2:

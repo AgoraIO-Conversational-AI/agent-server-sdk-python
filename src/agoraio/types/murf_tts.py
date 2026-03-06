@@ -5,15 +5,15 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 from ..core.unchecked_base_model import UncheckedBaseModel
-from .groq_tts_params import GroqTtsParams
+from .murf_tts_params import MurfTtsParams
 
 
-class GroqTts(UncheckedBaseModel):
+class MurfTts(UncheckedBaseModel):
     """
-    Groq Text-to-Speech configuration (Beta).
+    Murf Text-to-Speech configuration.
     """
 
-    params: GroqTtsParams
+    params: MurfTtsParams
     skip_patterns: typing.Optional[typing.List[int]] = pydantic.Field(default=None)
     """
     Controls whether the TTS module skips bracketed content when reading LLM response text.

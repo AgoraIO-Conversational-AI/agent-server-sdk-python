@@ -24,13 +24,12 @@ class StartAgentsRequestPropertiesSal(UncheckedBaseModel):
 
     sample_urls: typing.Optional[typing.Dict[str, str]] = pydantic.Field(default=None)
     """
-    The registered voiceprint URLs as key-value pairs, where each key is the voiceprint name and each value is the download URL for that speaker's voiceprint.
+    The registered voiceprint URL as a key-value pair, where the key is the voiceprint name and the value is the download URL for the speaker's voiceprint. Only one voiceprint URL is supported.
     > - Do not set the incoming voiceprint name to "unknown"; this is a reserved keyword used to identify unknown speakers.
     > - For a registered voiceprint, ensure that:
-    >   - Quantity: You must register at least 1 voiceprint URL, with a maximum of 3 per task request.
     >   - Size: A single voiceprint file must not exceed 2 MB.
     >   - Duration: 10 to 15 seconds, with at least 8 seconds of effective audio without silent segments.
-    >   - Format: 16kHz sampling rate, 16-bit depth, mono PCM audio file. The file name extension must be ".pcm".
+    >   - Format: 16kHz sampling rate, 16-bit depth, mono PCM audio file. The file name extension must be ".pcm".      
     """
 
     if IS_PYDANTIC_V2:

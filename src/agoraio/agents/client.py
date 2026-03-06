@@ -73,12 +73,12 @@ class AgentsClient:
         from agoraio import Agora, MicrosoftTtsParams, Tts_Microsoft
         from agoraio.agents import (
             StartAgentsRequestProperties,
-            StartAgentsRequestPropertiesAdvancedFeatures,
             StartAgentsRequestPropertiesAsr,
             StartAgentsRequestPropertiesLlm,
         )
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -91,9 +91,6 @@ class AgentsClient:
                 agent_rtc_uid="1001",
                 remote_rtc_uids=["1002"],
                 idle_timeout=120,
-                advanced_features=StartAgentsRequestPropertiesAdvancedFeatures(
-                    enable_aivad=True,
-                ),
                 asr=StartAgentsRequestPropertiesAsr(
                     language="en-US",
                 ),
@@ -179,6 +176,7 @@ class AgentsClient:
         from agoraio import Agora
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -229,6 +227,7 @@ class AgentsClient:
         from agoraio import Agora
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -269,6 +268,7 @@ class AgentsClient:
         from agoraio import Agora
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -304,6 +304,7 @@ class AgentsClient:
         from agoraio import Agora
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -354,6 +355,7 @@ class AgentsClient:
         )
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -433,6 +435,7 @@ class AgentsClient:
         from agoraio import Agora
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -476,6 +479,7 @@ class AgentsClient:
         from agoraio import Agora
 
         client = Agora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -540,12 +544,12 @@ class AsyncAgentsClient:
         from agoraio import AsyncAgora, MicrosoftTtsParams, Tts_Microsoft
         from agoraio.agents import (
             StartAgentsRequestProperties,
-            StartAgentsRequestPropertiesAdvancedFeatures,
             StartAgentsRequestPropertiesAsr,
             StartAgentsRequestPropertiesLlm,
         )
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -561,9 +565,6 @@ class AsyncAgentsClient:
                     agent_rtc_uid="1001",
                     remote_rtc_uids=["1002"],
                     idle_timeout=120,
-                    advanced_features=StartAgentsRequestPropertiesAdvancedFeatures(
-                        enable_aivad=True,
-                    ),
                     asr=StartAgentsRequestPropertiesAsr(
                         language="en-US",
                     ),
@@ -656,6 +657,7 @@ class AsyncAgentsClient:
         from agoraio import AsyncAgora
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -715,6 +717,7 @@ class AsyncAgentsClient:
         from agoraio import AsyncAgora
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -763,6 +766,7 @@ class AsyncAgentsClient:
         from agoraio import AsyncAgora
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -806,6 +810,7 @@ class AsyncAgentsClient:
         from agoraio import AsyncAgora
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -864,6 +869,7 @@ class AsyncAgentsClient:
         )
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -953,6 +959,7 @@ class AsyncAgentsClient:
         from agoraio import AsyncAgora
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -1004,6 +1011,7 @@ class AsyncAgentsClient:
         from agoraio import AsyncAgora
 
         client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )

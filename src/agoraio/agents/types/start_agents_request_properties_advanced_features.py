@@ -14,7 +14,7 @@ class StartAgentsRequestPropertiesAdvancedFeatures(UncheckedBaseModel):
 
     enable_aivad: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Whether to enable the intelligent interruption handling function (AIVAD). This feature is currently available only for English.
+    Whether to enable the intelligent interruption handling function (AIVAD). This feature is currently available only for English. Deprecated. Use `turn_detection.config.end_of_speech.mode.semantic` instead.
     """
 
     enable_mllm: typing.Optional[bool] = pydantic.Field(default=None)
@@ -30,6 +30,11 @@ class StartAgentsRequestPropertiesAdvancedFeatures(UncheckedBaseModel):
     enable_sal: typing.Optional[bool] = pydantic.Field(default=None)
     """
     Enable Selective Attention Locking (SAL). When enabled, configure the `sal` field to set up speaker recognition or locking modes.
+    """
+
+    enable_tools: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Enable tool invocation. When enabled, the agent can invoke tools provided by the MCP server to implement advanced functionality.
     """
 
     if IS_PYDANTIC_V2:

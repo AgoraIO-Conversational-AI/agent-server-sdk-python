@@ -3,7 +3,7 @@ name = "agora-agent-sdk"
 
 [tool.poetry]
 name = "agora-agent-sdk"
-version = "1.0.0"
+version = "0.1.0"
 description = ""
 readme = "README.md"
 authors = []
@@ -31,7 +31,7 @@ packages = [
 ]
 
 [tool.poetry.urls]
-Repository = 'https://github.com/fern-demo/agoraio-python-sdk'
+Repository = 'https://github.com/AgoraIO-Conversational-AI/agora-agent-python-sdk'
 
 [tool.poetry.dependencies]
 python = "^3.8"

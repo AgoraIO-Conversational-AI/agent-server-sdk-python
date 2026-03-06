@@ -13,11 +13,13 @@ from .cartesia_tts_params import CartesiaTtsParams
 from .eleven_labs_tts_params import ElevenLabsTtsParams
 from .fish_audio_tts_params import FishAudioTtsParams
 from .google_tts_params import GoogleTtsParams
-from .groq_tts_params import GroqTtsParams
 from .hume_ai_tts_params import HumeAiTtsParams
 from .microsoft_tts_params import MicrosoftTtsParams
+from .minimax_tts_params import MinimaxTtsParams
+from .murf_tts_params import MurfTtsParams
 from .open_ai_tts_params import OpenAiTtsParams
 from .rime_tts_params import RimeTtsParams
+from .sarvam_tts_params import SarvamTtsParams
 
 
 class Tts_Microsoft(UncheckedBaseModel):
@@ -38,6 +40,36 @@ class Tts_Microsoft(UncheckedBaseModel):
 class Tts_Elevenlabs(UncheckedBaseModel):
     vendor: typing.Literal["elevenlabs"] = "elevenlabs"
     params: ElevenLabsTtsParams
+    skip_patterns: typing.Optional[typing.List[int]] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+class Tts_Minimax(UncheckedBaseModel):
+    vendor: typing.Literal["minimax"] = "minimax"
+    params: MinimaxTtsParams
+    skip_patterns: typing.Optional[typing.List[int]] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
+class Tts_Murf(UncheckedBaseModel):
+    vendor: typing.Literal["murf"] = "murf"
+    params: MurfTtsParams
     skip_patterns: typing.Optional[typing.List[int]] = None
 
     if IS_PYDANTIC_V2:
@@ -125,21 +157,6 @@ class Tts_Fishaudio(UncheckedBaseModel):
             extra = pydantic.Extra.allow
 
 
-class Tts_Groq(UncheckedBaseModel):
-    vendor: typing.Literal["groq"] = "groq"
-    params: GroqTtsParams
-    skip_patterns: typing.Optional[typing.List[int]] = None
-
-    if IS_PYDANTIC_V2:
-        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
-    else:
-
-        class Config:
-            frozen = True
-            smart_union = True
-            extra = pydantic.Extra.allow
-
-
 class Tts_Google(UncheckedBaseModel):
     vendor: typing.Literal["google"] = "google"
     params: GoogleTtsParams
@@ -170,18 +187,35 @@ class Tts_Amazon(UncheckedBaseModel):
             extra = pydantic.Extra.allow
 
 
+class Tts_Sarvam(UncheckedBaseModel):
+    vendor: typing.Literal["sarvam"] = "sarvam"
+    params: SarvamTtsParams
+    skip_patterns: typing.Optional[typing.List[int]] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 Tts = typing_extensions.Annotated[
     typing.Union[
         Tts_Microsoft,
         Tts_Elevenlabs,
+        Tts_Minimax,
+        Tts_Murf,
         Tts_Cartesia,
         Tts_Openai,
         Tts_Humeai,
         Tts_Rime,
         Tts_Fishaudio,
-        Tts_Groq,
         Tts_Google,
         Tts_Amazon,
+        Tts_Sarvam,
     ],
     UnionMetadata(discriminant="vendor"),
 ]

@@ -5,31 +5,18 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 from ..core.unchecked_base_model import UncheckedBaseModel
+from .minimax_tts_params import MinimaxTtsParams
 
 
-class MicrosoftTtsParams(UncheckedBaseModel):
+class MinimaxTts(UncheckedBaseModel):
     """
-    Microsoft Azure TTS configuration parameters.
-    """
-
-    key: str = pydantic.Field()
-    """
-    Microsoft Azure API key
+    MiniMax Text-to-Speech configuration.
     """
 
-    region: str = pydantic.Field()
+    params: MinimaxTtsParams
+    skip_patterns: typing.Optional[typing.List[int]] = pydantic.Field(default=None)
     """
-    Azure region (e.g., "eastus")
-    """
-
-    voice_name: str = pydantic.Field()
-    """
-    Voice name (e.g., "en-US-AndrewMultilingualNeural")
-    """
-
-    sample_rate: typing.Optional[int] = pydantic.Field(default=None)
-    """
-    Audio sampling rate in Hz
+    Controls whether the TTS module skips bracketed content when reading LLM response text.
     """
 
     if IS_PYDANTIC_V2:

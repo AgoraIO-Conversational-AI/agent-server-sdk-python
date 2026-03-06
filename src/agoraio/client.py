@@ -32,6 +32,7 @@ class Agora:
 
 
 
+    authorization : str
     username : typing.Union[str, typing.Callable[[], str]]
     password : typing.Union[str, typing.Callable[[], str]]
     headers : typing.Optional[typing.Dict[str, str]]
@@ -51,6 +52,7 @@ class Agora:
     from agoraio import Agora
 
     client = Agora(
+        authorization="YOUR_AUTHORIZATION",
         username="YOUR_USERNAME",
         password="YOUR_PASSWORD",
     )
@@ -61,6 +63,7 @@ class Agora:
         *,
         base_url: typing.Optional[str] = None,
         environment: AgoraEnvironment = AgoraEnvironment.DEFAULT,
+        authorization: str,
         username: typing.Union[str, typing.Callable[[], str]],
         password: typing.Union[str, typing.Callable[[], str]],
         headers: typing.Optional[typing.Dict[str, str]] = None,
@@ -73,6 +76,7 @@ class Agora:
         )
         self._client_wrapper = SyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
+            authorization=authorization,
             username=username,
             password=password,
             headers=headers,
@@ -130,6 +134,7 @@ class AsyncAgora:
 
 
 
+    authorization : str
     username : typing.Union[str, typing.Callable[[], str]]
     password : typing.Union[str, typing.Callable[[], str]]
     headers : typing.Optional[typing.Dict[str, str]]
@@ -149,6 +154,7 @@ class AsyncAgora:
     from agoraio import AsyncAgora
 
     client = AsyncAgora(
+        authorization="YOUR_AUTHORIZATION",
         username="YOUR_USERNAME",
         password="YOUR_PASSWORD",
     )
@@ -159,6 +165,7 @@ class AsyncAgora:
         *,
         base_url: typing.Optional[str] = None,
         environment: AgoraEnvironment = AgoraEnvironment.DEFAULT,
+        authorization: str,
         username: typing.Union[str, typing.Callable[[], str]],
         password: typing.Union[str, typing.Callable[[], str]],
         headers: typing.Optional[typing.Dict[str, str]] = None,
@@ -171,6 +178,7 @@ class AsyncAgora:
         )
         self._client_wrapper = AsyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
+            authorization=authorization,
             username=username,
             password=password,
             headers=headers,

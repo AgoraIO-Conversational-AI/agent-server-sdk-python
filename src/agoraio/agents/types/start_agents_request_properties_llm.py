@@ -5,6 +5,8 @@ import typing
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.unchecked_base_model import UncheckedBaseModel
+from .start_agents_request_properties_llm_greeting_configs import StartAgentsRequestPropertiesLlmGreetingConfigs
+from .start_agents_request_properties_llm_mcp_servers_item import StartAgentsRequestPropertiesLlmMcpServersItem
 from .start_agents_request_properties_llm_style import StartAgentsRequestPropertiesLlmStyle
 
 
@@ -79,6 +81,23 @@ class StartAgentsRequestPropertiesLlm(UncheckedBaseModel):
     - `gemini`: For Google Gemini and Google Vertex API format
     - `anthropic`: For Anthropic Claude API format
     - `dify`: For Dify API format
+    """
+
+    greeting_configs: typing.Optional[StartAgentsRequestPropertiesLlmGreetingConfigs] = pydantic.Field(default=None)
+    """
+    Agent greeting broadcast configuration.
+    """
+
+    template_variables: typing.Optional[typing.Dict[str, str]] = pydantic.Field(default=None)
+    """
+    Template parameter configuration used to insert variables into the agent's `system_messages`, `greeting_message`, `failure_message`, and `parameters.silence_config.content` text. Uses key-value pairs, where the key is the variable name and the value is the variable's value. To insert defined variables in the prompt text, use the syntax `{{variable_name}}`. The system automatically replaces each variable with the corresponding value defined in `template_variables`. Variable values cannot reference other variables.
+    """
+
+    mcp_servers: typing.Optional[typing.List[StartAgentsRequestPropertiesLlmMcpServersItem]] = pydantic.Field(
+        default=None
+    )
+    """
+    MCP (Model Context Protocol) server configuration. By configuring MCP servers, agents can call tools provided by external services to implement advanced functionality.
     """
 
     if IS_PYDANTIC_V2:

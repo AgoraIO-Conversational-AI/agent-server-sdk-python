@@ -7,29 +7,14 @@ from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.unchecked_base_model import UncheckedBaseModel
 
 
-class CallTelephonyRequestSip(UncheckedBaseModel):
+class StartAgentsRequestPropertiesFillerWordsTriggerFixedTimeConfig(UncheckedBaseModel):
     """
-    SIP (Session Initiation Protocol) call configuration object.
-    """
-
-    to_number: str = pydantic.Field()
-    """
-    Called number (target phone number), in E.164 format.
+    Fixed time trigger configuration. Used when `mode` is `fixed_time`.
     """
 
-    from_number: str = pydantic.Field()
+    response_wait_ms: typing.Optional[int] = pydantic.Field(default=None)
     """
-    Caller ID (the number that initiated the call), in E.164 format.
-    """
-
-    rtc_uid: str = pydantic.Field()
-    """
-    The RTC UID used by the SIP gateway.
-    """
-
-    rtc_token: str = pydantic.Field()
-    """
-    The RTC token used by the SIP gateway.
+    LLM response wait threshold in milliseconds. Triggers filler word playback when the LLM waits this duration without generating a response.
     """
 
     if IS_PYDANTIC_V2:

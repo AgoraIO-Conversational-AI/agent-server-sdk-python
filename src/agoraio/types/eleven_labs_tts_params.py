@@ -34,7 +34,7 @@ class ElevenLabsTtsParams(UncheckedBaseModel):
 
     sample_rate: typing.Optional[int] = pydantic.Field(default=None)
     """
-    Audio sample rate (e.g., 24000)
+    Audio sample rate in Hz (16kHz for Akool, 24kHz for HeyGen)
     """
 
     if IS_PYDANTIC_V2:

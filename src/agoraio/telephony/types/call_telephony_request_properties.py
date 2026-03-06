@@ -10,7 +10,7 @@ from ...core.unchecked_base_model import UncheckedBaseModel
 class CallTelephonyRequestProperties(UncheckedBaseModel):
     """
     Call attribute configuration. The content of this field varies depending on the invocation method:
-    - **Using pipeline ID**: Simply pass in `channel`, `token`, and `agent_rtc_uid`.
+    - **Using pipeline ID**: Simply pass in `channel`, `token`, `agent_rtc_uid`, and `remote_rtc_uids`.
     - **Using complete configuration**: Pass in the complete parameters of the [Start a conversational AI agent](https://docs.agora.io/en/conversational-ai/rest-api/agent/join) `properties`, including all required fields such as `channel`, `token`, `agent_rtc_uid`, `remote_rtc_uids`, `tts`, and `llm`.
     """
 
@@ -27,6 +27,11 @@ class CallTelephonyRequestProperties(UncheckedBaseModel):
     agent_rtc_uid: str = pydantic.Field()
     """
     The agent's user ID in the RTC channel.
+    """
+
+    remote_rtc_uids: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    """
+    A list of RTC user IDs. When using pipeline ID, this should contain the SIP gateway UID.
     """
 
     if IS_PYDANTIC_V2:

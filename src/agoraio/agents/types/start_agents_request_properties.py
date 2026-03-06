@@ -9,9 +9,12 @@ from ...types.tts import Tts
 from .start_agents_request_properties_advanced_features import StartAgentsRequestPropertiesAdvancedFeatures
 from .start_agents_request_properties_asr import StartAgentsRequestPropertiesAsr
 from .start_agents_request_properties_avatar import StartAgentsRequestPropertiesAvatar
+from .start_agents_request_properties_filler_words import StartAgentsRequestPropertiesFillerWords
+from .start_agents_request_properties_geofence import StartAgentsRequestPropertiesGeofence
 from .start_agents_request_properties_llm import StartAgentsRequestPropertiesLlm
 from .start_agents_request_properties_mllm import StartAgentsRequestPropertiesMllm
 from .start_agents_request_properties_parameters import StartAgentsRequestPropertiesParameters
+from .start_agents_request_properties_rtc import StartAgentsRequestPropertiesRtc
 from .start_agents_request_properties_sal import StartAgentsRequestPropertiesSal
 from .start_agents_request_properties_turn_detection import StartAgentsRequestPropertiesTurnDetection
 
@@ -53,6 +56,11 @@ class StartAgentsRequestProperties(UncheckedBaseModel):
     Sets the timeout after all the users specified in `remote_rtc_uids` are detected to have left the channel. When the timeout value is exceeded, the agent automatically stops and exits the channel. A value of `0` means that the agent does not exit until it is stopped manually.
     """
 
+    geofence: typing.Optional[StartAgentsRequestPropertiesGeofence] = pydantic.Field(default=None)
+    """
+    Regional access restriction configuration. Use this to limit which Agora servers the Conversational AI Engine can access based on geographic regions.
+    """
+
     advanced_features: typing.Optional[StartAgentsRequestPropertiesAdvancedFeatures] = pydantic.Field(default=None)
     """
     Advanced features configuration.
@@ -63,12 +71,12 @@ class StartAgentsRequestProperties(UncheckedBaseModel):
     Automatic Speech Recognition (ASR) configuration.
     """
 
-    tts: typing.Optional[Tts] = pydantic.Field(default=None)
+    tts: Tts = pydantic.Field()
     """
     Text-to-speech (TTS) module configuration.
     """
 
-    llm: typing.Optional[StartAgentsRequestPropertiesLlm] = pydantic.Field(default=None)
+    llm: StartAgentsRequestPropertiesLlm = pydantic.Field()
     """
     Large language model (LLM) configuration.
     """
@@ -85,12 +93,27 @@ class StartAgentsRequestProperties(UncheckedBaseModel):
 
     turn_detection: typing.Optional[StartAgentsRequestPropertiesTurnDetection] = pydantic.Field(default=None)
     """
-    Conversation turn detection settings.
+    Conversation turn detection settings. Controls the logic for voice activity detection and conversation turn determination.
     """
 
     sal: typing.Optional[StartAgentsRequestPropertiesSal] = pydantic.Field(default=None)
     """
     Selective Attention Locking (SAL) configuration.
+    """
+
+    labels: typing.Optional[typing.Dict[str, str]] = pydantic.Field(default=None)
+    """
+    Custom labels in key-value pair format, where the key is the label name and the value is the label value. Enables agents to carry custom business information. These labels are bound to the agent and returned in the `payload` field of all message notification callbacks from the conversational AI engine.
+    """
+
+    rtc: typing.Optional[StartAgentsRequestPropertiesRtc] = pydantic.Field(default=None)
+    """
+    RTC media encryption configuration.
+    """
+
+    filler_words: typing.Optional[StartAgentsRequestPropertiesFillerWords] = pydantic.Field(default=None)
+    """
+    Filler word configuration. Plays filler words while waiting for LLM responses to reduce user anxiety and improve conversation flow.
     """
 
     parameters: typing.Optional[StartAgentsRequestPropertiesParameters] = pydantic.Field(default=None)

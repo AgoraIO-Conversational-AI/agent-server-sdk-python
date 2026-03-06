@@ -7,29 +7,24 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2
 from ..core.unchecked_base_model import UncheckedBaseModel
 
 
-class MicrosoftTtsParams(UncheckedBaseModel):
+class SarvamTtsParams(UncheckedBaseModel):
     """
-    Microsoft Azure TTS configuration parameters.
+    Sarvam TTS configuration parameters.
     """
 
     key: str = pydantic.Field()
     """
-    Microsoft Azure API key
+    Sarvam API subscription key
     """
 
-    region: str = pydantic.Field()
+    speaker: str = pydantic.Field()
     """
-    Azure region (e.g., "eastus")
-    """
-
-    voice_name: str = pydantic.Field()
-    """
-    Voice name (e.g., "en-US-AndrewMultilingualNeural")
+    Voice ID (e.g., anushka, abhilash, karun, hitesh, manisha, vidya, arya)
     """
 
-    sample_rate: typing.Optional[int] = pydantic.Field(default=None)
+    target_language_code: str = pydantic.Field()
     """
-    Audio sampling rate in Hz
+    Target language code (e.g., en-IN)
     """
 
     if IS_PYDANTIC_V2:
