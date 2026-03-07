@@ -75,12 +75,12 @@ async def _debug_response_async(response: httpx.Response) -> None:
 def _create_debug_client(
     *,
     timeout: typing.Optional[float],
-    follow_redirects: bool,
+    follow_redirects: typing.Optional[bool],
 ) -> httpx.Client:
     """Create an httpx.Client with request/response logging hooks."""
     return httpx.Client(
         timeout=timeout or 60.0,
-        follow_redirects=follow_redirects,
+        follow_redirects=follow_redirects if follow_redirects is not None else False,
         event_hooks={"request": [_debug_request], "response": [_debug_response]},
     )
 
@@ -88,12 +88,12 @@ def _create_debug_client(
 def _create_debug_async_client(
     *,
     timeout: typing.Optional[float],
-    follow_redirects: bool,
+    follow_redirects: typing.Optional[bool],
 ) -> httpx.AsyncClient:
     """Create an httpx.AsyncClient with request/response logging hooks."""
     return httpx.AsyncClient(
         timeout=timeout or 60.0,
-        follow_redirects=follow_redirects,
+        follow_redirects=follow_redirects if follow_redirects is not None else False,
         event_hooks={
             "request": [_debug_request_async],
             "response": [_debug_response_async],
