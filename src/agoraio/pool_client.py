@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import typing
 
 import httpx
@@ -9,6 +10,13 @@ import httpx
 from .client import Agora as BaseAgora
 from .client import AsyncAgora as BaseAsyncAgora
 from .core.domain import Area, Pool
+
+_AUTH_MODE = typing.Literal["app-credentials", "basic"]
+
+
+def _basic_auth_header(customer_id: str, customer_secret: str) -> str:
+    encoded = base64.b64encode(f"{customer_id}:{customer_secret}".encode()).decode()
+    return f"Basic {encoded}"
 
 
 class Agora(BaseAgora):
@@ -26,28 +34,59 @@ class Agora(BaseAgora):
     area : Area
         The area to use for regional URL selection.
 
-    username : typing.Union[str, typing.Callable[[], str]]
-    password : typing.Union[str, typing.Callable[[], str]]
+    app_id : str
+        Your Agora App ID.
+
+    app_certificate : str
+        Your Agora App Certificate.
+
+    customer_id : typing.Optional[str]
+        Customer ID for Basic auth. When provided together with
+        ``customer_secret``, the client uses
+        ``Authorization: Basic base64(customer_id:customer_secret)``.
+        When omitted the client operates in *app-credentials* mode and
+        auto-generates a ConvoAI token per request.
+
+    customer_secret : typing.Optional[str]
+        Customer secret for Basic auth (required when ``customer_id`` is set).
+
     headers : typing.Optional[typing.Dict[str, str]]
         Additional headers to send with every request.
 
     timeout : typing.Optional[float]
-        The timeout to be used, in seconds, for requests. By default the timeout is 60 seconds, unless a custom httpx client is used, in which case this default is not enforced.
+        The timeout to be used, in seconds, for requests. By default the
+        timeout is 60 seconds, unless a custom httpx client is used, in which
+        case this default is not enforced.
 
     follow_redirects : typing.Optional[bool]
-        Whether the default httpx client follows redirects or not, this is irrelevant if a custom httpx client is passed in.
+        Whether the default httpx client follows redirects or not, this is
+        irrelevant if a custom httpx client is passed in.
 
     httpx_client : typing.Optional[httpx.Client]
-        The httpx client to use for making requests, a preconfigured client is used by default, however this is useful should you want to pass in any custom httpx configuration.
+        The httpx client to use for making requests, a preconfigured client is
+        used by default, however this is useful should you want to pass in any
+        custom httpx configuration.
 
     Examples
     --------
+    # App-credentials mode (auto token generation per request)
     from agoraio import Agora, Area
 
     client = Agora(
         area=Area.US,
-        username="YOUR_USERNAME",
-        password="YOUR_PASSWORD",
+        app_id="YOUR_APP_ID",
+        app_certificate="YOUR_APP_CERTIFICATE",
+    )
+
+    # Basic auth mode
+    from agoraio import Agora, Area
+
+    client = Agora(
+        area=Area.US,
+        app_id="YOUR_APP_ID",
+        app_certificate="YOUR_APP_CERTIFICATE",
+        customer_id="YOUR_CUSTOMER_ID",
+        customer_secret="YOUR_CUSTOMER_SECRET",
     )
     """
 
@@ -55,18 +94,33 @@ class Agora(BaseAgora):
         self,
         *,
         area: Area,
-        username: typing.Union[str, typing.Callable[[], str]],
-        password: typing.Union[str, typing.Callable[[], str]],
+        app_id: str,
+        app_certificate: str,
+        customer_id: typing.Optional[str] = None,
+        customer_secret: typing.Optional[str] = None,
         headers: typing.Optional[typing.Dict[str, str]] = None,
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.Client] = None,
     ):
         self._pool = Pool(area)
+        self.app_id = app_id
+        self.app_certificate = app_certificate
+
+        if customer_id is not None:
+            if customer_secret is None:
+                raise ValueError("customer_secret is required when customer_id is provided")
+            self.auth_mode: _AUTH_MODE = "basic"
+            authorization = _basic_auth_header(customer_id, customer_secret)
+        else:
+            self.auth_mode = "app-credentials"
+            authorization = ""
+
         super().__init__(
             base_url=self._pool.get_current_url(),
-            username=username,
-            password=password,
+            authorization=authorization,
+            username="",
+            password="",
             headers=headers,
             timeout=timeout,
             follow_redirects=follow_redirects,
@@ -125,28 +179,59 @@ class AsyncAgora(BaseAsyncAgora):
     area : Area
         The area to use for regional URL selection.
 
-    username : typing.Union[str, typing.Callable[[], str]]
-    password : typing.Union[str, typing.Callable[[], str]]
+    app_id : str
+        Your Agora App ID.
+
+    app_certificate : str
+        Your Agora App Certificate.
+
+    customer_id : typing.Optional[str]
+        Customer ID for Basic auth. When provided together with
+        ``customer_secret``, the client uses
+        ``Authorization: Basic base64(customer_id:customer_secret)``.
+        When omitted the client operates in *app-credentials* mode and
+        auto-generates a ConvoAI token per request.
+
+    customer_secret : typing.Optional[str]
+        Customer secret for Basic auth (required when ``customer_id`` is set).
+
     headers : typing.Optional[typing.Dict[str, str]]
         Additional headers to send with every request.
 
     timeout : typing.Optional[float]
-        The timeout to be used, in seconds, for requests. By default the timeout is 60 seconds, unless a custom httpx client is used, in which case this default is not enforced.
+        The timeout to be used, in seconds, for requests. By default the
+        timeout is 60 seconds, unless a custom httpx client is used, in which
+        case this default is not enforced.
 
     follow_redirects : typing.Optional[bool]
-        Whether the default httpx client follows redirects or not, this is irrelevant if a custom httpx client is passed in.
+        Whether the default httpx client follows redirects or not, this is
+        irrelevant if a custom httpx client is passed in.
 
     httpx_client : typing.Optional[httpx.AsyncClient]
-        The httpx client to use for making requests, a preconfigured client is used by default, however this is useful should you want to pass in any custom httpx configuration.
+        The httpx client to use for making requests, a preconfigured client is
+        used by default, however this is useful should you want to pass in any
+        custom httpx configuration.
 
     Examples
     --------
+    # App-credentials mode (auto token generation per request)
     from agoraio import AsyncAgora, Area
 
     client = AsyncAgora(
         area=Area.US,
-        username="YOUR_USERNAME",
-        password="YOUR_PASSWORD",
+        app_id="YOUR_APP_ID",
+        app_certificate="YOUR_APP_CERTIFICATE",
+    )
+
+    # Basic auth mode
+    from agoraio import AsyncAgora, Area
+
+    client = AsyncAgora(
+        area=Area.US,
+        app_id="YOUR_APP_ID",
+        app_certificate="YOUR_APP_CERTIFICATE",
+        customer_id="YOUR_CUSTOMER_ID",
+        customer_secret="YOUR_CUSTOMER_SECRET",
     )
     """
 
@@ -154,18 +239,33 @@ class AsyncAgora(BaseAsyncAgora):
         self,
         *,
         area: Area,
-        username: typing.Union[str, typing.Callable[[], str]],
-        password: typing.Union[str, typing.Callable[[], str]],
+        app_id: str,
+        app_certificate: str,
+        customer_id: typing.Optional[str] = None,
+        customer_secret: typing.Optional[str] = None,
         headers: typing.Optional[typing.Dict[str, str]] = None,
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.AsyncClient] = None,
     ):
         self._pool = Pool(area)
+        self.app_id = app_id
+        self.app_certificate = app_certificate
+
+        if customer_id is not None:
+            if customer_secret is None:
+                raise ValueError("customer_secret is required when customer_id is provided")
+            self.auth_mode: _AUTH_MODE = "basic"
+            authorization = _basic_auth_header(customer_id, customer_secret)
+        else:
+            self.auth_mode = "app-credentials"
+            authorization = ""
+
         super().__init__(
             base_url=self._pool.get_current_url(),
-            username=username,
-            password=password,
+            authorization=authorization,
+            username="",
+            password="",
             headers=headers,
             timeout=timeout,
             follow_redirects=follow_redirects,

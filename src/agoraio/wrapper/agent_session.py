@@ -3,6 +3,7 @@ import warnings
 
 from ..core.api_error import ApiError
 from .agent import Agent
+from .token import generate_convo_ai_token
 
 
 class AgentSessionOptions(typing.TypedDict, total=False):
@@ -33,7 +34,7 @@ class AgentSession:
     >>> from agoraio import Agora, Area
     >>> from agoraio.wrapper import Agent
     >>>
-    >>> client = Agora(area=Area.US, username="...", password="...")
+    >>> client = Agora(area=Area.US, app_id="...", app_certificate="...")
     >>> agent = Agent(name="assistant", instructions="You are a helpful voice assistant.")
     >>> from agoraio.wrapper.vendors import OpenAI, ElevenLabsTTS
     >>> agent = agent.with_llm(OpenAI(api_key="...", model="gpt-4")).with_tts(ElevenLabsTTS(key="...", model_id="...", voice_id="..."))
@@ -97,6 +98,36 @@ class AgentSession:
         """
         return self._client.agents
 
+    def _convo_ai_headers(self) -> typing.Optional[typing.Dict[str, str]]:
+        """Return per-request auth headers when client is in app-credentials mode.
+
+        In app-credentials mode a fresh ConvoAI token (RTC + RTM) is generated
+        for every request and returned as ``Authorization: agora token=<token>``.
+        In basic-auth mode this returns ``None`` (the client-level header is used).
+        """
+        if getattr(self._client, "auth_mode", None) != "app-credentials":
+            return None
+        app_id: str = getattr(self._client, "app_id", self._app_id)
+        app_certificate: typing.Optional[str] = getattr(
+            self._client, "app_certificate", self._app_certificate
+        )
+        if not app_certificate:
+            raise RuntimeError("app_certificate is required for app-credentials auth mode")
+        token = generate_convo_ai_token(
+            app_id=app_id,
+            app_certificate=app_certificate,
+            channel_name=self._channel,
+            account=self._agent_uid,
+        )
+        return {"Authorization": f"agora token={token}"}
+
+    def _request_options(self) -> typing.Optional[typing.Dict[str, typing.Any]]:
+        """Build request_options dict with per-request auth headers if needed."""
+        headers = self._convo_ai_headers()
+        if headers is None:
+            return None
+        return {"additional_headers": headers}
+
     def _validate_avatar_config(self) -> None:
         avatar_sr = self._agent._avatar_required_sample_rate
         tts_sr = self._agent._tts_sample_rate
@@ -155,6 +186,7 @@ class AgentSession:
                 self._app_id,
                 name=self._name,
                 properties=properties,
+                request_options=self._request_options(),
             )
 
             self._agent_id = response.agent_id if hasattr(response, "agent_id") else None
@@ -180,7 +212,9 @@ class AgentSession:
         self._status = "stopping"
 
         try:
-            self._client.agents.stop(self._app_id, self._agent_id)
+            self._client.agents.stop(
+                self._app_id, self._agent_id, request_options=self._request_options()
+            )
             self._status = "stopped"
             self._emit("stopped", {"agent_id": self._agent_id})
         except ApiError as e:
@@ -219,7 +253,9 @@ class AgentSession:
         if interruptable is not None:
             kwargs["interruptable"] = interruptable
 
-        self._client.agents.speak(self._app_id, self._agent_id, **kwargs)
+        self._client.agents.speak(
+            self._app_id, self._agent_id, request_options=self._request_options(), **kwargs
+        )
 
     def interrupt(self) -> None:
         """Interrupt the agent while speaking or thinking."""
@@ -228,7 +264,9 @@ class AgentSession:
         if not self._agent_id:
             raise RuntimeError("No agent ID available")
 
-        self._client.agents.interrupt(self._app_id, self._agent_id)
+        self._client.agents.interrupt(
+            self._app_id, self._agent_id, request_options=self._request_options()
+        )
 
     def update(self, properties: typing.Any) -> None:
         """Update the agent configuration at runtime.
@@ -243,21 +281,28 @@ class AgentSession:
         if not self._agent_id:
             raise RuntimeError("No agent ID available")
 
-        self._client.agents.update(self._app_id, self._agent_id, properties=properties)
+        self._client.agents.update(
+            self._app_id, self._agent_id, properties=properties,
+            request_options=self._request_options(),
+        )
 
     def get_history(self) -> typing.Any:
         """Get the conversation history."""
         if not self._agent_id:
             raise RuntimeError("No agent ID available")
 
-        return self._client.agents.get_history(self._app_id, self._agent_id)
+        return self._client.agents.get_history(
+            self._app_id, self._agent_id, request_options=self._request_options()
+        )
 
     def get_info(self) -> typing.Any:
         """Get the current session info."""
         if not self._agent_id:
             raise RuntimeError("No agent ID available")
 
-        return self._client.agents.get(self._app_id, self._agent_id)
+        return self._client.agents.get(
+            self._app_id, self._agent_id, request_options=self._request_options()
+        )
 
     def on(self, event: str, handler: typing.Callable[..., None]) -> None:
         """Register an event handler.
@@ -297,7 +342,7 @@ class AsyncAgentSession:
     >>> from agoraio import AsyncAgora, Area
     >>> from agoraio.wrapper import Agent
     >>>
-    >>> client = AsyncAgora(area=Area.US, username="...", password="...")
+    >>> client = AsyncAgora(area=Area.US, app_id="...", app_certificate="...")
     >>> agent = Agent(name="assistant", instructions="You are helpful.")
     >>> from agoraio.wrapper.vendors import OpenAI, ElevenLabsTTS
     >>> agent = agent.with_llm(OpenAI(api_key="...", model="gpt-4")).with_tts(ElevenLabsTTS(key="...", model_id="...", voice_id="..."))
@@ -357,6 +402,31 @@ class AsyncAgentSession:
         """Direct access to the underlying Fern-generated AsyncAgentsClient."""
         return self._client.agents
 
+    def _convo_ai_headers(self) -> typing.Optional[typing.Dict[str, str]]:
+        """Return per-request auth headers when client is in app-credentials mode."""
+        if getattr(self._client, "auth_mode", None) != "app-credentials":
+            return None
+        app_id: str = getattr(self._client, "app_id", self._app_id)
+        app_certificate: typing.Optional[str] = getattr(
+            self._client, "app_certificate", self._app_certificate
+        )
+        if not app_certificate:
+            raise RuntimeError("app_certificate is required for app-credentials auth mode")
+        token = generate_convo_ai_token(
+            app_id=app_id,
+            app_certificate=app_certificate,
+            channel_name=self._channel,
+            account=self._agent_uid,
+        )
+        return {"Authorization": f"agora token={token}"}
+
+    def _request_options(self) -> typing.Optional[typing.Dict[str, typing.Any]]:
+        """Build request_options dict with per-request auth headers if needed."""
+        headers = self._convo_ai_headers()
+        if headers is None:
+            return None
+        return {"additional_headers": headers}
+
     def _validate_avatar_config(self) -> None:
         avatar_sr = self._agent._avatar_required_sample_rate
         tts_sr = self._agent._tts_sample_rate
@@ -408,6 +478,7 @@ class AsyncAgentSession:
                 self._app_id,
                 name=self._name,
                 properties=properties,
+                request_options=self._request_options(),
             )
 
             self._agent_id = response.agent_id if hasattr(response, "agent_id") else None
@@ -429,7 +500,9 @@ class AsyncAgentSession:
         self._status = "stopping"
 
         try:
-            await self._client.agents.stop(self._app_id, self._agent_id)
+            await self._client.agents.stop(
+                self._app_id, self._agent_id, request_options=self._request_options()
+            )
             self._status = "stopped"
             self._emit("stopped", {"agent_id": self._agent_id})
         except ApiError as e:
@@ -458,7 +531,9 @@ class AsyncAgentSession:
         if interruptable is not None:
             kwargs["interruptable"] = interruptable
 
-        await self._client.agents.speak(self._app_id, self._agent_id, **kwargs)
+        await self._client.agents.speak(
+            self._app_id, self._agent_id, request_options=self._request_options(), **kwargs
+        )
 
     async def interrupt(self) -> None:
         """Interrupt the agent while speaking or thinking (async)."""
@@ -467,7 +542,9 @@ class AsyncAgentSession:
         if not self._agent_id:
             raise RuntimeError("No agent ID available")
 
-        await self._client.agents.interrupt(self._app_id, self._agent_id)
+        await self._client.agents.interrupt(
+            self._app_id, self._agent_id, request_options=self._request_options()
+        )
 
     async def update(self, properties: typing.Any) -> None:
         """Update the agent configuration at runtime (async)."""
@@ -476,21 +553,28 @@ class AsyncAgentSession:
         if not self._agent_id:
             raise RuntimeError("No agent ID available")
 
-        await self._client.agents.update(self._app_id, self._agent_id, properties=properties)
+        await self._client.agents.update(
+            self._app_id, self._agent_id, properties=properties,
+            request_options=self._request_options(),
+        )
 
     async def get_history(self) -> typing.Any:
         """Get the conversation history (async)."""
         if not self._agent_id:
             raise RuntimeError("No agent ID available")
 
-        return await self._client.agents.get_history(self._app_id, self._agent_id)
+        return await self._client.agents.get_history(
+            self._app_id, self._agent_id, request_options=self._request_options()
+        )
 
     async def get_info(self) -> typing.Any:
         """Get the current session info (async)."""
         if not self._agent_id:
             raise RuntimeError("No agent ID available")
 
-        return await self._client.agents.get(self._app_id, self._agent_id)
+        return await self._client.agents.get(
+            self._app_id, self._agent_id, request_options=self._request_options()
+        )
 
     def on(self, event: str, handler: typing.Callable[..., None]) -> None:
         """Register an event handler."""

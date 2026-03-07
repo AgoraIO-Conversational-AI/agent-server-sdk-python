@@ -1,6 +1,6 @@
 from .agent import Agent
 from .agent_session import AgentSession, AgentSessionOptions
-from .token import GenerateTokenOptions, generate_rtc_token
+from .token import GenerateConvoAITokenOptions, GenerateTokenOptions, generate_convo_ai_token, generate_rtc_token
 from .vendors import (
     AkoolAvatar,
     AmazonSTT,
@@ -23,7 +23,6 @@ from .vendors import (
     Gemini,
     GoogleSTT,
     GoogleTTS,
-    GroqTTS,
     HeyGenAvatar,
     HumeAITTS,
     MicrosoftSampleRate,
@@ -39,7 +38,6 @@ from .vendors import (
     SampleRate,
     SarvamSTT,
     SarvamTTS,
-    SonioxSTT,
     SpeechmaticsSTT,
     VertexAI,
 )
@@ -50,6 +48,8 @@ __all__ = [
     "AgentSessionOptions",
     "generate_rtc_token",
     "GenerateTokenOptions",
+    "generate_convo_ai_token",
+    "GenerateConvoAITokenOptions",
     "BaseLLM",
     "BaseTTS",
     "BaseSTT",
@@ -73,7 +73,6 @@ __all__ = [
     "HumeAITTS",
     "RimeTTS",
     "FishAudioTTS",
-    "GroqTTS",
     "MiniMaxTTS",
     "SarvamTTS",
     "SpeechmaticsSTT",
@@ -84,7 +83,6 @@ __all__ = [
     "AmazonSTT",
     "AssemblyAISTT",
     "AresSTT",
-    "SonioxSTT",
     "SarvamSTT",
     "OpenAIRealtime",
     "VertexAI",
