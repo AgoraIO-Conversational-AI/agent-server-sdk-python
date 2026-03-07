@@ -31,12 +31,12 @@ class AgentSession:
 
     Examples
     --------
-    >>> from agoraio import Agora, Area
-    >>> from agoraio.wrapper import Agent
+    >>> from agora_agent import Agora, Area
+    >>> from agora_agent.wrapper import Agent
     >>>
     >>> client = Agora(area=Area.US, app_id="...", app_certificate="...")
     >>> agent = Agent(name="assistant", instructions="You are a helpful voice assistant.")
-    >>> from agoraio.wrapper.vendors import OpenAI, ElevenLabsTTS
+    >>> from agora_agent.wrapper.vendors import OpenAI, ElevenLabsTTS
     >>> agent = agent.with_llm(OpenAI(api_key="...", model="gpt-4")).with_tts(ElevenLabsTTS(key="...", model_id="...", voice_id="..."))
     >>> session = agent.create_session(client, channel="room-123", agent_uid="1", remote_uids=["100"])
     >>> agent_id = session.start()
@@ -339,12 +339,12 @@ class AsyncAgentSession:
 
     Examples
     --------
-    >>> from agoraio import AsyncAgora, Area
-    >>> from agoraio.wrapper import Agent
+    >>> from agora_agent import AsyncAgora, Area
+    >>> from agora_agent.wrapper import Agent
     >>>
     >>> client = AsyncAgora(area=Area.US, app_id="...", app_certificate="...")
     >>> agent = Agent(name="assistant", instructions="You are helpful.")
-    >>> from agoraio.wrapper.vendors import OpenAI, ElevenLabsTTS
+    >>> from agora_agent.wrapper.vendors import OpenAI, ElevenLabsTTS
     >>> agent = agent.with_llm(OpenAI(api_key="...", model="gpt-4")).with_tts(ElevenLabsTTS(key="...", model_id="...", voice_id="..."))
     >>> session = AsyncAgentSession(client=client, agent=agent, ...)
     >>> agent_id = await session.start()

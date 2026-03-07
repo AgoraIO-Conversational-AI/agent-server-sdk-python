@@ -26,8 +26,8 @@ class Agent:
 
     Examples
     --------
-    >>> from agoraio.wrapper import Agent
-    >>> from agoraio.wrapper.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT
+    >>> from agora_agent.wrapper import Agent
+    >>> from agora_agent.wrapper.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT
     >>>
     >>> agent = Agent(instructions="You are a helpful voice assistant.")
     >>> agent = (

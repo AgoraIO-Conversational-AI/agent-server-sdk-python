@@ -4,7 +4,7 @@
 
 import typing_extensions
 
-from agoraio.core.serialization import FieldMetadata
+from agora_agent.core.serialization import FieldMetadata
 
 
 class CircleParams(typing_extensions.TypedDict):

@@ -27,7 +27,7 @@ classifiers = [
     "Typing :: Typed"
 ]
 packages = [
-    { include = "agoraio", from = "src"}
+    { include = "agora_agent", from = "src"}
 ]
 
 [tool.poetry.urls]

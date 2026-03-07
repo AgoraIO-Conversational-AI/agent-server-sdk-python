@@ -109,8 +109,8 @@ client.agents.start(
 Instantiate and use the client with the following:
 
 ```python
-from agoraio import Agora, MicrosoftTtsParams, Tts_Microsoft
-from agoraio.agents import (
+from agora_agent import Agora, MicrosoftTtsParams, Tts_Microsoft
+from agora_agent.agents import (
     StartAgentsRequestProperties,
     StartAgentsRequestPropertiesAsr,
     StartAgentsRequestPropertiesLlm,
@@ -162,8 +162,8 @@ The SDK also exports an `async` client so that you can make non-blocking calls t
 ```python
 import asyncio
 
-from agoraio import AsyncAgora, MicrosoftTtsParams, Tts_Microsoft
-from agoraio.agents import (
+from agora_agent import AsyncAgora, MicrosoftTtsParams, Tts_Microsoft
+from agora_agent.agents import (
     StartAgentsRequestProperties,
     StartAgentsRequestPropertiesAsr,
     StartAgentsRequestPropertiesLlm,
@@ -220,7 +220,7 @@ When the API returns a non-success status code (4xx or 5xx response), a subclass
 will be thrown.
 
 ```python
-from agoraio.core.api_error import ApiError
+from agora_agent.core.api_error import ApiError
 
 try:
     client.agents.start(...)
@@ -234,7 +234,7 @@ except ApiError as e:
 Paginated requests will return a `SyncPager` or `AsyncPager`, which can be used as generators for the underlying object.
 
 ```python
-from agoraio import Agora
+from agora_agent import Agora
 
 client = Agora(
     authorization="YOUR_AUTHORIZATION",
@@ -268,7 +268,7 @@ The SDK provides access to raw response data, including headers, through the `.w
 The `.with_raw_response` property returns a "raw" client that can be used to access the `.headers` and `.data` attributes.
 
 ```python
-from agoraio import Agora
+from agora_agent import Agora
 
 client = Agora(
     ...,
@@ -312,7 +312,7 @@ The SDK defaults to a 60 second timeout. You can configure this with a timeout o
 
 ```python
 
-from agoraio import Agora
+from agora_agent import Agora
 
 client = Agora(
     ...,
@@ -333,7 +333,7 @@ and transports.
 
 ```python
 import httpx
-from agoraio import Agora
+from agora_agent import Agora
 
 client = Agora(
     ...,

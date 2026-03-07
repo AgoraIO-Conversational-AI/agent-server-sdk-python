@@ -70,7 +70,7 @@ class Agora(BaseAgora):
     Examples
     --------
     # App-credentials mode (auto token generation per request)
-    from agoraio import Agora, Area
+    from agora_agent import Agora, Area
 
     client = Agora(
         area=Area.US,
@@ -79,7 +79,7 @@ class Agora(BaseAgora):
     )
 
     # Basic auth mode
-    from agoraio import Agora, Area
+    from agora_agent import Agora, Area
 
     client = Agora(
         area=Area.US,
@@ -215,7 +215,7 @@ class AsyncAgora(BaseAsyncAgora):
     Examples
     --------
     # App-credentials mode (auto token generation per request)
-    from agoraio import AsyncAgora, Area
+    from agora_agent import AsyncAgora, Area
 
     client = AsyncAgora(
         area=Area.US,
@@ -224,7 +224,7 @@ class AsyncAgora(BaseAsyncAgora):
     )
 
     # Basic auth mode
-    from agoraio import AsyncAgora, Area
+    from agora_agent import AsyncAgora, Area
 
     client = AsyncAgora(
         area=Area.US,

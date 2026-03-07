@@ -86,7 +86,7 @@ class TelephonyClient:
 
         Examples
         --------
-        from agoraio import Agora
+        from agora_agent import Agora
 
         client = Agora(
             authorization="YOUR_AUTHORIZATION",
@@ -157,8 +157,8 @@ class TelephonyClient:
 
         Examples
         --------
-        from agoraio import Agora
-        from agoraio.telephony import (
+        from agora_agent import Agora
+        from agora_agent.telephony import (
             CallTelephonyRequestProperties,
             CallTelephonyRequestSip,
         )
@@ -215,7 +215,7 @@ class TelephonyClient:
 
         Examples
         --------
-        from agoraio import Agora
+        from agora_agent import Agora
 
         client = Agora(
             authorization="YOUR_AUTHORIZATION",
@@ -254,7 +254,7 @@ class TelephonyClient:
 
         Examples
         --------
-        from agoraio import Agora
+        from agora_agent import Agora
 
         client = Agora(
             authorization="YOUR_AUTHORIZATION",
@@ -339,7 +339,7 @@ class AsyncTelephonyClient:
         --------
         import asyncio
 
-        from agoraio import AsyncAgora
+        from agora_agent import AsyncAgora
 
         client = AsyncAgora(
             authorization="YOUR_AUTHORIZATION",
@@ -419,8 +419,8 @@ class AsyncTelephonyClient:
         --------
         import asyncio
 
-        from agoraio import AsyncAgora
-        from agoraio.telephony import (
+        from agora_agent import AsyncAgora
+        from agora_agent.telephony import (
             CallTelephonyRequestProperties,
             CallTelephonyRequestSip,
         )
@@ -485,7 +485,7 @@ class AsyncTelephonyClient:
         --------
         import asyncio
 
-        from agoraio import AsyncAgora
+        from agora_agent import AsyncAgora
 
         client = AsyncAgora(
             authorization="YOUR_AUTHORIZATION",
@@ -532,7 +532,7 @@ class AsyncTelephonyClient:
         --------
         import asyncio
 
-        from agoraio import AsyncAgora
+        from agora_agent import AsyncAgora
 
         client = AsyncAgora(
             authorization="YOUR_AUTHORIZATION",
