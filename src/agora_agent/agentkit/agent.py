@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import time
 import typing
 
 if typing.TYPE_CHECKING:
-    from .agent_session import AgentSession
+    from .agent_session import AgentSession, AsyncAgentSession
 
 from ..agents.types.start_agents_request_properties import StartAgentsRequestProperties
 from ..agents.types.start_agents_request_properties_turn_detection import StartAgentsRequestPropertiesTurnDetection
@@ -26,8 +27,8 @@ class Agent:
 
     Examples
     --------
-    >>> from agora_agent.wrapper import Agent
-    >>> from agora_agent.wrapper.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT
+    >>> from agora_agent.agentkit import Agent
+    >>> from agora_agent.agentkit.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT
     >>>
     >>> agent = Agent(instructions="You are a helpful voice assistant.")
     >>> agent = (
@@ -180,8 +181,41 @@ class Agent:
     ) -> "AgentSession":
         from .agent_session import AgentSession
 
-        session_name = name or self._name or f"agent-{int(typing.cast(typing.Any, __import__('time')).time())}"
+        session_name = name or self._name or f"agent-{int(time.time())}"
         return AgentSession(
+            client=client,
+            agent=self,
+            app_id=client.app_id if hasattr(client, "app_id") else "",
+            app_certificate=client.app_certificate if hasattr(client, "app_certificate") else None,
+            name=session_name,
+            channel=channel,
+            token=token,
+            agent_uid=agent_uid,
+            remote_uids=remote_uids,
+            idle_timeout=idle_timeout,
+            enable_string_uid=enable_string_uid,
+        )
+
+    def create_async_session(
+        self,
+        client: typing.Any,
+        channel: str,
+        agent_uid: str,
+        remote_uids: typing.List[str],
+        name: typing.Optional[str] = None,
+        token: typing.Optional[str] = None,
+        idle_timeout: typing.Optional[int] = None,
+        enable_string_uid: typing.Optional[bool] = None,
+    ) -> "AsyncAgentSession":
+        """Create an async session for use with :class:`~agora_agent.AsyncAgora`.
+
+        Equivalent to :meth:`create_session` but returns an
+        :class:`~agora_agent.agentkit.AsyncAgentSession`.
+        """
+        from .agent_session import AsyncAgentSession
+
+        session_name = name or self._name or f"agent-{int(time.time())}"
+        return AsyncAgentSession(
             client=client,
             agent=self,
             app_id=client.app_id if hasattr(client, "app_id") else "",
@@ -258,14 +292,16 @@ class Agent:
             raise ValueError("LLM configuration is required. Use with_llm() to set it.")
 
         llm_config = dict(self._llm)
+        # Agent-level fields take priority over the vendor's defaults.
+        # This matches the TS SDK where agent-level values override vendor config.
         if self._instructions:
             llm_config["system_messages"] = [{"role": "system", "content": self._instructions}]
         if self._greeting:
-            llm_config.setdefault("greeting_message", self._greeting)
+            llm_config["greeting_message"] = self._greeting
         if self._failure_message:
-            llm_config.setdefault("failure_message", self._failure_message)
+            llm_config["failure_message"] = self._failure_message
         if self._max_history is not None:
-            llm_config.setdefault("max_history", self._max_history)
+            llm_config["max_history"] = self._max_history
 
         base_kwargs["llm"] = llm_config
         base_kwargs["tts"] = self._tts

@@ -6,36 +6,36 @@ import typing
 from importlib import import_module
 
 if typing.TYPE_CHECKING:
-    from . import agents, core, phone_numbers, telephony, wrapper
+    from . import agents, agentkit, core, phone_numbers, telephony
     from .core.domain import Area, Pool, create_pool
     from .pool_client import Agora, AsyncAgora
     from .version import __version__
-    from .wrapper import (
+    from .agentkit import (
         Agent,
         AgentSession,
         AgentSessionOptions,
         generate_rtc_token,
         GenerateTokenOptions,
     )
-    from .wrapper.agent_session import AsyncAgentSession
+    from .agentkit.agent_session import AsyncAgentSession
 _dynamic_imports: typing.Dict[str, str] = {
     "Agora": ".pool_client",
-    "Agent": ".wrapper",
-    "AgentSession": ".wrapper",
-    "AgentSessionOptions": ".wrapper",
+    "Agent": ".agentkit",
+    "AgentSession": ".agentkit",
+    "AgentSessionOptions": ".agentkit",
     "Area": ".core.domain",
-    "AsyncAgentSession": ".wrapper.agent_session",
+    "AsyncAgentSession": ".agentkit.agent_session",
     "AsyncAgora": ".pool_client",
-    "GenerateTokenOptions": ".wrapper",
+    "GenerateTokenOptions": ".agentkit",
     "Pool": ".core.domain",
     "__version__": ".version",
+    "agentkit": ".agentkit",
     "agents": ".agents",
     "core": ".core",
     "create_pool": ".core.domain",
-    "generate_rtc_token": ".wrapper",
+    "generate_rtc_token": ".agentkit",
     "phone_numbers": ".phone_numbers",
     "telephony": ".telephony",
-    "wrapper": ".wrapper",
 }
 
 
@@ -71,11 +71,11 @@ __all__ = [
     "GenerateTokenOptions",
     "Pool",
     "__version__",
+    "agentkit",
     "agents",
     "core",
     "create_pool",
     "generate_rtc_token",
     "phone_numbers",
     "telephony",
-    "wrapper",
 ]

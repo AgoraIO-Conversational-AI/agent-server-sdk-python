@@ -1,5 +1,5 @@
 from .agent import Agent
-from .agent_session import AgentSession, AgentSessionOptions
+from .agent_session import AgentSession, AgentSessionOptions, AsyncAgentSession
 from .token import GenerateConvoAITokenOptions, GenerateTokenOptions, generate_convo_ai_token, generate_rtc_token
 from .vendors import (
     AkoolAvatar,
@@ -45,6 +45,7 @@ from .vendors import (
 __all__ = [
     "Agent",
     "AgentSession",
+    "AsyncAgentSession",
     "AgentSessionOptions",
     "generate_rtc_token",
     "GenerateTokenOptions",

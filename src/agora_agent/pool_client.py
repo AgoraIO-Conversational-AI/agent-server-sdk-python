@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import logging
 import typing
 
 import httpx
@@ -12,6 +13,92 @@ from .client import AsyncAgora as BaseAsyncAgora
 from .core.domain import Area, Pool
 
 _AUTH_MODE = typing.Literal["app-credentials", "basic"]
+_DEBUG_LOGGER = logging.getLogger("agora_agent")
+
+
+def _redact_headers(headers: typing.Mapping[str, str]) -> typing.Dict[str, str]:
+    """Redact sensitive header values for debug logging."""
+    out: typing.Dict[str, str] = {}
+    for k, v in headers.items():
+        kl = k.lower()
+        if kl == "authorization":
+            if v.startswith("Basic "):
+                out[k] = "Basic ***"
+            elif v.startswith("agora token="):
+                out[k] = "agora token=***"
+            else:
+                out[k] = "***"
+        else:
+            out[k] = v
+    return out
+
+
+def _debug_request(request: httpx.Request) -> None:
+    """Log HTTP request when debug is enabled."""
+    headers = _redact_headers(request.headers)
+    body_preview = ""
+    if request.content:
+        try:
+            preview = request.content[:500] if len(request.content) > 500 else request.content
+            body_preview = f" body={preview!r}..."
+        except Exception:
+            body_preview = " body=<unable to read>"
+    _DEBUG_LOGGER.debug(
+        "HTTP request: %s %s headers=%s%s",
+        request.method,
+        request.url,
+        headers,
+        body_preview,
+    )
+
+
+def _debug_response(response: httpx.Response) -> None:
+    """Log HTTP response when debug is enabled."""
+    headers = _redact_headers(dict(response.headers))
+    _DEBUG_LOGGER.debug(
+        "HTTP response: %s %s status=%d headers=%s",
+        response.request.method,
+        response.request.url,
+        response.status_code,
+        headers,
+    )
+
+
+async def _debug_request_async(request: httpx.Request) -> None:
+    _debug_request(request)
+
+
+async def _debug_response_async(response: httpx.Response) -> None:
+    _debug_response(response)
+
+
+def _create_debug_client(
+    *,
+    timeout: typing.Optional[float],
+    follow_redirects: bool,
+) -> httpx.Client:
+    """Create an httpx.Client with request/response logging hooks."""
+    return httpx.Client(
+        timeout=timeout or 60.0,
+        follow_redirects=follow_redirects,
+        event_hooks={"request": [_debug_request], "response": [_debug_response]},
+    )
+
+
+def _create_debug_async_client(
+    *,
+    timeout: typing.Optional[float],
+    follow_redirects: bool,
+) -> httpx.AsyncClient:
+    """Create an httpx.AsyncClient with request/response logging hooks."""
+    return httpx.AsyncClient(
+        timeout=timeout or 60.0,
+        follow_redirects=follow_redirects,
+        event_hooks={
+            "request": [_debug_request_async],
+            "response": [_debug_response_async],
+        },
+    )
 
 
 def _basic_auth_header(customer_id: str, customer_secret: str) -> str:
@@ -67,6 +154,13 @@ class Agora(BaseAgora):
         used by default, however this is useful should you want to pass in any
         custom httpx configuration.
 
+    debug : bool
+        If True, log HTTP requests and responses (method, URL, headers, status).
+        Uses the ``agora_agent`` logger; enable with
+        ``logging.getLogger("agora_agent").setLevel(logging.DEBUG)`` or pass
+        ``debug=True`` which configures the logger automatically. Ignored when
+        ``httpx_client`` is provided.
+
     Examples
     --------
     # App-credentials mode (auto token generation per request)
@@ -102,6 +196,7 @@ class Agora(BaseAgora):
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.Client] = None,
+        debug: bool = False,
     ):
         self._pool = Pool(area)
         self.app_id = app_id
@@ -115,6 +210,17 @@ class Agora(BaseAgora):
         else:
             self.auth_mode = "app-credentials"
             authorization = ""
+
+        if debug and httpx_client is None:
+            _DEBUG_LOGGER.setLevel(logging.DEBUG)
+            if not _DEBUG_LOGGER.handlers:
+                _h = logging.StreamHandler()
+                _h.setFormatter(logging.Formatter("%(levelname)s [%(name)s] %(message)s"))
+                _DEBUG_LOGGER.addHandler(_h)
+            httpx_client = _create_debug_client(
+                timeout=timeout,
+                follow_redirects=follow_redirects,
+            )
 
         super().__init__(
             base_url=self._pool.get_current_url(),
@@ -212,6 +318,9 @@ class AsyncAgora(BaseAsyncAgora):
         used by default, however this is useful should you want to pass in any
         custom httpx configuration.
 
+    debug : bool
+        If True, log HTTP requests and responses. See ``Agora`` docstring.
+
     Examples
     --------
     # App-credentials mode (auto token generation per request)
@@ -247,6 +356,7 @@ class AsyncAgora(BaseAsyncAgora):
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
         httpx_client: typing.Optional[httpx.AsyncClient] = None,
+        debug: bool = False,
     ):
         self._pool = Pool(area)
         self.app_id = app_id
@@ -260,6 +370,17 @@ class AsyncAgora(BaseAsyncAgora):
         else:
             self.auth_mode = "app-credentials"
             authorization = ""
+
+        if debug and httpx_client is None:
+            _DEBUG_LOGGER.setLevel(logging.DEBUG)
+            if not _DEBUG_LOGGER.handlers:
+                _h = logging.StreamHandler()
+                _h.setFormatter(logging.Formatter("%(levelname)s [%(name)s] %(message)s"))
+                _DEBUG_LOGGER.addHandler(_h)
+            httpx_client = _create_debug_async_client(
+                timeout=timeout,
+                follow_redirects=follow_redirects,
+            )
 
         super().__init__(
             base_url=self._pool.get_current_url(),

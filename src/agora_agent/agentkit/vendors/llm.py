@@ -27,10 +27,22 @@ class OpenAI(BaseLLM):
         self.options = OpenAIOptions(**kwargs)
 
     def to_config(self) -> Dict[str, Any]:
+        # model is the default; explicit params entries extend/override it.
+        # This matches the TS SDK behaviour: { model, ...params }.
+        params: Dict[str, Any] = {"model": self.options.model, **(self.options.params or {})}
+
+        # Named fields take precedence over anything in the generic params dict.
+        if self.options.max_tokens is not None:
+            params["max_tokens"] = self.options.max_tokens
+        if self.options.temperature is not None:
+            params["temperature"] = self.options.temperature
+        if self.options.top_p is not None:
+            params["top_p"] = self.options.top_p
+
         config: Dict[str, Any] = {
             "url": self.options.base_url or "https://api.openai.com/v1/chat/completions",
             "api_key": self.options.api_key,
-            "params": self.options.params or {"model": self.options.model},
+            "params": params,
             "style": "openai",
             "input_modalities": self.options.input_modalities or ["text"],
         }
@@ -41,12 +53,6 @@ class OpenAI(BaseLLM):
             config["greeting_message"] = self.options.greeting_message
         if self.options.failure_message is not None:
             config["failure_message"] = self.options.failure_message
-        if self.options.max_tokens is not None:
-            config.setdefault("params", {})["max_tokens"] = self.options.max_tokens
-        if self.options.temperature is not None:
-            config.setdefault("params", {})["temperature"] = self.options.temperature
-        if self.options.top_p is not None:
-            config.setdefault("params", {})["top_p"] = self.options.top_p
 
         return config
 
