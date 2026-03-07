@@ -22,7 +22,6 @@ from .stt import (
     MicrosoftSTT,
     OpenAISTT,
     SarvamSTT,
-    SonioxSTT,
     SpeechmaticsSTT,
 )
 from .tts import (
@@ -31,7 +30,6 @@ from .tts import (
     ElevenLabsTTS,
     FishAudioTTS,
     GoogleTTS,
-    GroqTTS,
     HumeAITTS,
     MicrosoftTTS,
     MiniMaxTTS,
@@ -64,7 +62,6 @@ __all__ = [
     "HumeAITTS",
     "RimeTTS",
     "FishAudioTTS",
-    "GroqTTS",
     "MiniMaxTTS",
     "SarvamTTS",
     "SpeechmaticsSTT",
@@ -75,7 +72,6 @@ __all__ = [
     "AmazonSTT",
     "AssemblyAISTT",
     "AresSTT",
-    "SonioxSTT",
     "SarvamSTT",
     "OpenAIRealtime",
     "VertexAI",

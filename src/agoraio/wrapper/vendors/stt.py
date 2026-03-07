@@ -244,34 +244,6 @@ class AresSTT(BaseSTT):
         }
 
 
-class SonioxSTTOptions(BaseModel):
-    api_key: str = Field(..., description="Soniox API key")
-    language: str = Field(..., description="Language code (e.g., en, es, fr)")
-    additional_params: Optional[Dict[str, Any]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
-
-class SonioxSTT(BaseSTT):
-    def __init__(self, **kwargs: Any):
-        self.options = SonioxSTTOptions(**kwargs)
-
-    def to_config(self) -> Dict[str, Any]:
-        params: Dict[str, Any] = {
-            "api_key": self.options.api_key,
-            "language": self.options.language,
-        }
-        if self.options.additional_params is not None:
-            params.update(self.options.additional_params)
-
-        return {
-            "vendor": "soniox",
-            "language": self.options.language,
-            "params": params,
-        }
-
-
 class SarvamSTTOptions(BaseModel):
     api_key: str = Field(..., description="Sarvam API key")
     language: str = Field(..., description="Language code (e.g., en, hi, ta)")
