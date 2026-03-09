@@ -78,7 +78,7 @@ class AgentsClient:
         )
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -176,7 +176,7 @@ class AgentsClient:
         from agora_agent import Agora
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -227,7 +227,7 @@ class AgentsClient:
         from agora_agent import Agora
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -268,7 +268,7 @@ class AgentsClient:
         from agora_agent import Agora
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -304,7 +304,7 @@ class AgentsClient:
         from agora_agent import Agora
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -355,7 +355,7 @@ class AgentsClient:
         )
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -435,7 +435,7 @@ class AgentsClient:
         from agora_agent import Agora
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -479,7 +479,7 @@ class AgentsClient:
         from agora_agent import Agora
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -549,7 +549,7 @@ class AsyncAgentsClient:
         )
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -657,7 +657,7 @@ class AsyncAgentsClient:
         from agora_agent import AsyncAgora
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -717,7 +717,7 @@ class AsyncAgentsClient:
         from agora_agent import AsyncAgora
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -766,7 +766,7 @@ class AsyncAgentsClient:
         from agora_agent import AsyncAgora
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -810,7 +810,7 @@ class AsyncAgentsClient:
         from agora_agent import AsyncAgora
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -869,7 +869,7 @@ class AsyncAgentsClient:
         )
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -959,7 +959,7 @@ class AsyncAgentsClient:
         from agora_agent import AsyncAgora
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -1011,7 +1011,7 @@ class AsyncAgentsClient:
         from agora_agent import AsyncAgora
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )

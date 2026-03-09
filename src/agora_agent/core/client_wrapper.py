@@ -10,14 +10,14 @@ class BaseClientWrapper:
     def __init__(
         self,
         *,
-        authorization: str,
+        auth_token: str,
         username: typing.Union[str, typing.Callable[[], str]],
         password: typing.Union[str, typing.Callable[[], str]],
         headers: typing.Optional[typing.Dict[str, str]] = None,
         base_url: str,
         timeout: typing.Optional[float] = None,
     ):
-        self._authorization = authorization
+        self._auth_token = auth_token
         self._username = username
         self._password = password
         self._headers = headers
@@ -26,14 +26,14 @@ class BaseClientWrapper:
 
     def get_headers(self) -> typing.Dict[str, str]:
         headers: typing.Dict[str, str] = {
-            "User-Agent": "agora-agent-sdk/0.1.0",
+            "User-Agent": "agora-agent-server-sdk/1.1.0",
             "X-Fern-Language": "Python",
-            "X-Fern-SDK-Name": "agora-agent-sdk",
-            "X-Fern-SDK-Version": "0.1.0",
+            "X-Fern-SDK-Name": "agora-agent-server-sdk",
+            "X-Fern-SDK-Version": "1.1.0",
             **(self.get_custom_headers() or {}),
         }
         headers["Authorization"] = httpx.BasicAuth(self._get_username(), self._get_password())._auth_header
-        headers["Authorization"] = self._authorization
+        headers["Authorization"] = self._auth_token
         return headers
 
     def _get_username(self) -> str:
@@ -62,7 +62,7 @@ class SyncClientWrapper(BaseClientWrapper):
     def __init__(
         self,
         *,
-        authorization: str,
+        auth_token: str,
         username: typing.Union[str, typing.Callable[[], str]],
         password: typing.Union[str, typing.Callable[[], str]],
         headers: typing.Optional[typing.Dict[str, str]] = None,
@@ -71,7 +71,7 @@ class SyncClientWrapper(BaseClientWrapper):
         httpx_client: httpx.Client,
     ):
         super().__init__(
-            authorization=authorization,
+            auth_token=auth_token,
             username=username,
             password=password,
             headers=headers,
@@ -90,7 +90,7 @@ class AsyncClientWrapper(BaseClientWrapper):
     def __init__(
         self,
         *,
-        authorization: str,
+        auth_token: str,
         username: typing.Union[str, typing.Callable[[], str]],
         password: typing.Union[str, typing.Callable[[], str]],
         headers: typing.Optional[typing.Dict[str, str]] = None,
@@ -99,7 +99,7 @@ class AsyncClientWrapper(BaseClientWrapper):
         httpx_client: httpx.AsyncClient,
     ):
         super().__init__(
-            authorization=authorization,
+            auth_token=auth_token,
             username=username,
             password=password,
             headers=headers,

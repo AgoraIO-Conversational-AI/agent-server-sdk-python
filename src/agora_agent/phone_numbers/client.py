@@ -55,7 +55,7 @@ class PhoneNumbersClient:
         from agora_agent import Agora
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -121,7 +121,7 @@ class PhoneNumbersClient:
         )
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -176,7 +176,7 @@ class PhoneNumbersClient:
         from agora_agent import Agora
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -211,7 +211,7 @@ class PhoneNumbersClient:
         from agora_agent import Agora
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -261,7 +261,7 @@ class PhoneNumbersClient:
         )
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -322,7 +322,7 @@ class AsyncPhoneNumbersClient:
         from agora_agent import AsyncAgora
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -396,7 +396,7 @@ class AsyncPhoneNumbersClient:
         )
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -459,7 +459,7 @@ class AsyncPhoneNumbersClient:
         from agora_agent import AsyncAgora
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -502,7 +502,7 @@ class AsyncPhoneNumbersClient:
         from agora_agent import AsyncAgora
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -560,7 +560,7 @@ class AsyncPhoneNumbersClient:
         )
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )

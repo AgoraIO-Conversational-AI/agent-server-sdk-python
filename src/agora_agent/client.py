@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import os
 import typing
 
 import httpx
+from .core.api_error import ApiError
 from .core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from .environment import AgoraEnvironment
 
@@ -32,7 +34,7 @@ class Agora:
 
 
 
-    authorization : str
+    auth_token : typing.Optional[str]
     username : typing.Union[str, typing.Callable[[], str]]
     password : typing.Union[str, typing.Callable[[], str]]
     headers : typing.Optional[typing.Dict[str, str]]
@@ -52,7 +54,7 @@ class Agora:
     from agora_agent import Agora
 
     client = Agora(
-        authorization="YOUR_AUTHORIZATION",
+        auth_token="YOUR_AUTH_TOKEN",
         username="YOUR_USERNAME",
         password="YOUR_PASSWORD",
     )
@@ -63,7 +65,7 @@ class Agora:
         *,
         base_url: typing.Optional[str] = None,
         environment: AgoraEnvironment = AgoraEnvironment.DEFAULT,
-        authorization: str,
+        auth_token: typing.Optional[str] = os.getenv("AGORA_AUTH_TOKEN"),
         username: typing.Union[str, typing.Callable[[], str]],
         password: typing.Union[str, typing.Callable[[], str]],
         headers: typing.Optional[typing.Dict[str, str]] = None,
@@ -74,9 +76,13 @@ class Agora:
         _defaulted_timeout = (
             timeout if timeout is not None else 60 if httpx_client is None else httpx_client.timeout.read
         )
+        if auth_token is None:
+            raise ApiError(
+                body="The client must be instantiated be either passing in auth_token or setting AGORA_AUTH_TOKEN"
+            )
         self._client_wrapper = SyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
-            authorization=authorization,
+            auth_token=auth_token,
             username=username,
             password=password,
             headers=headers,
@@ -134,7 +140,7 @@ class AsyncAgora:
 
 
 
-    authorization : str
+    auth_token : typing.Optional[str]
     username : typing.Union[str, typing.Callable[[], str]]
     password : typing.Union[str, typing.Callable[[], str]]
     headers : typing.Optional[typing.Dict[str, str]]
@@ -154,7 +160,7 @@ class AsyncAgora:
     from agora_agent import AsyncAgora
 
     client = AsyncAgora(
-        authorization="YOUR_AUTHORIZATION",
+        auth_token="YOUR_AUTH_TOKEN",
         username="YOUR_USERNAME",
         password="YOUR_PASSWORD",
     )
@@ -165,7 +171,7 @@ class AsyncAgora:
         *,
         base_url: typing.Optional[str] = None,
         environment: AgoraEnvironment = AgoraEnvironment.DEFAULT,
-        authorization: str,
+        auth_token: typing.Optional[str] = os.getenv("AGORA_AUTH_TOKEN"),
         username: typing.Union[str, typing.Callable[[], str]],
         password: typing.Union[str, typing.Callable[[], str]],
         headers: typing.Optional[typing.Dict[str, str]] = None,
@@ -176,9 +182,13 @@ class AsyncAgora:
         _defaulted_timeout = (
             timeout if timeout is not None else 60 if httpx_client is None else httpx_client.timeout.read
         )
+        if auth_token is None:
+            raise ApiError(
+                body="The client must be instantiated be either passing in auth_token or setting AGORA_AUTH_TOKEN"
+            )
         self._client_wrapper = AsyncClientWrapper(
             base_url=_get_base_url(base_url=base_url, environment=environment),
-            authorization=authorization,
+            auth_token=auth_token,
             username=username,
             password=password,
             headers=headers,

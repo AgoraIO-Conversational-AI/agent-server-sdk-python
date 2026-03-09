@@ -89,7 +89,7 @@ class TelephonyClient:
         from agora_agent import Agora
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -164,7 +164,7 @@ class TelephonyClient:
         )
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -218,7 +218,7 @@ class TelephonyClient:
         from agora_agent import Agora
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -257,7 +257,7 @@ class TelephonyClient:
         from agora_agent import Agora
 
         client = Agora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -342,7 +342,7 @@ class AsyncTelephonyClient:
         from agora_agent import AsyncAgora
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -426,7 +426,7 @@ class AsyncTelephonyClient:
         )
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -488,7 +488,7 @@ class AsyncTelephonyClient:
         from agora_agent import AsyncAgora
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )
@@ -535,7 +535,7 @@ class AsyncTelephonyClient:
         from agora_agent import AsyncAgora
 
         client = AsyncAgora(
-            authorization="YOUR_AUTHORIZATION",
+            auth_token="YOUR_AUTH_TOKEN",
             username="YOUR_USERNAME",
             password="YOUR_PASSWORD",
         )

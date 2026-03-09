@@ -35,7 +35,7 @@ from agora_agent.agents import (
 )
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -152,7 +152,7 @@ Retrieve a list of agents that meet the specified conditions.
 from agora_agent import Agora
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -286,7 +286,7 @@ Get the current state information of the specified agent instance.
 from agora_agent import Agora
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -369,7 +369,7 @@ Call this endpoint while the agent is running to retrieve the conversation histo
 from agora_agent import Agora
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -450,7 +450,7 @@ Stop the specified conversational agent instance.
 from agora_agent import Agora
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -535,7 +535,7 @@ from agora_agent.agents import (
 )
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -644,7 +644,7 @@ Note: The speak API is not supported when using `mllm` configuration.
 from agora_agent import Agora
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -761,7 +761,7 @@ Interrupt the specified agent while speaking or thinking.
 from agora_agent import Agora
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -843,7 +843,7 @@ Query historical call records for a specified appid based on the filter criteria
 from agora_agent import Agora
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -980,7 +980,7 @@ from agora_agent.telephony import (
 )
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1101,7 +1101,7 @@ Retrieve the call status and related information of a specified agent.
 from agora_agent import Agora
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1182,7 +1182,7 @@ Instruct the agent to proactively hang up the ongoing call and leave the RTC cha
 from agora_agent import Agora
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1264,7 +1264,7 @@ Retrieve a list of all imported phone numbers under the current account.
 from agora_agent import Agora
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1330,7 +1330,7 @@ from agora_agent.phone_numbers import (
 )
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1465,7 +1465,7 @@ Retrieve detailed information for a specific phone number.
 from agora_agent import Agora
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1540,7 +1540,7 @@ After calling this endpoint, the number stops receiving calls routed through thi
 from agora_agent import Agora
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
@@ -1616,7 +1616,7 @@ from agora_agent.phone_numbers import (
 )
 
 client = Agora(
-    authorization="YOUR_AUTHORIZATION",
+    auth_token="YOUR_AUTH_TOKEN",
     username="YOUR_USERNAME",
     password="YOUR_PASSWORD",
 )
