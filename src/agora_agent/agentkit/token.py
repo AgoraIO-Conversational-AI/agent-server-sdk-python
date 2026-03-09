@@ -7,10 +7,69 @@ import time
 import typing
 import zlib
 
-DEFAULT_EXPIRY_SECONDS = 3600
+DEFAULT_EXPIRY_SECONDS = 86400
+MAX_EXPIRY_SECONDS = 86400
 
 ROLE_PUBLISHER = 1
 ROLE_SUBSCRIBER = 2
+
+
+def _validate_expires_in(seconds: float) -> int:
+    """Validate an ``expires_in`` value in seconds.
+
+    - Raises :class:`ValueError` if ``seconds <= 0``.
+    - Warns and caps at :data:`MAX_EXPIRY_SECONDS` if ``seconds > MAX_EXPIRY_SECONDS``.
+    """
+    import warnings
+
+    if seconds <= 0:
+        raise ValueError("expires_in must be between 1 and 86400 seconds (24h)")
+    if seconds > MAX_EXPIRY_SECONDS:
+        warnings.warn("agora-agent-sdk: expires_in capped at 24h (Agora max)", stacklevel=3)
+        return MAX_EXPIRY_SECONDS
+    return int(seconds)
+
+
+def expires_in_hours(hours: float) -> int:
+    """Convert hours to seconds for use as ``expires_in``.
+
+    Parameters
+    ----------
+    hours : float
+        Number of hours. Must be > 0 and result must not exceed 24 hours (86400 s).
+
+    Returns
+    -------
+    int
+        Equivalent seconds, capped at :data:`MAX_EXPIRY_SECONDS`.
+
+    Raises
+    ------
+    ValueError
+        If ``hours <= 0``.
+    """
+    return _validate_expires_in(hours * 3600)
+
+
+def expires_in_minutes(minutes: float) -> int:
+    """Convert minutes to seconds for use as ``expires_in``.
+
+    Parameters
+    ----------
+    minutes : float
+        Number of minutes. Must be > 0 and result must not exceed 24 hours (86400 s).
+
+    Returns
+    -------
+    int
+        Equivalent seconds, capped at :data:`MAX_EXPIRY_SECONDS`.
+
+    Raises
+    ------
+    ValueError
+        If ``minutes <= 0``.
+    """
+    return _validate_expires_in(minutes * 60)
 
 
 class GenerateTokenOptions(typing.TypedDict, total=False):
@@ -149,7 +208,7 @@ def generate_rtc_token(
     role : int
         RTC role (ROLE_PUBLISHER or ROLE_SUBSCRIBER).
     expiry_seconds : int
-        Token expiry in seconds (default 3600).
+        Token expiry in seconds (default 86400).
 
     Returns
     -------
@@ -206,7 +265,7 @@ def generate_convo_ai_token(
     account : str
         String account identity — pass the agent UID as a string (e.g. "1001").
     token_expire : int
-        Seconds until the token expires (default 3600).
+        Seconds until the token expires (default 86400).
     privilege_expire : int
         Seconds until privileges expire; 0 means same as token_expire (default 0).
 

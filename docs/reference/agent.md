@@ -115,6 +115,7 @@ create_session(
     token: Optional[str] = None,
     idle_timeout: Optional[int] = None,
     enable_string_uid: Optional[bool] = None,
+    expires_in: Optional[int] = None,
 ) -> AgentSession
 ```
 
@@ -127,7 +128,8 @@ Creates an `AgentSession` bound to the given client and channel.
 | `agent_uid` | `str` | Yes | UID for the agent |
 | `remote_uids` | `List[str]` | Yes | UIDs of remote participants |
 | `name` | `Optional[str]` | No | Session name (defaults to agent name) |
-| `token` | `Optional[str]` | No | Pre-built RTC token |
+| `token` | `Optional[str]` | No | Pre-built RTC+RTM token |
+| `expires_in` | `Optional[int]` | No | Token lifetime in seconds (default: `86400` = 24 h, Agora max). Only applies when the token is auto-generated. Use `expires_in_hours()` or `expires_in_minutes()` for clarity. Valid range: 1–86400. |
 | `idle_timeout` | `Optional[int]` | No | Idle timeout in seconds |
 | `enable_string_uid` | `Optional[bool]` | No | Enable string UIDs |
 

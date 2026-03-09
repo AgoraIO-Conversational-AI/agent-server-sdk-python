@@ -27,13 +27,14 @@ class AgentSessionOptions(_AgentSessionRequiredOptions, total=False):
 
     Optional fields
     ---------------
-    app_certificate, token, idle_timeout, enable_string_uid
+    app_certificate, token, idle_timeout, enable_string_uid, expires_in
     """
 
     app_certificate: str
     token: str
     idle_timeout: int
     enable_string_uid: bool
+    expires_in: int
 
 
 class _AgentSessionBase:
@@ -56,6 +57,7 @@ class _AgentSessionBase:
         token: typing.Optional[str] = None,
         idle_timeout: typing.Optional[int] = None,
         enable_string_uid: typing.Optional[bool] = None,
+        expires_in: typing.Optional[int] = None,
     ):
         self._client = client
         self._agent = agent
@@ -68,6 +70,7 @@ class _AgentSessionBase:
         self._remote_uids = remote_uids
         self._idle_timeout = idle_timeout
         self._enable_string_uid = enable_string_uid
+        self._expires_in = expires_in
         self._agent_id: typing.Optional[str] = None
         self._status: str = "idle"
         self._event_handlers: typing.Dict[str, typing.List[typing.Callable[..., None]]] = {}
@@ -241,6 +244,7 @@ class AgentSession(_AgentSessionBase):
                 token_opts = {
                     "app_id": self._app_id,
                     "app_certificate": self._app_certificate,
+                    "expires_in": self._expires_in,
                 }
 
             properties = self._agent.to_properties(
@@ -432,6 +436,7 @@ class AsyncAgentSession(_AgentSessionBase):
                 token_opts = {
                     "app_id": self._app_id,
                     "app_certificate": self._app_certificate,
+                    "expires_in": self._expires_in,
                 }
 
             properties = self._agent.to_properties(

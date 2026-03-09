@@ -10,9 +10,11 @@ import httpx
 
 from .client import Agora as BaseAgora
 from .client import AsyncAgora as BaseAsyncAgora
+from .core.api_error import ApiError
 from .core.domain import Area, Pool
+from .agentkit.token import generate_convo_ai_token
 
-_AUTH_MODE = typing.Literal["app-credentials", "basic"]
+_AUTH_MODE = typing.Literal["app-credentials", "basic", "token"]
 _DEBUG_LOGGER = logging.getLogger("agora_agent")
 
 
@@ -137,6 +139,12 @@ class Agora(BaseAgora):
     customer_secret : typing.Optional[str]
         Customer secret for Basic auth (required when ``customer_id`` is set).
 
+    auth_token : typing.Optional[str]
+        Pre-built raw token for REST API authentication. Pass the raw token
+        string — the SDK automatically sets the header as
+        ``Authorization: agora token=<auth_token>``.
+        Mutually exclusive with ``customer_id``/``customer_secret``.
+
     headers : typing.Optional[typing.Dict[str, str]]
         Additional headers to send with every request.
 
@@ -182,6 +190,18 @@ class Agora(BaseAgora):
         customer_id="YOUR_CUSTOMER_ID",
         customer_secret="YOUR_CUSTOMER_SECRET",
     )
+
+    # Pre-built token mode (for debugging or custom token lifecycles)
+    from agora_agent import Agora, Area
+    from agora_agent.agentkit.token import generate_convo_ai_token
+
+    raw_token = generate_convo_ai_token(app_id="...", app_certificate="...", channel_name="...", account="1")
+    client = Agora(
+        area=Area.US,
+        app_id="YOUR_APP_ID",
+        app_certificate="YOUR_APP_CERTIFICATE",
+        auth_token=raw_token,  # SDK adds "agora token=" prefix automatically
+    )
     """
 
     def __init__(
@@ -192,6 +212,7 @@ class Agora(BaseAgora):
         app_certificate: str,
         customer_id: typing.Optional[str] = None,
         customer_secret: typing.Optional[str] = None,
+        auth_token: typing.Optional[str] = None,
         headers: typing.Optional[typing.Dict[str, str]] = None,
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
@@ -205,8 +226,13 @@ class Agora(BaseAgora):
         if customer_id is not None:
             if customer_secret is None:
                 raise ValueError("customer_secret is required when customer_id is provided")
+            if auth_token is not None:
+                raise ValueError("auth_token and customer_id/customer_secret are mutually exclusive")
             self.auth_mode: _AUTH_MODE = "basic"
             authorization = _basic_auth_header(customer_id, customer_secret)
+        elif auth_token is not None:
+            self.auth_mode = "token"
+            authorization = f"agora token={auth_token}"
         else:
             self.auth_mode = "app-credentials"
             authorization = ""
@@ -269,6 +295,45 @@ class Agora(BaseAgora):
         """
         self._client_wrapper._base_url = self._pool.get_current_url()
 
+    def stop_agent(self, agent_id: str) -> None:
+        """Stop an agent by its ID.
+
+        Use this when handling a stop request from your client app (e.g., an
+        end-call button) without holding an ``AgentSession`` reference. Create a
+        client with the same credentials used to start the agent and call this
+        method.
+
+        If the agent has already stopped (e.g., timed out or crashed), this
+        method returns successfully rather than raising.
+
+        Parameters
+        ----------
+        agent_id : str
+            The agent instance ID returned by ``AgentSession.start()``.
+
+        Example
+        -------
+        # End-call handler — no session reference needed
+        client = Agora(area=Area.US, app_id="...", app_certificate="...")
+        client.stop_agent(agent_id)
+        """
+        request_options: typing.Optional[typing.Dict[str, typing.Any]] = None
+        if self.auth_mode == "app-credentials":
+            token = generate_convo_ai_token(
+                app_id=self.app_id,
+                app_certificate=self.app_certificate,
+                channel_name="stop",
+                account=agent_id,
+            )
+            request_options = {"additional_headers": {"Authorization": f"agora token={token}"}}
+
+        try:
+            self.agents.stop(self.app_id, agent_id, request_options=request_options)
+        except ApiError as e:
+            if e.status_code == 404:
+                return  # Agent already stopped — treat as success
+            raise
+
 
 class AsyncAgora(BaseAsyncAgora):
     """
@@ -300,6 +365,12 @@ class AsyncAgora(BaseAsyncAgora):
 
     customer_secret : typing.Optional[str]
         Customer secret for Basic auth (required when ``customer_id`` is set).
+
+    auth_token : typing.Optional[str]
+        Pre-built raw token for REST API authentication. Pass the raw token
+        string — the SDK automatically sets the header as
+        ``Authorization: agora token=<auth_token>``.
+        Mutually exclusive with ``customer_id``/``customer_secret``.
 
     headers : typing.Optional[typing.Dict[str, str]]
         Additional headers to send with every request.
@@ -352,6 +423,7 @@ class AsyncAgora(BaseAsyncAgora):
         app_certificate: str,
         customer_id: typing.Optional[str] = None,
         customer_secret: typing.Optional[str] = None,
+        auth_token: typing.Optional[str] = None,
         headers: typing.Optional[typing.Dict[str, str]] = None,
         timeout: typing.Optional[float] = None,
         follow_redirects: typing.Optional[bool] = True,
@@ -365,8 +437,13 @@ class AsyncAgora(BaseAsyncAgora):
         if customer_id is not None:
             if customer_secret is None:
                 raise ValueError("customer_secret is required when customer_id is provided")
+            if auth_token is not None:
+                raise ValueError("auth_token and customer_id/customer_secret are mutually exclusive")
             self.auth_mode: _AUTH_MODE = "basic"
             authorization = _basic_auth_header(customer_id, customer_secret)
+        elif auth_token is not None:
+            self.auth_mode = "token"
+            authorization = f"agora token={auth_token}"
         else:
             self.auth_mode = "app-credentials"
             authorization = ""
@@ -428,3 +505,42 @@ class AsyncAgora(BaseAsyncAgora):
         Update the base URL in the client wrapper to match the pool's current URL.
         """
         self._client_wrapper._base_url = self._pool.get_current_url()
+
+    async def stop_agent(self, agent_id: str) -> None:
+        """Stop an agent by its ID (async).
+
+        Use this when handling a stop request from your client app (e.g., an
+        end-call button) without holding an ``AsyncAgentSession`` reference. Create
+        a client with the same credentials used to start the agent and call this
+        method.
+
+        If the agent has already stopped (e.g., timed out or crashed), this
+        method returns successfully rather than raising.
+
+        Parameters
+        ----------
+        agent_id : str
+            The agent instance ID returned by ``AsyncAgentSession.start()``.
+
+        Example
+        -------
+        # End-call handler — no session reference needed
+        client = AsyncAgora(area=Area.US, app_id="...", app_certificate="...")
+        await client.stop_agent(agent_id)
+        """
+        request_options: typing.Optional[typing.Dict[str, typing.Any]] = None
+        if self.auth_mode == "app-credentials":
+            token = generate_convo_ai_token(
+                app_id=self.app_id,
+                app_certificate=self.app_certificate,
+                channel_name="stop",
+                account=agent_id,
+            )
+            request_options = {"additional_headers": {"Authorization": f"agora token={token}"}}
+
+        try:
+            await self.agents.stop(self.app_id, agent_id, request_options=request_options)
+        except ApiError as e:
+            if e.status_code == 404:
+                return  # Agent already stopped — treat as success
+            raise

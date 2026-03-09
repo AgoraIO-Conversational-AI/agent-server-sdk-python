@@ -10,7 +10,7 @@ from ..agents.types.start_agents_request_properties import StartAgentsRequestPro
 from ..agents.types.start_agents_request_properties_turn_detection import StartAgentsRequestPropertiesTurnDetection
 from ..agents.types.start_agents_request_properties_sal import StartAgentsRequestPropertiesSal
 from ..agents.types.start_agents_request_properties_parameters import StartAgentsRequestPropertiesParameters
-from .token import generate_rtc_token
+from .token import generate_convo_ai_token, _validate_expires_in
 from .vendors.base import BaseAvatar, BaseLLM, BaseMLLM, BaseSTT, BaseTTS
 
 TurnDetectionConfig = StartAgentsRequestPropertiesTurnDetection
@@ -178,6 +178,7 @@ class Agent:
         token: typing.Optional[str] = None,
         idle_timeout: typing.Optional[int] = None,
         enable_string_uid: typing.Optional[bool] = None,
+        expires_in: typing.Optional[int] = None,
     ) -> "AgentSession":
         from .agent_session import AgentSession
 
@@ -194,6 +195,7 @@ class Agent:
             remote_uids=remote_uids,
             idle_timeout=idle_timeout,
             enable_string_uid=enable_string_uid,
+            expires_in=expires_in,
         )
 
     def create_async_session(
@@ -206,6 +208,7 @@ class Agent:
         token: typing.Optional[str] = None,
         idle_timeout: typing.Optional[int] = None,
         enable_string_uid: typing.Optional[bool] = None,
+        expires_in: typing.Optional[int] = None,
     ) -> "AsyncAgentSession":
         """Create an async session for use with :class:`~agora_agent.AsyncAgora`.
 
@@ -227,6 +230,7 @@ class Agent:
             remote_uids=remote_uids,
             idle_timeout=idle_timeout,
             enable_string_uid=enable_string_uid,
+            expires_in=expires_in,
         )
 
     def to_properties(
@@ -239,17 +243,23 @@ class Agent:
         token: typing.Optional[str] = None,
         app_id: typing.Optional[str] = None,
         app_certificate: typing.Optional[str] = None,
-        token_expiry_seconds: typing.Optional[int] = None,
+        expires_in: typing.Optional[int] = None,
     ) -> StartAgentsRequestProperties:
         if token is None:
             if app_id is None or app_certificate is None:
                 raise ValueError("Either token or app_id+app_certificate must be provided")
-            token = generate_rtc_token(
+            validated_expires_in = _validate_expires_in(expires_in) if expires_in is not None else None
+            # Use generate_convo_ai_token (RTC + RTM) so the token works whether or
+            # not the caller enables advanced_features.enable_rtm.
+            token_kwargs: typing.Dict[str, typing.Any] = {}
+            if validated_expires_in is not None:
+                token_kwargs["token_expire"] = validated_expires_in
+            token = generate_convo_ai_token(
                 app_id=app_id,
                 app_certificate=app_certificate,
-                channel=channel,
-                uid=int(agent_uid),
-                expiry_seconds=token_expiry_seconds or 3600,
+                channel_name=channel,
+                account=agent_uid,
+                **token_kwargs,
             )
 
         is_mllm_mode = (
