@@ -1,6 +1,14 @@
 from .agent import Agent
 from .agent_session import AgentSession, AgentSessionOptions, AsyncAgentSession
-from .token import GenerateConvoAITokenOptions, GenerateTokenOptions, generate_convo_ai_token, generate_rtc_token
+from .token import (
+    GenerateConvoAITokenOptions,
+    GenerateTokenOptions,
+    MAX_EXPIRY_SECONDS,
+    generate_convo_ai_token,
+    generate_rtc_token,
+    expires_in_hours,
+    expires_in_minutes,
+)
 from .vendors import (
     AkoolAvatar,
     AmazonSTT,
@@ -51,6 +59,9 @@ __all__ = [
     "GenerateTokenOptions",
     "generate_convo_ai_token",
     "GenerateConvoAITokenOptions",
+    "MAX_EXPIRY_SECONDS",
+    "expires_in_hours",
+    "expires_in_minutes",
     "BaseLLM",
     "BaseTTS",
     "BaseSTT",

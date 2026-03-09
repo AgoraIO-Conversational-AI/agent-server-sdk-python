@@ -68,11 +68,35 @@ client = AsyncAgora(
 )
 ```
 
+## Pre-built token
+
+Pass a manually generated `agora token=...` string via `auth_token`. Use this for debugging or when you want to control the REST API token lifecycle yourself:
+
+```python
+from agora_agent import Agora, Area
+from agora_agent.agentkit.token import generate_convo_ai_token
+
+raw_token = generate_convo_ai_token(
+    app_id='your-app-id',
+    app_certificate='your-app-certificate',
+    channel_name='your-channel',
+    account='1',
+)
+
+client = Agora(
+    area=Area.US,
+    app_id='your-app-id',
+    app_certificate='your-app-certificate',
+    auth_token=raw_token,  # SDK sets Authorization: agora token=<raw_token>
+)
+```
+
 ## Auth Mode Comparison
 
 | Mode | When to use | What you need |
 |---|---|---|
 | **App credentials** | Most applications. SDK manages ConvoAI tokens per request. | `app_id` + `app_certificate` |
+| **Pre-built token** | Debugging, or when you manage the REST API token lifecycle. | `app_id` + `app_certificate` + `auth_token` |
 | **Basic Auth** | When using customer-level credentials from the Agora Console. | `app_id` + `app_certificate` + `customer_id` + `customer_secret` |
 
 ## Advanced: Manual Token Generation
@@ -88,16 +112,16 @@ rtc_token = generate_rtc_token(
     app_certificate='your-app-certificate',
     channel='your-channel',
     uid=1,
-    expiry_seconds=3600,
+    expiry_seconds=86400,  # default; max allowed by Agora is 24 hours (86400 s)
 )
 
-# ConvoAI token (RTC + RTM combined, for REST API auth)
+# ConvoAI token (RTC + RTM combined, for REST API auth and channel join)
 convo_token = generate_convo_ai_token(
     app_id='your-app-id',
     app_certificate='your-app-certificate',
     channel_name='your-channel',
     account='1001',
-    token_expire=3600,
+    token_expire=86400,  # default; max allowed by Agora is 24 hours (86400 s)
 )
 auth_header = f'agora token={convo_token}'
 ```
@@ -111,7 +135,7 @@ auth_header = f'agora token={convo_token}'
 | `channel` | `str` | Yes | — | Channel name |
 | `uid` | `int` | Yes | — | User ID (0 = any) |
 | `role` | `int` | No | `ROLE_PUBLISHER` (1) | RTC role (`ROLE_PUBLISHER` or `ROLE_SUBSCRIBER`) |
-| `expiry_seconds` | `int` | No | `3600` | Token expiry in seconds |
+| `expiry_seconds` | `int` | No | `86400` | Token expiry in seconds (max: 86400 = 24 h) |
 
 ### `generate_convo_ai_token()` Reference
 
@@ -121,8 +145,27 @@ auth_header = f'agora token={convo_token}'
 | `app_certificate` | `str` | Yes | — | Agora App Certificate |
 | `channel_name` | `str` | Yes | — | Channel the agent will join |
 | `account` | `str` | Yes | — | Agent UID as a string (e.g. `"1001"`) |
-| `token_expire` | `int` | No | `3600` | Seconds until token expires |
+| `token_expire` | `int` | No | `86400` | Seconds until token expires (max: 86400 = 24 h) |
 | `privilege_expire` | `int` | No | `0` | Seconds until privileges expire (0 = same as `token_expire`) |
+
+## Token expiry
+
+When the SDK auto-generates a token (app credentials mode, or session without a pre-built `token`), the default lifetime is **86400 seconds (24 hours)** — the Agora maximum. You can customise this via `expires_in` on `create_session()`:
+
+```python
+from agora_agent.agentkit import expires_in_hours, expires_in_minutes
+
+session = agent.create_session(
+    client,
+    channel='room-123',
+    agent_uid='1',
+    remote_uids=['100'],
+    expires_in=expires_in_hours(12),    # 12-hour token
+    # expires_in=expires_in_minutes(30),  # 30-minute token
+)
+```
+
+`expires_in_hours()` and `expires_in_minutes()` validate the value and raise `ValueError` if it is ≤ 0, or warn and cap at 86400 if it exceeds 24 hours. Valid range: **1–86400 seconds**.
 
 ## Areas
 
