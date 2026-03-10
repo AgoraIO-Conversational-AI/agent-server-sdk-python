@@ -3,6 +3,7 @@
   "generatorName": "fernapi/fern-python-sdk",
   "generatorVersion": "4.37.0",
   "generatorConfig": {
+    "package_name": "agora_agent",
     "client": {
       "class_name": "Agora",
       "filename": "client.py"
