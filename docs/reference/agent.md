@@ -77,11 +77,12 @@ agent = Agent().with_stt(DeepgramSTT(api_key='your-key', language='en-US'))
 
 ### `with_mllm(vendor: BaseMLLM) -> Agent`
 
-Set the MLLM vendor for multimodal flow. Requires `advanced_features={'enable_mllm': True}`.
+Set the MLLM vendor for multimodal flow. Requires `AdvancedFeatures(enable_mllm=True)`.
 
 ```python
+from agora_agent.agentkit import AdvancedFeatures
 from agora_agent.agentkit.vendors import OpenAIRealtime
-agent = Agent(advanced_features={'enable_mllm': True}).with_mllm(OpenAIRealtime(api_key='your-key'))
+agent = Agent(advanced_features=AdvancedFeatures(enable_mllm=True)).with_mllm(OpenAIRealtime(api_key='your-key'))
 ```
 
 ### `with_avatar(vendor: BaseAvatar) -> Agent`

@@ -127,16 +127,18 @@ For real-time audio with OpenAI Realtime or Google Gemini Live, use the MLLM flo
 
 ```python
 from agora_agent import Agora, Area
+from agora_agent.agentkit import (
+    AdvancedFeatures,
+    TurnDetectionConfig,
+    TurnDetectionTypeValues,
+)
 from agora_agent.agents import (
     StartAgentsRequestProperties,
-    StartAgentsRequestPropertiesAdvancedFeatures,
     StartAgentsRequestPropertiesMllm,
     StartAgentsRequestPropertiesMllmVendor,
     StartAgentsRequestPropertiesTts,
     StartAgentsRequestPropertiesTtsVendor,
     StartAgentsRequestPropertiesLlm,
-    StartAgentsRequestPropertiesTurnDetection,
-    StartAgentsRequestPropertiesTurnDetectionType,
 )
 
 client = Agora(
@@ -154,9 +156,7 @@ client.agents.start(
         agent_rtc_uid="1001",
         remote_rtc_uids=["1002"],
         idle_timeout=120,
-        advanced_features=StartAgentsRequestPropertiesAdvancedFeatures(
-            enable_mllm=True,
-        ),
+        advanced_features=AdvancedFeatures(enable_mllm=True),
         mllm=StartAgentsRequestPropertiesMllm(
             url="wss://api.openai.com/v1/realtime",
             api_key="<your_openai_api_key>",
@@ -169,8 +169,8 @@ client.agents.start(
             output_modalities=["text", "audio"],
             greeting_message="Hello! I'm ready to chat in real-time.",
         ),
-        turn_detection=StartAgentsRequestPropertiesTurnDetection(
-            type=StartAgentsRequestPropertiesTurnDetectionType.SERVER_VAD,
+        turn_detection=TurnDetectionConfig(
+            type=TurnDetectionTypeValues.SERVER_VAD,  # deprecated; use config.end_of_speech instead
             threshold=0.5,
             silence_duration_ms=500,
         ),
