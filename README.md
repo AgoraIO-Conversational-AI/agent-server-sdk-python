@@ -1,7 +1,7 @@
 # Agora Agent Server SDK for Python
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FAgoraIO-Conversational-AI%2Fagent-server-sdk-python)
-[![pypi](https://img.shields.io/pypi/v/agora-agent-server-sdk)](https://pypi.python.org/pypi/agora-agent-server-sdk)
+[![pypi](https://img.shields.io/pypi/v/agent-server-sdk-python)](https://pypi.python.org/pypi/agent-server-sdk-python)
 
 The Agora Conversational AI SDK provides convenient access to the Agora Conversational AI APIs,
 enabling you to build voice-powered AI agents with support for both cascading flows (ASR -> LLM -> TTS)
@@ -28,7 +28,7 @@ and multimodal flows (MLLM) for real-time audio processing.
 ## Installation
 
 ```sh
-pip install agora-agent-server-sdk
+pip install agent-server-sdk-python
 ```
 
 ## Quick Start
