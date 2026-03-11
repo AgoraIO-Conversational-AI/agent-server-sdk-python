@@ -153,26 +153,29 @@ A full reference for this library is available [here](https://github.com/AgoraIO
 For real-time audio processing using OpenAI's Realtime API or Google Gemini Live, use the MLLM (Multimodal Large Language Model) flow instead of the cascading ASR -> LLM -> TTS flow. See the [MLLM Overview](https://docs.agora.io/en/conversational-ai/models/mllm/overview) for more details.
 
 ```python
-from agora-agent-server-sdk import Agora
-from agora-agent-server-sdk.agents import (
+from agora_agent import Agora, Area
+from agora_agent.agentkit import (
+    AdvancedFeatures,
+    TurnDetectionConfig,
+    TurnDetectionTypeValues,
+)
+from agora_agent.agents import (
     StartAgentsRequestProperties,
-    StartAgentsRequestPropertiesAdvancedFeatures,
     StartAgentsRequestPropertiesMllm,
     StartAgentsRequestPropertiesMllmVendor,
     StartAgentsRequestPropertiesTts,
     StartAgentsRequestPropertiesTtsVendor,
     StartAgentsRequestPropertiesLlm,
-    StartAgentsRequestPropertiesTurnDetection,
-    StartAgentsRequestPropertiesTurnDetectionType,
 )
 
 client = Agora(
-    customer_id="YOUR_CUSTOMER_ID",
-    customer_secret="YOUR_CUSTOMER_SECRET",
+    area=Area.US,
+    app_id="YOUR_APP_ID",
+    app_certificate="YOUR_APP_CERTIFICATE",
 )
 
 client.agents.start(
-    appid="your_app_id",
+    client.app_id,
     name="mllm_agent",
     properties=StartAgentsRequestProperties(
         channel="channel_name",
@@ -180,9 +183,7 @@ client.agents.start(
         agent_rtc_uid="1001",
         remote_rtc_uids=["1002"],
         idle_timeout=120,
-        advanced_features=StartAgentsRequestPropertiesAdvancedFeatures(
-            enable_mllm=True,
-        ),
+        advanced_features=AdvancedFeatures(enable_mllm=True),
         mllm=StartAgentsRequestPropertiesMllm(
             url="wss://api.openai.com/v1/realtime",
             api_key="<your_openai_api_key>",
@@ -195,8 +196,8 @@ client.agents.start(
             output_modalities=["text", "audio"],
             greeting_message="Hello! I'm ready to chat in real-time.",
         ),
-        turn_detection=StartAgentsRequestPropertiesTurnDetection(
-            type=StartAgentsRequestPropertiesTurnDetectionType.SERVER_VAD,
+        turn_detection=TurnDetectionConfig(
+            type=TurnDetectionTypeValues.SERVER_VAD,  # deprecated; use config.end_of_speech instead
             threshold=0.5,
             silence_duration_ms=500,
         ),
