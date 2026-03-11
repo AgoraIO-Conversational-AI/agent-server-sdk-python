@@ -29,7 +29,7 @@ class StartAgentsRequestPropertiesSal(UncheckedBaseModel):
     > - For a registered voiceprint, ensure that:
     >   - Size: A single voiceprint file must not exceed 2 MB.
     >   - Duration: 10 to 15 seconds, with at least 8 seconds of effective audio without silent segments.
-    >   - Format: 16kHz sampling rate, 16-bit depth, mono PCM audio file. The file name extension must be ".pcm".      
+    >   - Format: 16kHz sampling rate, 16-bit depth, mono PCM audio file. The file name extension must be ".pcm".
     """
 
     if IS_PYDANTIC_V2:

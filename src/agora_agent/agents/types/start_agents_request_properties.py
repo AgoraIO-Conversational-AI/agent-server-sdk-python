@@ -71,19 +71,19 @@ class StartAgentsRequestProperties(UncheckedBaseModel):
     Automatic Speech Recognition (ASR) configuration.
     """
 
-    tts: Tts = pydantic.Field()
+    tts: typing.Optional[Tts] = pydantic.Field(default=None)
     """
     Text-to-speech (TTS) module configuration.
     """
 
-    llm: StartAgentsRequestPropertiesLlm = pydantic.Field()
+    llm: typing.Optional[StartAgentsRequestPropertiesLlm] = pydantic.Field(default=None)
     """
     Large language model (LLM) configuration.
     """
 
     mllm: typing.Optional[StartAgentsRequestPropertiesMllm] = pydantic.Field(default=None)
     """
-    Multimodal Large Language Model (MLLM) configuration for real-time audio and text processing.
+    Multimodal Large Language Model (MLLM) configuration for real-time audio and text processing. MLLM is an exclusive alternative to the standard `asr` + `llm` + `tts` pipeline.
     """
 
     avatar: typing.Optional[StartAgentsRequestPropertiesAvatar] = pydantic.Field(default=None)
