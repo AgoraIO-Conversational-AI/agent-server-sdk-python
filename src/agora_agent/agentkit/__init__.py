@@ -4,6 +4,10 @@ from .agent import (
     GeofenceConfig,
     RtcConfig,
     FillerWordsConfig,
+    FillerWordsTrigger,
+    FillerWordsTriggerFixedTimeConfig,
+    FillerWordsContent,
+    FillerWordsContentStaticConfig,
     TurnDetectionConfig,
     TurnDetectionNestedConfig,
     StartOfSpeechConfig,
@@ -16,11 +20,9 @@ from .agent import (
     EndOfSpeechMode,
     EndOfSpeechVadConfig,
     EndOfSpeechSemanticConfig,
-    TurnDetectionType,
     InterruptMode,
     Eagerness,
     SalConfig,
-    SalMode,
     AdvancedFeatures,
     SessionParams,
     SilenceConfig,
@@ -32,6 +34,15 @@ from .agent import (
     McpServersItem,
 )
 from .agent_session import AgentSession, AgentSessionOptions, AsyncAgentSession
+from .constants import (
+    DataChannel,
+    SilenceActionValues,
+    SalModeValues,
+    GeofenceArea,
+    GeofenceExcludeArea,
+    FillerWordsSelectionRule,
+    TurnDetectionTypeValues,
+)
 from .token import (
     GenerateConvoAITokenOptions,
     GenerateTokenOptions,
@@ -90,6 +101,10 @@ __all__ = [
     "GeofenceConfig",
     "RtcConfig",
     "FillerWordsConfig",
+    "FillerWordsTrigger",
+    "FillerWordsTriggerFixedTimeConfig",
+    "FillerWordsContent",
+    "FillerWordsContentStaticConfig",
     # Turn detection types
     "TurnDetectionConfig",
     "TurnDetectionNestedConfig",
@@ -104,12 +119,10 @@ __all__ = [
     "EndOfSpeechVadConfig",
     "EndOfSpeechSemanticConfig",
     # Deprecated turn detection types
-    "TurnDetectionType",
     "InterruptMode",
     "Eagerness",
     # SAL types
     "SalConfig",
-    "SalMode",
     # Advanced features
     "AdvancedFeatures",
     # Session parameters types
@@ -118,6 +131,14 @@ __all__ = [
     "SilenceAction",
     "FarewellConfig",
     "ParametersDataChannel",
+    # Type-safe constants
+    "DataChannel",
+    "SilenceActionValues",
+    "SalModeValues",
+    "GeofenceArea",
+    "GeofenceExcludeArea",
+    "FillerWordsSelectionRule",
+    "TurnDetectionTypeValues",
     # LLM sub-types
     "LlmGreetingConfigs",
     "LlmGreetingConfigsMode",

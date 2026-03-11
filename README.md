@@ -1,7 +1,7 @@
 # Agoraio Python Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FAgoraIO-Conversational-AI%2Fagent-server-sdk-python)
-[![pypi](https://img.shields.io/pypi/v/agora-agent-server-sdk)](https://pypi.python.org/pypi/agora-agent-server-sdk)
+[![pypi](https://img.shields.io/pypi/v/agent-server-sdk-python)](https://pypi.python.org/pypi/agent-server-sdk-python)
 
 The Agora Conversational AI SDK provides convenient access to the Agora Conversational AI APIs, 
 enabling you to build voice-powered AI agents with support for both cascading flows (ASR -> LLM -> TTS) 
@@ -30,7 +30,7 @@ and multimodal flows (MLLM) for real-time audio processing.
 ## Installation
 
 ```sh
-pip install agora-agent-server-sdk
+pip install agent-server-sdk-python
 ```
 
 ## Quick Start
@@ -155,26 +155,29 @@ A full reference for this library is available [here](https://github.com/AgoraIO
 For real-time audio processing using OpenAI's Realtime API or Google Gemini Live, use the MLLM (Multimodal Large Language Model) flow instead of the cascading ASR -> LLM -> TTS flow. See the [MLLM Overview](https://docs.agora.io/en/conversational-ai/models/mllm/overview) for more details.
 
 ```python
-from agora-agent-server-sdk import Agora
-from agora-agent-server-sdk.agents import (
+from agora_agent import Agora, Area
+from agora_agent.agentkit import (
+    AdvancedFeatures,
+    TurnDetectionConfig,
+    TurnDetectionTypeValues,
+)
+from agora_agent.agents import (
     StartAgentsRequestProperties,
-    StartAgentsRequestPropertiesAdvancedFeatures,
     StartAgentsRequestPropertiesMllm,
     StartAgentsRequestPropertiesMllmVendor,
     StartAgentsRequestPropertiesTts,
     StartAgentsRequestPropertiesTtsVendor,
     StartAgentsRequestPropertiesLlm,
-    StartAgentsRequestPropertiesTurnDetection,
-    StartAgentsRequestPropertiesTurnDetectionType,
 )
 
 client = Agora(
-    customer_id="YOUR_CUSTOMER_ID",
-    customer_secret="YOUR_CUSTOMER_SECRET",
+    area=Area.US,
+    app_id="YOUR_APP_ID",
+    app_certificate="YOUR_APP_CERTIFICATE",
 )
 
 client.agents.start(
-    appid="your_app_id",
+    client.app_id,
     name="mllm_agent",
     properties=StartAgentsRequestProperties(
         channel="channel_name",
@@ -182,9 +185,7 @@ client.agents.start(
         agent_rtc_uid="1001",
         remote_rtc_uids=["1002"],
         idle_timeout=120,
-        advanced_features=StartAgentsRequestPropertiesAdvancedFeatures(
-            enable_mllm=True,
-        ),
+        advanced_features=AdvancedFeatures(enable_mllm=True),
         mllm=StartAgentsRequestPropertiesMllm(
             url="wss://api.openai.com/v1/realtime",
             api_key="<your_openai_api_key>",
@@ -197,8 +198,8 @@ client.agents.start(
             output_modalities=["text", "audio"],
             greeting_message="Hello! I'm ready to chat in real-time.",
         ),
-        turn_detection=StartAgentsRequestPropertiesTurnDetection(
-            type=StartAgentsRequestPropertiesTurnDetectionType.SERVER_VAD,
+        turn_detection=TurnDetectionConfig(
+            type=TurnDetectionTypeValues.SERVER_VAD,  # deprecated; use config.end_of_speech instead
             threshold=0.5,
             silence_duration_ms=500,
         ),

@@ -18,14 +18,16 @@ Two MLLM vendors are supported:
 MLLM mode must be explicitly enabled via `advanced_features`:
 
 ```python
+from agora_agent.agentkit import Agent, AdvancedFeatures
+
 agent = Agent(
     name='realtime-agent',
     instructions='You are a voice assistant.',
-    advanced_features={'enable_mllm': True},
+    advanced_features=AdvancedFeatures(enable_mllm=True),
 )
 ```
 
-Without `advanced_features={'enable_mllm': True}`, the SDK treats the session as a cascading flow and requires LLM + TTS vendors.
+Without `AdvancedFeatures(enable_mllm=True)`, the SDK treats the session as a cascading flow and requires LLM + TTS vendors.
 
 ## OpenAI Realtime
 
@@ -33,7 +35,7 @@ Without `advanced_features={'enable_mllm': True}`, the SDK treats the session as
 
 ```python
 from agora_agent import Agora, Area
-from agora_agent.agentkit import Agent
+from agora_agent.agentkit import Agent, AdvancedFeatures
 from agora_agent.agentkit.vendors import OpenAIRealtime
 
 client = Agora(
@@ -46,7 +48,7 @@ agent = (
     Agent(
         name='realtime-agent',
         instructions='You are a helpful voice assistant.',
-        advanced_features={'enable_mllm': True},
+        advanced_features=AdvancedFeatures(enable_mllm=True),
     )
     .with_mllm(OpenAIRealtime(
         api_key='your-openai-key',
@@ -65,7 +67,7 @@ session.stop()
 ```python
 import asyncio
 from agora_agent import AsyncAgora, Area
-from agora_agent.agentkit import Agent
+from agora_agent.agentkit import Agent, AdvancedFeatures
 from agora_agent.agentkit.vendors import OpenAIRealtime
 
 async def main():
@@ -79,7 +81,7 @@ async def main():
         Agent(
             name='realtime-agent',
             instructions='You are a helpful voice assistant.',
-            advanced_features={'enable_mllm': True},
+            advanced_features=AdvancedFeatures(enable_mllm=True),
         )
         .with_mllm(OpenAIRealtime(
             api_key='your-openai-key',
@@ -100,7 +102,7 @@ Vertex AI requires Google Cloud credentials:
 
 ```python
 from agora_agent import Agora, Area
-from agora_agent.agentkit import Agent
+from agora_agent.agentkit import Agent, AdvancedFeatures
 from agora_agent.agentkit.vendors import VertexAI
 
 client = Agora(
@@ -113,7 +115,7 @@ agent = (
     Agent(
         name='gemini-agent',
         instructions='You are a helpful multilingual assistant.',
-        advanced_features={'enable_mllm': True},
+        advanced_features=AdvancedFeatures(enable_mllm=True),
     )
     .with_mllm(VertexAI(
         model='gemini-2.0-flash-exp',

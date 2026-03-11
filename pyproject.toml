@@ -1,5 +1,5 @@
 [project]
-name = "agora-agent-server-sdk"
+name = "agent-server-sdk-python"
 
 [tool.poetry]
 name = "agora-agent-server-sdk"

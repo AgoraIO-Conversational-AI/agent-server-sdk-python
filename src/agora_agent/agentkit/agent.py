@@ -34,7 +34,12 @@ from ..agents.types.start_agents_request_properties_llm_greeting_configs_mode im
 from ..agents.types.start_agents_request_properties_llm_mcp_servers_item import StartAgentsRequestPropertiesLlmMcpServersItem
 from ..agents.types.start_agents_request_properties_geofence import StartAgentsRequestPropertiesGeofence
 from ..agents.types.start_agents_request_properties_rtc import StartAgentsRequestPropertiesRtc
+from ..agents.types.start_agents_request_properties_advanced_features import StartAgentsRequestPropertiesAdvancedFeatures
 from ..agents.types.start_agents_request_properties_filler_words import StartAgentsRequestPropertiesFillerWords
+from ..agents.types.start_agents_request_properties_filler_words_trigger import StartAgentsRequestPropertiesFillerWordsTrigger
+from ..agents.types.start_agents_request_properties_filler_words_trigger_fixed_time_config import StartAgentsRequestPropertiesFillerWordsTriggerFixedTimeConfig
+from ..agents.types.start_agents_request_properties_filler_words_content import StartAgentsRequestPropertiesFillerWordsContent
+from ..agents.types.start_agents_request_properties_filler_words_content_static_config import StartAgentsRequestPropertiesFillerWordsContentStaticConfig
 from .token import generate_convo_ai_token, _validate_expires_in
 from .vendors.base import BaseAvatar, BaseLLM, BaseMLLM, BaseSTT, BaseTTS
 
@@ -42,7 +47,7 @@ from .vendors.base import BaseAvatar, BaseLLM, BaseMLLM, BaseSTT, BaseTTS
 TurnDetectionConfig = StartAgentsRequestPropertiesTurnDetection
 SalConfig = StartAgentsRequestPropertiesSal
 SalMode = StartAgentsRequestPropertiesSalSalMode
-AdvancedFeatures = typing.Dict[str, typing.Any]
+AdvancedFeatures = StartAgentsRequestPropertiesAdvancedFeatures
 SessionParams = StartAgentsRequestPropertiesParameters
 
 # SOS/EOS turn detection aliases (preferred)
@@ -87,6 +92,10 @@ McpServersItem = StartAgentsRequestPropertiesLlmMcpServersItem
 GeofenceConfig = StartAgentsRequestPropertiesGeofence
 RtcConfig = StartAgentsRequestPropertiesRtc
 FillerWordsConfig = StartAgentsRequestPropertiesFillerWords
+FillerWordsTrigger = StartAgentsRequestPropertiesFillerWordsTrigger
+FillerWordsTriggerFixedTimeConfig = StartAgentsRequestPropertiesFillerWordsTriggerFixedTimeConfig
+FillerWordsContent = StartAgentsRequestPropertiesFillerWordsContent
+FillerWordsContentStaticConfig = StartAgentsRequestPropertiesFillerWordsContentStaticConfig
 
 
 class Agent:
@@ -462,8 +471,10 @@ class Agent:
 
         is_mllm_mode = (
             self._advanced_features is not None
-            and isinstance(self._advanced_features, dict)
-            and self._advanced_features.get("enable_mllm") is True
+            and (
+                (isinstance(self._advanced_features, dict) and self._advanced_features.get("enable_mllm") is True)
+                or (isinstance(self._advanced_features, StartAgentsRequestPropertiesAdvancedFeatures) and self._advanced_features.enable_mllm is True)
+            )
         )
 
         base_kwargs: typing.Dict[str, typing.Any] = {
@@ -544,4 +555,8 @@ class Agent:
         new_agent._greeting = self._greeting
         new_agent._failure_message = self._failure_message
         new_agent._max_history = self._max_history
+        new_agent._geofence = self._geofence
+        new_agent._labels = self._labels
+        new_agent._rtc = self._rtc
+        new_agent._filler_words = self._filler_words
         return new_agent
