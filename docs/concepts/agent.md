@@ -33,6 +33,10 @@ agent = Agent(
 | `sal` | `SalConfig` | No | SAL (Speech Activity Level) configuration |
 | `advanced_features` | `Dict[str, Any]` | No | Advanced features (e.g., `{'enable_mllm': True}`) |
 | `parameters` | `SessionParams` | No | Additional session parameters |
+| `geofence` | `GeofenceConfig` | No | Regional access restriction |
+| `labels` | `Dict[str, str]` | No | Custom key-value labels (returned in callbacks) |
+| `rtc` | `RtcConfig` | No | RTC media encryption |
+| `filler_words` | `FillerWordsConfig` | No | Filler words while waiting for LLM |
 
 ## Builder Methods
 
@@ -55,7 +59,16 @@ Each `with_*` method returns a **new** `Agent` instance — the original is unch
 | `with_instructions(text)` | `str` | Override the system prompt |
 | `with_greeting(text)` | `str` | Override the greeting message |
 | `with_name(name)` | `str` | Override the agent name |
-| `with_turn_detection(config)` | `TurnDetectionConfig` | Override turn detection settings |
+| `with_turn_detection(config)` | `TurnDetectionConfig` | Override turn detection (use `config.start_of_speech` / `config.end_of_speech` for SOS/EOS) |
+| `with_sal(config)` | `SalConfig` | Set SAL configuration |
+| `with_advanced_features(features)` | `Dict[str, Any]` | Set advanced features |
+| `with_parameters(parameters)` | `SessionParams` | Set session parameters |
+| `with_failure_message(message)` | `str` | Set failure message |
+| `with_max_history(max_history)` | `int` | Set max history length |
+| `with_geofence(geofence)` | `GeofenceConfig` | Set geofence configuration |
+| `with_labels(labels)` | `Dict[str, str]` | Set custom labels |
+| `with_rtc(rtc)` | `RtcConfig` | Set RTC configuration |
+| `with_filler_words(filler_words)` | `FillerWordsConfig` | Set filler words configuration |
 
 ## Chaining Example
 
@@ -139,9 +152,19 @@ See [Avatar Integration](../guides/avatars.md) for details.
 | `agent.name` | `Optional[str]` | Agent name |
 | `agent.instructions` | `Optional[str]` | System prompt |
 | `agent.greeting` | `Optional[str]` | Greeting message |
+| `agent.failure_message` | `Optional[str]` | Message spoken when LLM fails |
+| `agent.max_history` | `Optional[int]` | Max conversation history length |
 | `agent.llm` | `Optional[Dict]` | LLM configuration dict |
 | `agent.tts` | `Optional[Dict]` | TTS configuration dict |
 | `agent.stt` | `Optional[Dict]` | STT configuration dict |
 | `agent.mllm` | `Optional[Dict]` | MLLM configuration dict |
+| `agent.avatar` | `Optional[Dict]` | Avatar configuration dict |
 | `agent.turn_detection` | `Optional[TurnDetectionConfig]` | Turn detection settings |
+| `agent.sal` | `Optional[SalConfig]` | SAL configuration |
+| `agent.advanced_features` | `Optional[Dict]` | Advanced features |
+| `agent.parameters` | `Optional[SessionParams]` | Session parameters |
+| `agent.geofence` | `Optional[GeofenceConfig]` | Geofence configuration |
+| `agent.labels` | `Optional[Dict[str, str]]` | Custom labels |
+| `agent.rtc` | `Optional[RtcConfig]` | RTC configuration |
+| `agent.filler_words` | `Optional[FillerWordsConfig]` | Filler words configuration |
 | `agent.config` | `Dict[str, Any]` | Full configuration dict |

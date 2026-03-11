@@ -21,6 +21,10 @@ Agent(
     greeting: Optional[str] = None,
     failure_message: Optional[str] = None,
     max_history: Optional[int] = None,
+    geofence: Optional[GeofenceConfig] = None,
+    labels: Optional[Dict[str, str]] = None,
+    rtc: Optional[RtcConfig] = None,
+    filler_words: Optional[FillerWordsConfig] = None,
 )
 ```
 
@@ -35,6 +39,10 @@ Agent(
 | `greeting` | `Optional[str]` | `None` | Auto-spoken greeting when agent joins |
 | `failure_message` | `Optional[str]` | `None` | Spoken on error |
 | `max_history` | `Optional[int]` | `None` | Max conversation history length |
+| `geofence` | `Optional[GeofenceConfig]` | `None` | Regional access restriction |
+| `labels` | `Optional[Dict[str, str]]` | `None` | Custom key-value labels (returned in callbacks) |
+| `rtc` | `Optional[RtcConfig]` | `None` | RTC media encryption |
+| `filler_words` | `Optional[FillerWordsConfig]` | `None` | Filler words while waiting for LLM |
 
 ## Builder Methods
 
@@ -89,7 +97,7 @@ agent = agent.with_avatar(HeyGenAvatar(api_key='your-key', quality='medium', ago
 
 ### `with_turn_detection(config: TurnDetectionConfig) -> Agent`
 
-Override turn detection settings.
+Override turn detection settings. Use `config.start_of_speech` and `config.end_of_speech` for the preferred SOS/EOS model.
 
 ### `with_instructions(instructions: str) -> Agent`
 
@@ -102,6 +110,42 @@ Override the greeting message.
 ### `with_name(name: str) -> Agent`
 
 Override the agent name.
+
+### `with_sal(config: SalConfig) -> Agent`
+
+Set SAL (Selective Attention Locking) configuration.
+
+### `with_advanced_features(features: AdvancedFeatures) -> Agent`
+
+Set advanced features (e.g. `{'enable_mllm': True}`, `{'enable_rtm': True}`).
+
+### `with_parameters(parameters: SessionParams) -> Agent`
+
+Set session parameters (silence config, farewell config, data channel, etc.).
+
+### `with_failure_message(message: str) -> Agent`
+
+Set the message spoken via TTS when the LLM call fails.
+
+### `with_max_history(max_history: int) -> Agent`
+
+Set the maximum conversation history length.
+
+### `with_geofence(geofence: GeofenceConfig) -> Agent`
+
+Set geofence configuration (restricts backend server regions).
+
+### `with_labels(labels: Dict[str, str]) -> Agent`
+
+Set custom labels (key-value pairs returned in notification callbacks).
+
+### `with_rtc(rtc: RtcConfig) -> Agent`
+
+Set RTC configuration.
+
+### `with_filler_words(filler_words: FillerWordsConfig) -> Agent`
+
+Set filler words configuration (played while waiting for LLM response).
 
 ## `create_session()`
 
@@ -149,7 +193,7 @@ to_properties(
     token: Optional[str] = None,
     app_id: Optional[str] = None,
     app_certificate: Optional[str] = None,
-    token_expiry_seconds: Optional[int] = None,
+    expires_in: Optional[int] = None,
 ) -> StartAgentsRequestProperties
 ```
 
@@ -162,9 +206,19 @@ to_properties(
 | `name` | `Optional[str]` | Agent name |
 | `instructions` | `Optional[str]` | System prompt |
 | `greeting` | `Optional[str]` | Greeting message |
+| `failure_message` | `Optional[str]` | Message spoken when LLM fails |
+| `max_history` | `Optional[int]` | Max conversation history length |
 | `llm` | `Optional[Dict[str, Any]]` | LLM config dict (from `to_config()`) |
 | `tts` | `Optional[Dict[str, Any]]` | TTS config dict |
 | `stt` | `Optional[Dict[str, Any]]` | STT config dict |
 | `mllm` | `Optional[Dict[str, Any]]` | MLLM config dict |
+| `avatar` | `Optional[Dict[str, Any]]` | Avatar config dict |
 | `turn_detection` | `Optional[TurnDetectionConfig]` | Turn detection settings |
+| `sal` | `Optional[SalConfig]` | SAL configuration |
+| `advanced_features` | `Optional[Dict[str, Any]]` | Advanced features |
+| `parameters` | `Optional[SessionParams]` | Session parameters |
+| `geofence` | `Optional[GeofenceConfig]` | Geofence configuration |
+| `labels` | `Optional[Dict[str, str]]` | Custom labels |
+| `rtc` | `Optional[RtcConfig]` | RTC configuration |
+| `filler_words` | `Optional[FillerWordsConfig]` | Filler words configuration |
 | `config` | `Dict[str, Any]` | Full configuration dict |
