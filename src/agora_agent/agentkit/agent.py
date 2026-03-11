@@ -8,15 +8,85 @@ if typing.TYPE_CHECKING:
 
 from ..agents.types.start_agents_request_properties import StartAgentsRequestProperties
 from ..agents.types.start_agents_request_properties_turn_detection import StartAgentsRequestPropertiesTurnDetection
+from ..agents.types.start_agents_request_properties_turn_detection_config import StartAgentsRequestPropertiesTurnDetectionConfig
+from ..agents.types.start_agents_request_properties_turn_detection_config_start_of_speech import StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeech
+from ..agents.types.start_agents_request_properties_turn_detection_config_start_of_speech_mode import StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechMode
+from ..agents.types.start_agents_request_properties_turn_detection_config_start_of_speech_vad_config import StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechVadConfig
+from ..agents.types.start_agents_request_properties_turn_detection_config_start_of_speech_keywords_config import StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechKeywordsConfig
+from ..agents.types.start_agents_request_properties_turn_detection_config_start_of_speech_disabled_config import StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechDisabledConfig
+from ..agents.types.start_agents_request_properties_turn_detection_config_start_of_speech_disabled_config_strategy import StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechDisabledConfigStrategy
+from ..agents.types.start_agents_request_properties_turn_detection_config_end_of_speech import StartAgentsRequestPropertiesTurnDetectionConfigEndOfSpeech
+from ..agents.types.start_agents_request_properties_turn_detection_config_end_of_speech_mode import StartAgentsRequestPropertiesTurnDetectionConfigEndOfSpeechMode
+from ..agents.types.start_agents_request_properties_turn_detection_config_end_of_speech_vad_config import StartAgentsRequestPropertiesTurnDetectionConfigEndOfSpeechVadConfig
+from ..agents.types.start_agents_request_properties_turn_detection_config_end_of_speech_semantic_config import StartAgentsRequestPropertiesTurnDetectionConfigEndOfSpeechSemanticConfig
+from ..agents.types.start_agents_request_properties_turn_detection_type import StartAgentsRequestPropertiesTurnDetectionType
+from ..agents.types.start_agents_request_properties_turn_detection_interrupt_mode import StartAgentsRequestPropertiesTurnDetectionInterruptMode
+from ..agents.types.start_agents_request_properties_turn_detection_eagerness import StartAgentsRequestPropertiesTurnDetectionEagerness
 from ..agents.types.start_agents_request_properties_sal import StartAgentsRequestPropertiesSal
+from ..agents.types.start_agents_request_properties_sal_sal_mode import StartAgentsRequestPropertiesSalSalMode
 from ..agents.types.start_agents_request_properties_parameters import StartAgentsRequestPropertiesParameters
+from ..agents.types.start_agents_request_properties_parameters_silence_config import StartAgentsRequestPropertiesParametersSilenceConfig
+from ..agents.types.start_agents_request_properties_parameters_silence_config_action import StartAgentsRequestPropertiesParametersSilenceConfigAction
+from ..agents.types.start_agents_request_properties_parameters_farewell_config import StartAgentsRequestPropertiesParametersFarewellConfig
+from ..agents.types.start_agents_request_properties_parameters_data_channel import StartAgentsRequestPropertiesParametersDataChannel
+from ..agents.types.start_agents_request_properties_llm_greeting_configs import StartAgentsRequestPropertiesLlmGreetingConfigs
+from ..agents.types.start_agents_request_properties_llm_greeting_configs_mode import StartAgentsRequestPropertiesLlmGreetingConfigsMode
+from ..agents.types.start_agents_request_properties_llm_mcp_servers_item import StartAgentsRequestPropertiesLlmMcpServersItem
+from ..agents.types.start_agents_request_properties_geofence import StartAgentsRequestPropertiesGeofence
+from ..agents.types.start_agents_request_properties_rtc import StartAgentsRequestPropertiesRtc
+from ..agents.types.start_agents_request_properties_filler_words import StartAgentsRequestPropertiesFillerWords
 from .token import generate_convo_ai_token, _validate_expires_in
 from .vendors.base import BaseAvatar, BaseLLM, BaseMLLM, BaseSTT, BaseTTS
 
+# Top-level aliases
 TurnDetectionConfig = StartAgentsRequestPropertiesTurnDetection
 SalConfig = StartAgentsRequestPropertiesSal
+SalMode = StartAgentsRequestPropertiesSalSalMode
 AdvancedFeatures = typing.Dict[str, typing.Any]
 SessionParams = StartAgentsRequestPropertiesParameters
+
+# SOS/EOS turn detection aliases (preferred)
+TurnDetectionNestedConfig = StartAgentsRequestPropertiesTurnDetectionConfig
+StartOfSpeechConfig = StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeech
+StartOfSpeechMode = StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechMode
+StartOfSpeechVadConfig = StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechVadConfig
+StartOfSpeechKeywordsConfig = StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechKeywordsConfig
+StartOfSpeechDisabledConfig = StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechDisabledConfig
+StartOfSpeechDisabledConfigStrategy = StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechDisabledConfigStrategy
+EndOfSpeechConfig = StartAgentsRequestPropertiesTurnDetectionConfigEndOfSpeech
+EndOfSpeechMode = StartAgentsRequestPropertiesTurnDetectionConfigEndOfSpeechMode
+EndOfSpeechVadConfig = StartAgentsRequestPropertiesTurnDetectionConfigEndOfSpeechVadConfig
+EndOfSpeechSemanticConfig = StartAgentsRequestPropertiesTurnDetectionConfigEndOfSpeechSemanticConfig
+
+# Deprecated turn detection aliases
+# Deprecated: Use TurnDetectionConfig with TurnDetectionNestedConfig.start_of_speech
+# and .end_of_speech instead. The `type` field and agora_vad/server_vad/semantic_vad
+# values will be removed in a future release.
+TurnDetectionType = StartAgentsRequestPropertiesTurnDetectionType
+
+# Deprecated: Use StartOfSpeechConfig with mode="vad"|"keywords"|"disabled" and the
+# corresponding vad_config, keywords_config, or disabled_config instead.
+InterruptMode = StartAgentsRequestPropertiesTurnDetectionInterruptMode
+
+# Deprecated: Only applies to server_vad/semantic_vad modes with OpenAI Realtime
+# (MLLM). Has no equivalent in the ASR + LLM + TTS pipeline.
+Eagerness = StartAgentsRequestPropertiesTurnDetectionEagerness
+
+# Parameters (SessionParams) sub-type aliases
+SilenceConfig = StartAgentsRequestPropertiesParametersSilenceConfig
+SilenceAction = StartAgentsRequestPropertiesParametersSilenceConfigAction
+FarewellConfig = StartAgentsRequestPropertiesParametersFarewellConfig
+ParametersDataChannel = StartAgentsRequestPropertiesParametersDataChannel
+
+# LLM sub-type aliases
+LlmGreetingConfigs = StartAgentsRequestPropertiesLlmGreetingConfigs
+LlmGreetingConfigsMode = StartAgentsRequestPropertiesLlmGreetingConfigsMode
+McpServersItem = StartAgentsRequestPropertiesLlmMcpServersItem
+
+# Additional top-level config aliases
+GeofenceConfig = StartAgentsRequestPropertiesGeofence
+RtcConfig = StartAgentsRequestPropertiesRtc
+FillerWordsConfig = StartAgentsRequestPropertiesFillerWords
 
 
 class Agent:
@@ -50,6 +120,10 @@ class Agent:
         greeting: typing.Optional[str] = None,
         failure_message: typing.Optional[str] = None,
         max_history: typing.Optional[int] = None,
+        geofence: typing.Optional[GeofenceConfig] = None,
+        labels: typing.Optional[typing.Dict[str, str]] = None,
+        rtc: typing.Optional[RtcConfig] = None,
+        filler_words: typing.Optional[FillerWordsConfig] = None,
     ):
         self._name = name
         self._instructions = instructions
@@ -67,6 +141,10 @@ class Agent:
         self._sal = sal
         self._advanced_features = advanced_features
         self._parameters = parameters
+        self._geofence = geofence
+        self._labels = labels
+        self._rtc = rtc
+        self._filler_words = filler_words
 
     def with_llm(self, vendor: BaseLLM) -> "Agent":
         new_agent = self._clone()
@@ -121,6 +199,78 @@ class Agent:
         new_agent._name = name
         return new_agent
 
+    def with_sal(self, config: SalConfig) -> "Agent":
+        """Returns a new Agent with the specified SAL (Selective Attention Locking) configuration."""
+        new_agent = self._clone()
+        new_agent._sal = config
+        return new_agent
+
+    def with_advanced_features(self, features: AdvancedFeatures) -> "Agent":
+        """Returns a new Agent with the specified advanced features configuration.
+
+        Use this to enable MLLM mode (``{"enable_mllm": True}``), RTM, and other features.
+        """
+        new_agent = self._clone()
+        new_agent._advanced_features = features
+        return new_agent
+
+    def with_parameters(self, parameters: SessionParams) -> "Agent":
+        """Returns a new Agent with the specified session parameters.
+
+        Use this to configure silence behaviour, graceful hang-up, data channel, and more.
+        """
+        new_agent = self._clone()
+        new_agent._parameters = parameters
+        return new_agent
+
+    def with_failure_message(self, message: str) -> "Agent":
+        """Returns a new Agent with the specified failure message.
+
+        The failure message is played via TTS when the LLM call fails.
+        """
+        new_agent = self._clone()
+        new_agent._failure_message = message
+        return new_agent
+
+    def with_max_history(self, max_history: int) -> "Agent":
+        """Returns a new Agent with the specified maximum conversation history length."""
+        new_agent = self._clone()
+        new_agent._max_history = max_history
+        return new_agent
+
+    def with_geofence(self, geofence: GeofenceConfig) -> "Agent":
+        """Returns a new Agent with the specified geofence configuration.
+
+        Restricts which geographic regions the agent's backend servers may run in.
+        """
+        new_agent = self._clone()
+        new_agent._geofence = geofence
+        return new_agent
+
+    def with_labels(self, labels: typing.Dict[str, str]) -> "Agent":
+        """Returns a new Agent with the specified custom labels.
+
+        Labels are key-value pairs attached to the agent and returned in notification callbacks.
+        """
+        new_agent = self._clone()
+        new_agent._labels = dict(labels)
+        return new_agent
+
+    def with_rtc(self, rtc: RtcConfig) -> "Agent":
+        """Returns a new Agent with the specified RTC configuration."""
+        new_agent = self._clone()
+        new_agent._rtc = rtc
+        return new_agent
+
+    def with_filler_words(self, filler_words: FillerWordsConfig) -> "Agent":
+        """Returns a new Agent with the specified filler words configuration.
+
+        Filler words are played while the agent waits for the LLM to respond.
+        """
+        new_agent = self._clone()
+        new_agent._filler_words = filler_words
+        return new_agent
+
     @property
     def name(self) -> typing.Optional[str]:
         return self._name
@@ -154,18 +304,66 @@ class Agent:
         return self._greeting
 
     @property
+    def failure_message(self) -> typing.Optional[str]:
+        return self._failure_message
+
+    @property
+    def max_history(self) -> typing.Optional[int]:
+        return self._max_history
+
+    @property
+    def avatar(self) -> typing.Optional[typing.Dict[str, typing.Any]]:
+        return self._avatar
+
+    @property
+    def sal(self) -> typing.Optional[SalConfig]:
+        return self._sal
+
+    @property
+    def advanced_features(self) -> typing.Optional[AdvancedFeatures]:
+        return self._advanced_features
+
+    @property
+    def parameters(self) -> typing.Optional[SessionParams]:
+        return self._parameters
+
+    @property
+    def geofence(self) -> typing.Optional[GeofenceConfig]:
+        return self._geofence
+
+    @property
+    def labels(self) -> typing.Optional[typing.Dict[str, str]]:
+        return self._labels
+
+    @property
+    def rtc(self) -> typing.Optional[RtcConfig]:
+        return self._rtc
+
+    @property
+    def filler_words(self) -> typing.Optional[FillerWordsConfig]:
+        return self._filler_words
+
+    @property
     def config(self) -> typing.Dict[str, typing.Any]:
         return {
             "name": self._name,
             "instructions": self._instructions,
+            "greeting": self._greeting,
+            "failure_message": self._failure_message,
+            "max_history": self._max_history,
+            "llm": self._llm,
+            "tts": self._tts,
+            "stt": self._stt,
+            "mllm": self._mllm,
             "turn_detection": self._turn_detection,
             "sal": self._sal,
             "avatar": self._avatar,
             "advanced_features": self._advanced_features,
             "parameters": self._parameters,
-            "greeting": self._greeting,
-            "failure_message": self._failure_message,
-            "max_history": self._max_history,
+            "geofence": self._geofence,
+            "labels": self._labels,
+            "rtc": self._rtc,
+            "filler_words": self._filler_words,
         }
 
     def create_session(
@@ -291,6 +489,14 @@ class Agent:
             base_kwargs["advanced_features"] = self._advanced_features
         if self._parameters is not None:
             base_kwargs["parameters"] = self._parameters
+        if self._geofence is not None:
+            base_kwargs["geofence"] = self._geofence
+        if self._labels is not None:
+            base_kwargs["labels"] = self._labels
+        if self._rtc is not None:
+            base_kwargs["rtc"] = self._rtc
+        if self._filler_words is not None:
+            base_kwargs["filler_words"] = self._filler_words
 
         if is_mllm_mode:
             return StartAgentsRequestProperties(**base_kwargs)

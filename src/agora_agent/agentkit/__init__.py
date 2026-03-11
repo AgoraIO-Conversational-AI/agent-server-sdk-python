@@ -1,4 +1,36 @@
-from .agent import Agent
+from .agent import (
+    Agent,
+    StartAgentsRequestProperties,
+    GeofenceConfig,
+    RtcConfig,
+    FillerWordsConfig,
+    TurnDetectionConfig,
+    TurnDetectionNestedConfig,
+    StartOfSpeechConfig,
+    StartOfSpeechMode,
+    StartOfSpeechVadConfig,
+    StartOfSpeechKeywordsConfig,
+    StartOfSpeechDisabledConfig,
+    StartOfSpeechDisabledConfigStrategy,
+    EndOfSpeechConfig,
+    EndOfSpeechMode,
+    EndOfSpeechVadConfig,
+    EndOfSpeechSemanticConfig,
+    TurnDetectionType,
+    InterruptMode,
+    Eagerness,
+    SalConfig,
+    SalMode,
+    AdvancedFeatures,
+    SessionParams,
+    SilenceConfig,
+    SilenceAction,
+    FarewellConfig,
+    ParametersDataChannel,
+    LlmGreetingConfigs,
+    LlmGreetingConfigsMode,
+    McpServersItem,
+)
 from .agent_session import AgentSession, AgentSessionOptions, AsyncAgentSession
 from .token import (
     GenerateConvoAITokenOptions,
@@ -52,6 +84,44 @@ from .vendors import (
 
 __all__ = [
     "Agent",
+    # Return type of Agent.to_properties()
+    "StartAgentsRequestProperties",
+    # Top-level config types
+    "GeofenceConfig",
+    "RtcConfig",
+    "FillerWordsConfig",
+    # Turn detection types
+    "TurnDetectionConfig",
+    "TurnDetectionNestedConfig",
+    "StartOfSpeechConfig",
+    "StartOfSpeechMode",
+    "StartOfSpeechVadConfig",
+    "StartOfSpeechKeywordsConfig",
+    "StartOfSpeechDisabledConfig",
+    "StartOfSpeechDisabledConfigStrategy",
+    "EndOfSpeechConfig",
+    "EndOfSpeechMode",
+    "EndOfSpeechVadConfig",
+    "EndOfSpeechSemanticConfig",
+    # Deprecated turn detection types
+    "TurnDetectionType",
+    "InterruptMode",
+    "Eagerness",
+    # SAL types
+    "SalConfig",
+    "SalMode",
+    # Advanced features
+    "AdvancedFeatures",
+    # Session parameters types
+    "SessionParams",
+    "SilenceConfig",
+    "SilenceAction",
+    "FarewellConfig",
+    "ParametersDataChannel",
+    # LLM sub-types
+    "LlmGreetingConfigs",
+    "LlmGreetingConfigsMode",
+    "McpServersItem",
     "AgentSession",
     "AsyncAgentSession",
     "AgentSessionOptions",
