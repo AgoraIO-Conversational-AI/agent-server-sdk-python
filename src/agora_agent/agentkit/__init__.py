@@ -20,9 +20,11 @@ from .agent import (
     EndOfSpeechMode,
     EndOfSpeechVadConfig,
     EndOfSpeechSemanticConfig,
+    TurnDetectionType,
     InterruptMode,
     Eagerness,
     SalConfig,
+    SalMode,
     AdvancedFeatures,
     SessionParams,
     SilenceConfig,
@@ -119,10 +121,12 @@ __all__ = [
     "EndOfSpeechVadConfig",
     "EndOfSpeechSemanticConfig",
     # Deprecated turn detection types
+    "TurnDetectionType",
     "InterruptMode",
     "Eagerness",
     # SAL types
     "SalConfig",
+    "SalMode",
     # Advanced features
     "AdvancedFeatures",
     # Session parameters types
