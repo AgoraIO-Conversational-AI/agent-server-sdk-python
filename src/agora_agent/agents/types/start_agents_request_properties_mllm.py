@@ -10,7 +10,7 @@ from .start_agents_request_properties_mllm_vendor import StartAgentsRequestPrope
 
 class StartAgentsRequestPropertiesMllm(UncheckedBaseModel):
     """
-    Multimodal Large Language Model (MLLM) configuration for real-time audio and text processing.
+    Multimodal Large Language Model (MLLM) configuration for real-time audio and text processing. MLLM is an exclusive alternative to the standard `asr` + `llm` + `tts` pipeline.
     """
 
     url: typing.Optional[str] = pydantic.Field(default=None)
