@@ -322,6 +322,35 @@ class FishAudioTTS(BaseTTS):
         return result
 
 
+class GroqTTSOptions(BaseModel):
+    key: str = Field(..., description="Groq API key")
+    model: Optional[str] = Field(default=None, description="Model name")
+    skip_patterns: Optional[List[int]] = Field(default=None)
+
+    class Config:
+        extra = "forbid"
+
+
+class GroqTTS(BaseTTS):
+    def __init__(self, **kwargs: Any):
+        self.options = GroqTTSOptions(**kwargs)
+
+    @property
+    def sample_rate(self) -> Optional[int]:
+        return None
+
+    def to_config(self) -> Dict[str, Any]:
+        params: Dict[str, Any] = {"key": self.options.key}
+
+        if self.options.model is not None:
+            params["model"] = self.options.model
+
+        result: Dict[str, Any] = {"vendor": "groq", "params": params}
+        if self.options.skip_patterns is not None:
+            result["skip_patterns"] = self.options.skip_patterns
+        return result
+
+
 class MiniMaxTTSOptions(BaseModel):
     key: str = Field(..., description="MiniMax API key")
     group_id: str = Field(..., description="MiniMax group identifier")
@@ -358,9 +387,9 @@ class MiniMaxTTS(BaseTTS):
 
 
 class SarvamTTSOptions(BaseModel):
-    api_key: str = Field(..., description="Sarvam API key")
-    voice_id: Optional[str] = Field(default=None, description="Voice ID")
-    model: Optional[str] = Field(default=None, description="Model name")
+    key: str = Field(..., description="Sarvam API subscription key")
+    speaker: str = Field(..., description="Speaker/voice ID (e.g., 'anushka', 'abhilash', 'karun', 'hitesh', 'manisha', 'vidya', 'arya')")
+    target_language_code: str = Field(..., description="Target language code (e.g., 'en-IN', 'hi-IN', 'ta-IN')")
     skip_patterns: Optional[List[int]] = Field(default=None)
 
     class Config:
@@ -376,14 +405,46 @@ class SarvamTTS(BaseTTS):
         return None
 
     def to_config(self) -> Dict[str, Any]:
-        params: Dict[str, Any] = {"api_key": self.options.api_key}
-
-        if self.options.voice_id is not None:
-            params["voice_id"] = self.options.voice_id
-        if self.options.model is not None:
-            params["model"] = self.options.model
+        params: Dict[str, Any] = {
+            "key": self.options.key,
+            "speaker": self.options.speaker,
+            "target_language_code": self.options.target_language_code,
+        }
 
         result: Dict[str, Any] = {"vendor": "sarvam", "params": params}
+        if self.options.skip_patterns is not None:
+            result["skip_patterns"] = self.options.skip_patterns
+        return result
+
+
+class MurfTTSOptions(BaseModel):
+    key: str = Field(..., description="Murf API key")
+    voice_id: str = Field(..., description="Voice ID (e.g., 'Ariana', 'Natalie', 'Ken')")
+    style: Optional[str] = Field(default=None, description="Voice style (e.g., 'Angry', 'Sad', 'Conversational', 'Newscast')")
+    skip_patterns: Optional[List[int]] = Field(default=None)
+
+    class Config:
+        extra = "forbid"
+
+
+class MurfTTS(BaseTTS):
+    def __init__(self, **kwargs: Any):
+        self.options = MurfTTSOptions(**kwargs)
+
+    @property
+    def sample_rate(self) -> Optional[int]:
+        return None
+
+    def to_config(self) -> Dict[str, Any]:
+        params: Dict[str, Any] = {
+            "key": self.options.key,
+            "voice_id": self.options.voice_id,
+        }
+
+        if self.options.style is not None:
+            params["style"] = self.options.style
+
+        result: Dict[str, Any] = {"vendor": "murf", "params": params}
         if self.options.skip_patterns is not None:
             result["skip_patterns"] = self.options.skip_patterns
         return result
