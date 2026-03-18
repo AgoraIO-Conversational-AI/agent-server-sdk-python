@@ -8,8 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 
-- `GroqTTS` vendor
 - `MurfTTS` vendor
+
 
 ### Fixed
 
@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - `AzureOpenAI` LLM: added `params` escape hatch for passing arbitrary API parameters
 - `Anthropic` LLM: added `url` for custom endpoints and `params` escape hatch
 - `Gemini` LLM: added `url` for custom endpoints and `params` escape hatch; named model params (`temperature`, `top_p`, `top_k`, `max_output_tokens`) now take precedence over `params` dict
+- `SpeechmaticsSTT`, `SarvamSTT`: added optional `model` field
 
 ## [v1.0.0] — 2026-03-11
 
