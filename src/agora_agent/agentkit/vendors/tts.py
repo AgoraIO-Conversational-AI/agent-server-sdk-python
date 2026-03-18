@@ -322,35 +322,6 @@ class FishAudioTTS(BaseTTS):
         return result
 
 
-class GroqTTSOptions(BaseModel):
-    key: str = Field(..., description="Groq API key")
-    model: Optional[str] = Field(default=None, description="Model name")
-    skip_patterns: Optional[List[int]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
-
-class GroqTTS(BaseTTS):
-    def __init__(self, **kwargs: Any):
-        self.options = GroqTTSOptions(**kwargs)
-
-    @property
-    def sample_rate(self) -> Optional[int]:
-        return None
-
-    def to_config(self) -> Dict[str, Any]:
-        params: Dict[str, Any] = {"key": self.options.key}
-
-        if self.options.model is not None:
-            params["model"] = self.options.model
-
-        result: Dict[str, Any] = {"vendor": "groq", "params": params}
-        if self.options.skip_patterns is not None:
-            result["skip_patterns"] = self.options.skip_patterns
-        return result
-
-
 class MiniMaxTTSOptions(BaseModel):
     key: str = Field(..., description="MiniMax API key")
     group_id: str = Field(..., description="MiniMax group identifier")

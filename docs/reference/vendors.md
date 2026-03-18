@@ -200,30 +200,33 @@ Fixed sample rate: 24000 Hz.
 | `reference_id` | `str` | Yes | — | Reference ID |
 | `skip_patterns` | `List[int]` | No | `None` | Skip patterns |
 
-### `GroqTTS`
-
-| Parameter | Type | Required | Default | Description |
-|---|---|---|---|---|
-| `key` | `str` | Yes | — | Groq API key |
-| `model` | `str` | No | `None` | Model name |
-| `skip_patterns` | `List[int]` | No | `None` | Skip patterns |
-
 ### `MiniMaxTTS`
 
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `key` | `str` | Yes | — | MiniMax API key |
-| `voice_id` | `str` | No | `None` | Voice ID |
-| `model` | `str` | No | `None` | Model name |
+| `group_id` | `str` | Yes | — | MiniMax group ID |
+| `model` | `str` | Yes | — | Model name (e.g., `speech-02-turbo`) |
+| `voice_id` | `str` | Yes | — | Voice style identifier |
+| `url` | `str` | Yes | — | WebSocket endpoint |
+| `skip_patterns` | `List[int]` | No | `None` | Skip patterns |
+
+### `MurfTTS`
+
+| Parameter | Type | Required | Default | Description |
+|---|---|---|---|---|
+| `key` | `str` | Yes | — | Murf API key |
+| `voice_id` | `str` | Yes | — | Voice ID (e.g., `Ariana`, `Natalie`) |
+| `style` | `str` | No | `None` | Voice style (e.g., `Conversational`) |
 | `skip_patterns` | `List[int]` | No | `None` | Skip patterns |
 
 ### `SarvamTTS`
 
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `api_key` | `str` | Yes | — | Sarvam API key |
-| `voice_id` | `str` | No | `None` | Voice ID |
-| `model` | `str` | No | `None` | Model name |
+| `key` | `str` | Yes | — | Sarvam API key |
+| `speaker` | `str` | Yes | — | Speaker name |
+| `target_language_code` | `str` | Yes | — | Target language code |
 | `skip_patterns` | `List[int]` | No | `None` | Skip patterns |
 
 ---
