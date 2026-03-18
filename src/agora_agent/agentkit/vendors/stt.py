@@ -8,6 +8,7 @@ from .base import BaseSTT
 class SpeechmaticsSTTOptions(BaseModel):
     api_key: str = Field(..., description="Speechmatics API key")
     language: str = Field(..., description="Language code (e.g., en, es, fr)")
+    model: Optional[str] = Field(default=None, description="Model name")
     additional_params: Optional[Dict[str, Any]] = Field(default=None)
 
     class Config:
@@ -23,6 +24,8 @@ class SpeechmaticsSTT(BaseSTT):
             "api_key": self.options.api_key,
             "language": self.options.language,
         }
+        if self.options.model is not None:
+            params["model"] = self.options.model
         if self.options.additional_params is not None:
             params.update(self.options.additional_params)
 
@@ -247,6 +250,7 @@ class AresSTT(BaseSTT):
 class SarvamSTTOptions(BaseModel):
     api_key: str = Field(..., description="Sarvam API key")
     language: str = Field(..., description="Language code (e.g., en, hi, ta)")
+    model: Optional[str] = Field(default=None, description="Model name")
     additional_params: Optional[Dict[str, Any]] = Field(default=None)
 
     class Config:
@@ -262,6 +266,8 @@ class SarvamSTT(BaseSTT):
             "api_key": self.options.api_key,
             "language": self.options.language,
         }
+        if self.options.model is not None:
+            params["model"] = self.options.model
         if self.options.additional_params is not None:
             params.update(self.options.additional_params)
 

@@ -32,6 +32,7 @@ class OpenAIOptions(BaseModel):
     template_variables: Optional[Dict[str, str]] = Field(default=None)
     vendor: Optional[str] = Field(default=None)
     mcp_servers: Optional[List[Dict[str, Any]]] = Field(default=None)
+    max_history: Optional[int] = Field(default=None, gt=0, description="Maximum number of conversation history messages to cache")
 
     class Config:
         extra = "forbid"
@@ -78,6 +79,8 @@ class OpenAI(BaseLLM):
             config["vendor"] = self.options.vendor
         if self.options.mcp_servers is not None:
             config["mcp_servers"] = _ensure_mcp_transport(self.options.mcp_servers)
+        if self.options.max_history is not None:
+            config["max_history"] = self.options.max_history
 
         return config
 
@@ -94,11 +97,13 @@ class AzureOpenAIOptions(BaseModel):
     greeting_message: Optional[str] = Field(default=None)
     failure_message: Optional[str] = Field(default=None)
     input_modalities: Optional[List[str]] = Field(default=None)
+    params: Optional[Dict[str, Any]] = Field(default=None)
     output_modalities: Optional[List[str]] = Field(default=None)
     greeting_configs: Optional[Dict[str, Any]] = Field(default=None)
     template_variables: Optional[Dict[str, str]] = Field(default=None)
     vendor: Optional[str] = Field(default=None)
     mcp_servers: Optional[List[Dict[str, Any]]] = Field(default=None)
+    max_history: Optional[int] = Field(default=None, gt=0, description="Maximum number of conversation history messages to cache")
 
     class Config:
         extra = "forbid"
@@ -122,7 +127,8 @@ class AzureOpenAI(BaseLLM):
             "input_modalities": self.options.input_modalities or ["text"],
         }
 
-        params: Dict[str, Any] = {}
+        # Named fields take precedence over anything in the generic params dict.
+        params: Dict[str, Any] = dict(self.options.params or {})
         if self.options.temperature is not None:
             params["temperature"] = self.options.temperature
         if self.options.top_p is not None:
@@ -146,6 +152,8 @@ class AzureOpenAI(BaseLLM):
             config["template_variables"] = self.options.template_variables
         if self.options.mcp_servers is not None:
             config["mcp_servers"] = _ensure_mcp_transport(self.options.mcp_servers)
+        if self.options.max_history is not None:
+            config["max_history"] = self.options.max_history
 
         return config
 
@@ -153,6 +161,7 @@ class AzureOpenAI(BaseLLM):
 class AnthropicOptions(BaseModel):
     api_key: str = Field(..., description="Anthropic API key")
     model: str = Field(default="claude-3-5-sonnet-20241022", description="Model name")
+    url: Optional[str] = Field(default=None, description="Custom API endpoint URL")
     max_tokens: Optional[int] = Field(default=None, gt=0)
     temperature: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     top_p: Optional[float] = Field(default=None, ge=0.0, le=1.0)
@@ -160,11 +169,13 @@ class AnthropicOptions(BaseModel):
     greeting_message: Optional[str] = Field(default=None)
     failure_message: Optional[str] = Field(default=None)
     input_modalities: Optional[List[str]] = Field(default=None)
+    params: Optional[Dict[str, Any]] = Field(default=None)
     output_modalities: Optional[List[str]] = Field(default=None)
     greeting_configs: Optional[Dict[str, Any]] = Field(default=None)
     template_variables: Optional[Dict[str, str]] = Field(default=None)
     vendor: Optional[str] = Field(default=None)
     mcp_servers: Optional[List[Dict[str, Any]]] = Field(default=None)
+    max_history: Optional[int] = Field(default=None, gt=0, description="Maximum number of conversation history messages to cache")
 
     class Config:
         extra = "forbid"
@@ -175,20 +186,23 @@ class Anthropic(BaseLLM):
         self.options = AnthropicOptions(**kwargs)
 
     def to_config(self) -> Dict[str, Any]:
+        # Named fields take precedence over anything in the generic params dict.
+        params: Dict[str, Any] = {"model": self.options.model, **(self.options.params or {})}
+        if self.options.max_tokens is not None:
+            params["max_tokens"] = self.options.max_tokens
+        if self.options.temperature is not None:
+            params["temperature"] = self.options.temperature
+        if self.options.top_p is not None:
+            params["top_p"] = self.options.top_p
+
         config: Dict[str, Any] = {
-            "url": "https://api.anthropic.com/v1/messages",
+            "url": self.options.url or "https://api.anthropic.com/v1/messages",
             "api_key": self.options.api_key,
-            "params": {"model": self.options.model},
+            "params": params,
             "style": "anthropic",
             "input_modalities": self.options.input_modalities or ["text"],
         }
 
-        if self.options.max_tokens is not None:
-            config["params"]["max_tokens"] = self.options.max_tokens
-        if self.options.temperature is not None:
-            config["params"]["temperature"] = self.options.temperature
-        if self.options.top_p is not None:
-            config["params"]["top_p"] = self.options.top_p
         if self.options.system_messages is not None:
             config["system_messages"] = self.options.system_messages
         if self.options.greeting_message is not None:
@@ -205,6 +219,8 @@ class Anthropic(BaseLLM):
             config["vendor"] = self.options.vendor
         if self.options.mcp_servers is not None:
             config["mcp_servers"] = _ensure_mcp_transport(self.options.mcp_servers)
+        if self.options.max_history is not None:
+            config["max_history"] = self.options.max_history
 
         return config
 
@@ -212,6 +228,7 @@ class Anthropic(BaseLLM):
 class GeminiOptions(BaseModel):
     api_key: str = Field(..., description="Google AI API key")
     model: str = Field(default="gemini-2.0-flash-exp", description="Model name")
+    url: Optional[str] = Field(default=None, description="Custom API endpoint URL")
     temperature: Optional[float] = Field(default=None, ge=0.0, le=2.0)
     top_p: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     top_k: Optional[int] = Field(default=None, gt=0)
@@ -220,11 +237,13 @@ class GeminiOptions(BaseModel):
     greeting_message: Optional[str] = Field(default=None)
     failure_message: Optional[str] = Field(default=None)
     input_modalities: Optional[List[str]] = Field(default=None)
+    params: Optional[Dict[str, Any]] = Field(default=None)
     output_modalities: Optional[List[str]] = Field(default=None)
     greeting_configs: Optional[Dict[str, Any]] = Field(default=None)
     template_variables: Optional[Dict[str, str]] = Field(default=None)
     vendor: Optional[str] = Field(default=None)
     mcp_servers: Optional[List[Dict[str, Any]]] = Field(default=None)
+    max_history: Optional[int] = Field(default=None, gt=0, description="Maximum number of conversation history messages to cache")
 
     class Config:
         extra = "forbid"
@@ -235,22 +254,25 @@ class Gemini(BaseLLM):
         self.options = GeminiOptions(**kwargs)
 
     def to_config(self) -> Dict[str, Any]:
+        # Named fields take precedence over anything in the generic params dict.
+        params: Dict[str, Any] = {"model": self.options.model, **(self.options.params or {})}
+        if self.options.temperature is not None:
+            params["temperature"] = self.options.temperature
+        if self.options.top_p is not None:
+            params["top_p"] = self.options.top_p
+        if self.options.top_k is not None:
+            params["top_k"] = self.options.top_k
+        if self.options.max_output_tokens is not None:
+            params["max_output_tokens"] = self.options.max_output_tokens
+
         config: Dict[str, Any] = {
-            "url": "https://generativelanguage.googleapis.com/v1beta/models",
+            "url": self.options.url or "https://generativelanguage.googleapis.com/v1beta/models",
             "api_key": self.options.api_key,
-            "params": {"model": self.options.model},
+            "params": params,
             "style": "gemini",
             "input_modalities": self.options.input_modalities or ["text"],
         }
 
-        if self.options.temperature is not None:
-            config["params"]["temperature"] = self.options.temperature
-        if self.options.top_p is not None:
-            config["params"]["top_p"] = self.options.top_p
-        if self.options.top_k is not None:
-            config["params"]["top_k"] = self.options.top_k
-        if self.options.max_output_tokens is not None:
-            config["params"]["max_output_tokens"] = self.options.max_output_tokens
         if self.options.system_messages is not None:
             config["system_messages"] = self.options.system_messages
         if self.options.greeting_message is not None:
@@ -267,5 +289,7 @@ class Gemini(BaseLLM):
             config["vendor"] = self.options.vendor
         if self.options.mcp_servers is not None:
             config["mcp_servers"] = _ensure_mcp_transport(self.options.mcp_servers)
+        if self.options.max_history is not None:
+            config["max_history"] = self.options.max_history
 
         return config
