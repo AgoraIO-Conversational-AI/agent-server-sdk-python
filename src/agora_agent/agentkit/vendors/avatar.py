@@ -12,10 +12,11 @@ class HeyGenAvatarOptions(BaseModel):
     api_key: str = Field(..., description="HeyGen API key")
     quality: str = Field(..., description="Avatar quality: low, medium, or high")
     agora_uid: str = Field(..., description="Agora UID for the avatar stream")
-    avatar_name: Optional[str] = Field(default=None, description="Avatar name")
-    voice_id: Optional[str] = Field(default=None, description="Voice ID")
-    language: Optional[str] = Field(default=None, description="Language code")
-    version: Optional[str] = Field(default=None, description="API version (v1 or v2)")
+    agora_token: Optional[str] = Field(default=None, description="RTC token for avatar authentication")
+    avatar_id: Optional[str] = Field(default=None, description="HeyGen avatar ID")
+    enable: Optional[bool] = Field(default=None, description="Enable avatar (default: true)")
+    disable_idle_timeout: Optional[bool] = Field(default=None, description="Whether to disable idle timeout")
+    activity_idle_timeout: Optional[int] = Field(default=None, description="Idle timeout in seconds")
 
     @field_validator("quality")
     @classmethod
@@ -44,16 +45,17 @@ class HeyGenAvatar(BaseAvatar):
             "agora_uid": self.options.agora_uid,
         }
 
-        if self.options.avatar_name is not None:
-            params["avatar_name"] = self.options.avatar_name
-        if self.options.voice_id is not None:
-            params["voice_id"] = self.options.voice_id
-        if self.options.language is not None:
-            params["language"] = self.options.language
-        if self.options.version is not None:
-            params["version"] = self.options.version
+        if self.options.agora_token is not None:
+            params["agora_token"] = self.options.agora_token
+        if self.options.avatar_id is not None:
+            params["avatar_id"] = self.options.avatar_id
+        if self.options.disable_idle_timeout is not None:
+            params["disable_idle_timeout"] = self.options.disable_idle_timeout
+        if self.options.activity_idle_timeout is not None:
+            params["activity_idle_timeout"] = self.options.activity_idle_timeout
 
-        return {"vendor": "heygen", "params": params}
+        enable = self.options.enable if self.options.enable is not None else True
+        return {"enable": enable, "vendor": "heygen", "params": params}
 
 
 class AkoolAvatarOptions(BaseModel):

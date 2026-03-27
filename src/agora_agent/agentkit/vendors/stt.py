@@ -234,17 +234,12 @@ class AresSTT(BaseSTT):
         self.options = AresSTTOptions(**kwargs)
 
     def to_config(self) -> Dict[str, Any]:
-        params: Dict[str, Any] = {}
+        config: Dict[str, Any] = {"vendor": "ares"}
         if self.options.language is not None:
-            params["language"] = self.options.language
-        if self.options.additional_params is not None:
-            params.update(self.options.additional_params)
-
-        return {
-            "vendor": "ares",
-            "language": self.options.language,
-            "params": params,
-        }
+            config["language"] = self.options.language
+        if self.options.additional_params:
+            config["params"] = self.options.additional_params
+        return config
 
 
 class SarvamSTTOptions(BaseModel):

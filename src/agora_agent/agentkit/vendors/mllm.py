@@ -14,6 +14,9 @@ class OpenAIRealtimeOptions(BaseModel):
     output_modalities: Optional[List[str]] = Field(default=None, description="Output modalities")
     messages: Optional[List[Dict[str, Any]]] = Field(default=None, description="Conversation messages")
     params: Optional[Dict[str, Any]] = Field(default=None, description="Additional parameters")
+    predefined_tools: Optional[List[str]] = Field(default=None, description="List of predefined tools")
+    failure_message: Optional[str] = Field(default=None, description="Message played on failure")
+    max_history: Optional[int] = Field(default=None, description="Maximum conversation history length")
 
     class Config:
         extra = "forbid"
@@ -47,6 +50,12 @@ class OpenAIRealtime(BaseMLLM):
             config["output_modalities"] = self.options.output_modalities
         if self.options.messages is not None:
             config["messages"] = self.options.messages
+        if self.options.predefined_tools is not None:
+            config["predefined_tools"] = self.options.predefined_tools
+        if self.options.failure_message is not None:
+            config["failure_message"] = self.options.failure_message
+        if self.options.max_history is not None:
+            config["max_history"] = self.options.max_history
 
         return config
 
@@ -63,6 +72,9 @@ class VertexAIOptions(BaseModel):
     output_modalities: Optional[List[str]] = Field(default=None, description="Output modalities")
     messages: Optional[List[Dict[str, Any]]] = Field(default=None, description="Conversation messages")
     additional_params: Optional[Dict[str, Any]] = Field(default=None, description="Additional parameters")
+    predefined_tools: Optional[List[str]] = Field(default=None, description="List of predefined tools")
+    failure_message: Optional[str] = Field(default=None, description="Message played on failure")
+    max_history: Optional[int] = Field(default=None, description="Maximum conversation history length")
 
     class Config:
         extra = "forbid"
@@ -101,5 +113,11 @@ class VertexAI(BaseMLLM):
             config["output_modalities"] = self.options.output_modalities
         if self.options.messages is not None:
             config["messages"] = self.options.messages
+        if self.options.predefined_tools is not None:
+            config["predefined_tools"] = self.options.predefined_tools
+        if self.options.failure_message is not None:
+            config["failure_message"] = self.options.failure_message
+        if self.options.max_history is not None:
+            config["max_history"] = self.options.max_history
 
         return config

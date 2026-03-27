@@ -94,9 +94,11 @@ class MicrosoftTTS(BaseTTS):
 
 
 class OpenAITTSOptions(BaseModel):
-    key: str = Field(..., description="OpenAI API key")
+    api_key: str = Field(..., description="OpenAI API key")
     voice: str = Field(..., description="Voice name (alloy, echo, fable, onyx, nova, shimmer)")
     model: Optional[str] = Field(default=None, description="Model name (tts-1, tts-1-hd)")
+    response_format: Optional[str] = Field(default=None, description="Audio format (e.g., pcm)")
+    speed: Optional[float] = Field(default=None, description="Speech speed multiplier")
     skip_patterns: Optional[List[int]] = Field(default=None)
 
     class Config:
@@ -113,12 +115,16 @@ class OpenAITTS(BaseTTS):
 
     def to_config(self) -> Dict[str, Any]:
         params: Dict[str, Any] = {
-            "key": self.options.key,
+            "api_key": self.options.api_key,
             "voice": self.options.voice,
         }
 
         if self.options.model is not None:
             params["model"] = self.options.model
+        if self.options.response_format is not None:
+            params["response_format"] = self.options.response_format
+        if self.options.speed is not None:
+            params["speed"] = self.options.speed
 
         result: Dict[str, Any] = {"vendor": "openai", "params": params}
         if self.options.skip_patterns is not None:
@@ -127,7 +133,7 @@ class OpenAITTS(BaseTTS):
 
 
 class CartesiaTTSOptions(BaseModel):
-    key: str = Field(..., description="Cartesia API key")
+    api_key: str = Field(..., description="Cartesia API key")
     voice_id: str = Field(..., description="Voice ID")
     model_id: Optional[str] = Field(default=None, description="Model ID")
     sample_rate: Optional[CartesiaSampleRate] = Field(default=None, description="Sample rate in Hz")
@@ -147,8 +153,8 @@ class CartesiaTTS(BaseTTS):
 
     def to_config(self) -> Dict[str, Any]:
         params: Dict[str, Any] = {
-            "key": self.options.key,
-            "voice_id": self.options.voice_id,
+            "api_key": self.options.api_key,
+            "voice": {"mode": "id", "id": self.options.voice_id},
         }
 
         if self.options.model_id is not None:
@@ -264,6 +270,9 @@ class RimeTTSOptions(BaseModel):
     key: str = Field(..., description="Rime API key")
     speaker: str = Field(..., description="Speaker ID")
     model_id: Optional[str] = Field(default=None, description="Model ID")
+    lang: Optional[str] = Field(default=None, description="Language code")
+    sampling_rate: Optional[int] = Field(default=None, description="Sampling rate in Hz")
+    speed_alpha: Optional[float] = Field(default=None, description="Speed multiplier")
     skip_patterns: Optional[List[int]] = Field(default=None)
 
     class Config:
@@ -286,6 +295,12 @@ class RimeTTS(BaseTTS):
 
         if self.options.model_id is not None:
             params["model_id"] = self.options.model_id
+        if self.options.lang is not None:
+            params["lang"] = self.options.lang
+        if self.options.sampling_rate is not None:
+            params["samplingRate"] = self.options.sampling_rate
+        if self.options.speed_alpha is not None:
+            params["speedAlpha"] = self.options.speed_alpha
 
         result: Dict[str, Any] = {"vendor": "rime", "params": params}
         if self.options.skip_patterns is not None:
