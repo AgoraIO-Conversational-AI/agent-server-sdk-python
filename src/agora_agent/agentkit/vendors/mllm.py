@@ -96,6 +96,8 @@ class VertexAI(BaseMLLM):
             params["instructions"] = self.options.instructions
         if self.options.voice is not None:
             params["voice"] = self.options.voice
+        if self.options.messages is not None:
+            params["messages"] = self.options.messages
         if self.options.additional_params is not None:
             params.update(self.options.additional_params)
 
@@ -111,8 +113,6 @@ class VertexAI(BaseMLLM):
             config["input_modalities"] = self.options.input_modalities
         if self.options.output_modalities is not None:
             config["output_modalities"] = self.options.output_modalities
-        if self.options.messages is not None:
-            config["messages"] = self.options.messages
         if self.options.predefined_tools is not None:
             config["predefined_tools"] = self.options.predefined_tools
         if self.options.failure_message is not None:
