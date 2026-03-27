@@ -139,9 +139,11 @@ llm = Gemini(api_key='your-google-key', model='gemini-2.0-flash-exp')
 
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `key` | `str` | Yes | — | OpenAI API key |
+| `api_key` | `str` | Yes | — | OpenAI API key |
 | `voice` | `str` | Yes | — | Voice: `alloy`, `echo`, `fable`, `onyx`, `nova`, `shimmer` |
 | `model` | `str` | No | `None` | Model: `tts-1` or `tts-1-hd` |
+| `response_format` | `str` | No | `None` | Audio format (e.g., `pcm`) |
+| `speed` | `float` | No | `None` | Speech speed multiplier |
 | `skip_patterns` | `List[int]` | No | `None` | Skip patterns |
 
 Fixed sample rate: 24000 Hz.
@@ -150,8 +152,8 @@ Fixed sample rate: 24000 Hz.
 
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
-| `key` | `str` | Yes | — | Cartesia API key |
-| `voice_id` | `str` | Yes | — | Voice ID |
+| `api_key` | `str` | Yes | — | Cartesia API key |
+| `voice_id` | `str` | Yes | — | Voice ID (serialized as `{"mode": "id", "id": "..."}`) |
 | `model_id` | `str` | No | `None` | Model ID |
 | `sample_rate` | `int` | No | `None` | Sample rate: 8000–48000 Hz |
 | `skip_patterns` | `List[int]` | No | `None` | Skip patterns |
@@ -190,6 +192,9 @@ Fixed sample rate: 24000 Hz.
 | `key` | `str` | Yes | — | Rime API key |
 | `speaker` | `str` | Yes | — | Speaker ID |
 | `model_id` | `str` | No | `None` | Model ID |
+| `lang` | `str` | No | `None` | Language code |
+| `sampling_rate` | `int` | No | `None` | Sampling rate in Hz (serialized as `samplingRate`) |
+| `speed_alpha` | `float` | No | `None` | Speed multiplier (serialized as `speedAlpha`) |
 | `skip_patterns` | `List[int]` | No | `None` | Skip patterns |
 
 ### `FishAudioTTS`
@@ -331,6 +336,9 @@ Fixed sample rate: 24000 Hz.
 | `model` | `str` | No | `None` | Model (e.g., `gpt-4o-realtime-preview`) |
 | `url` | `str` | No | `None` | Custom WebSocket URL |
 | `greeting_message` | `str` | No | `None` | Greeting message |
+| `failure_message` | `str` | No | `None` | Message played when the model call fails |
+| `max_history` | `int` | No | `None` | Maximum conversation history length |
+| `predefined_tools` | `List[str]` | No | `None` | Predefined tools (e.g., `["_publish_message"]`) |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
 | `output_modalities` | `List[str]` | No | `None` | Output modalities |
 | `messages` | `List[Dict]` | No | `None` | Conversation messages |
@@ -347,6 +355,9 @@ Fixed sample rate: 24000 Hz.
 | `instructions` | `str` | No | `None` | System instructions |
 | `voice` | `str` | No | `None` | Voice name (e.g., `Aoede`, `Charon`) |
 | `greeting_message` | `str` | No | `None` | Greeting message |
+| `failure_message` | `str` | No | `None` | Message played when the model call fails |
+| `max_history` | `int` | No | `None` | Maximum conversation history length |
+| `predefined_tools` | `List[str]` | No | `None` | Predefined tools (e.g., `["_publish_message"]`) |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
 | `output_modalities` | `List[str]` | No | `None` | Output modalities |
 | `messages` | `List[Dict]` | No | `None` | Conversation messages |
@@ -365,10 +376,11 @@ Required TTS sample rate: **24000 Hz**
 | `api_key` | `str` | Yes | — | HeyGen API key |
 | `quality` | `str` | Yes | — | Avatar quality: `low`, `medium`, or `high` |
 | `agora_uid` | `str` | Yes | — | Agora UID for avatar video stream |
-| `avatar_name` | `str` | No | `None` | Avatar name |
-| `voice_id` | `str` | No | `None` | Voice ID |
-| `language` | `str` | No | `None` | Language code |
-| `version` | `str` | No | `None` | API version (`v1` or `v2`) |
+| `agora_token` | `str` | No | `None` | RTC token for avatar authentication |
+| `avatar_id` | `str` | No | `None` | HeyGen avatar ID |
+| `enable` | `bool` | No | `True` | Enable or disable the avatar |
+| `disable_idle_timeout` | `bool` | No | `None` | Disable the idle timeout |
+| `activity_idle_timeout` | `int` | No | `None` | Idle timeout in seconds (default: 120) |
 
 ### `AkoolAvatar`
 
