@@ -1,19 +1,17 @@
 from typing import Any, Dict, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from .base import BaseSTT
 
 
 class SpeechmaticsSTTOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     api_key: str = Field(..., description="Speechmatics API key")
     language: str = Field(..., description="Language code (e.g., en, es, fr)")
     model: Optional[str] = Field(default=None, description="Model name")
     additional_params: Optional[Dict[str, Any]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class SpeechmaticsSTT(BaseSTT):
     def __init__(self, **kwargs: Any):
@@ -37,16 +35,14 @@ class SpeechmaticsSTT(BaseSTT):
 
 
 class DeepgramSTTOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     api_key: Optional[str] = Field(default=None, description="Deepgram API key")
     model: Optional[str] = Field(default=None, description="Model (e.g., nova-2, enhanced, base)")
     language: Optional[str] = Field(default=None, description="Language code (e.g., en-US)")
     smart_format: Optional[bool] = Field(default=None, description="Enable smart formatting")
     punctuation: Optional[bool] = Field(default=None, description="Enable punctuation")
     additional_params: Optional[Dict[str, Any]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class DeepgramSTT(BaseSTT):
     def __init__(self, **kwargs: Any):
@@ -76,14 +72,12 @@ class DeepgramSTT(BaseSTT):
 
 
 class MicrosoftSTTOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     key: str = Field(..., description="Azure subscription key")
     region: str = Field(..., description="Azure region (e.g., eastus)")
     language: Optional[str] = Field(default=None, description="Language code (e.g., en-US)")
     additional_params: Optional[Dict[str, Any]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class MicrosoftSTT(BaseSTT):
     def __init__(self, **kwargs: Any):
@@ -107,14 +101,12 @@ class MicrosoftSTT(BaseSTT):
 
 
 class OpenAISTTOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     api_key: str = Field(..., description="OpenAI API key")
     model: Optional[str] = Field(default=None, description="Model (default: whisper-1)")
     language: Optional[str] = Field(default=None, description="Language code")
     additional_params: Optional[Dict[str, Any]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class OpenAISTT(BaseSTT):
     def __init__(self, **kwargs: Any):
@@ -136,13 +128,11 @@ class OpenAISTT(BaseSTT):
 
 
 class GoogleSTTOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     api_key: str = Field(..., description="Google Cloud API key")
     language: Optional[str] = Field(default=None, description="Language code (e.g., en-US)")
     additional_params: Optional[Dict[str, Any]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class GoogleSTT(BaseSTT):
     def __init__(self, **kwargs: Any):
@@ -164,15 +154,13 @@ class GoogleSTT(BaseSTT):
 
 
 class AmazonSTTOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     access_key: str = Field(..., description="AWS Access Key ID")
     secret_key: str = Field(..., description="AWS Secret Access Key")
     region: str = Field(..., description="AWS region (e.g., us-east-1)")
     language: Optional[str] = Field(default=None, description="Language code")
     additional_params: Optional[Dict[str, Any]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class AmazonSTT(BaseSTT):
     def __init__(self, **kwargs: Any):
@@ -197,13 +185,11 @@ class AmazonSTT(BaseSTT):
 
 
 class AssemblyAISTTOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     api_key: str = Field(..., description="AssemblyAI API key")
     language: Optional[str] = Field(default=None, description="Language code")
     additional_params: Optional[Dict[str, Any]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class AssemblyAISTT(BaseSTT):
     def __init__(self, **kwargs: Any):
@@ -222,12 +208,10 @@ class AssemblyAISTT(BaseSTT):
 
 
 class AresSTTOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     language: Optional[str] = Field(default=None, description="Language code")
     additional_params: Optional[Dict[str, Any]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class AresSTT(BaseSTT):
     def __init__(self, **kwargs: Any):
@@ -243,14 +227,12 @@ class AresSTT(BaseSTT):
 
 
 class SarvamSTTOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     api_key: str = Field(..., description="Sarvam API key")
     language: str = Field(..., description="Language code (e.g., en, hi, ta)")
     model: Optional[str] = Field(default=None, description="Model name")
     additional_params: Optional[Dict[str, Any]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class SarvamSTT(BaseSTT):
     def __init__(self, **kwargs: Any):

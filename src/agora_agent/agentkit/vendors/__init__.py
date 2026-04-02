@@ -11,9 +11,9 @@ from .base import (
     OpenAISampleRate,
     SampleRate,
 )
-from .avatar import AkoolAvatar, HeyGenAvatar
+from .avatar import AkoolAvatar, AnamAvatar, HeyGenAvatar, LiveAvatarAvatar
 from .llm import Anthropic, AzureOpenAI, Gemini, OpenAI
-from .mllm import OpenAIRealtime, VertexAI
+from .mllm import GeminiLive, OpenAIRealtime, VertexAI
 from .stt import (
     AmazonSTT,
     AresSTT,
@@ -78,7 +78,10 @@ __all__ = [
     "AresSTT",
     "SarvamSTT",
     "OpenAIRealtime",
+    "GeminiLive",
     "VertexAI",
     "HeyGenAvatar",
+    "LiveAvatarAvatar",
     "AkoolAvatar",
+    "AnamAvatar",
 ]

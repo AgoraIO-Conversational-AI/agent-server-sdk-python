@@ -1,11 +1,13 @@
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from .base import BaseTTS, CartesiaSampleRate, ElevenLabsSampleRate, GoogleTTSSampleRate, MicrosoftSampleRate
 
 
 class ElevenLabsTTSOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     key: str = Field(..., description="ElevenLabs API key")
     model_id: str = Field(..., description="Model ID (e.g., eleven_flash_v2_5)")
     voice_id: str = Field(..., description="Voice ID")
@@ -17,10 +19,6 @@ class ElevenLabsTTSOptions(BaseModel):
     similarity_boost: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     style: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     use_speaker_boost: Optional[bool] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class ElevenLabsTTS(BaseTTS):
     def __init__(self, **kwargs: Any):
@@ -59,15 +57,13 @@ class ElevenLabsTTS(BaseTTS):
 
 
 class MicrosoftTTSOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     key: str = Field(..., description="Azure subscription key")
     region: str = Field(..., description="Azure region (e.g., eastus)")
     voice_name: str = Field(..., description="Voice name")
     sample_rate: Optional[MicrosoftSampleRate] = Field(default=None, description="Sample rate in Hz")
     skip_patterns: Optional[List[int]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class MicrosoftTTS(BaseTTS):
     def __init__(self, **kwargs: Any):
@@ -94,16 +90,14 @@ class MicrosoftTTS(BaseTTS):
 
 
 class OpenAITTSOptions(BaseModel):
-    api_key: str = Field(..., description="OpenAI API key")
+    model_config = ConfigDict(extra="forbid")
+
+    api_key: Optional[str] = Field(default=None, description="OpenAI API key")
     voice: str = Field(..., description="Voice name (alloy, echo, fable, onyx, nova, shimmer)")
     model: Optional[str] = Field(default=None, description="Model name (tts-1, tts-1-hd)")
     response_format: Optional[str] = Field(default=None, description="Audio format (e.g., pcm)")
     speed: Optional[float] = Field(default=None, description="Speech speed multiplier")
     skip_patterns: Optional[List[int]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class OpenAITTS(BaseTTS):
     def __init__(self, **kwargs: Any):
@@ -115,9 +109,10 @@ class OpenAITTS(BaseTTS):
 
     def to_config(self) -> Dict[str, Any]:
         params: Dict[str, Any] = {
-            "api_key": self.options.api_key,
             "voice": self.options.voice,
         }
+        if self.options.api_key is not None:
+            params["api_key"] = self.options.api_key
 
         if self.options.model is not None:
             params["model"] = self.options.model
@@ -133,15 +128,13 @@ class OpenAITTS(BaseTTS):
 
 
 class CartesiaTTSOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     api_key: str = Field(..., description="Cartesia API key")
     voice_id: str = Field(..., description="Voice ID")
     model_id: Optional[str] = Field(default=None, description="Model ID")
     sample_rate: Optional[CartesiaSampleRate] = Field(default=None, description="Sample rate in Hz")
     skip_patterns: Optional[List[int]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class CartesiaTTS(BaseTTS):
     def __init__(self, **kwargs: Any):
@@ -169,15 +162,13 @@ class CartesiaTTS(BaseTTS):
 
 
 class GoogleTTSOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     key: str = Field(..., description="Google Cloud API key")
     voice_name: str = Field(..., description="Voice name")
     language_code: Optional[str] = Field(default=None, description="Language code (e.g., en-US)")
     sample_rate_hertz: Optional[GoogleTTSSampleRate] = Field(default=None, description="Sample rate in Hz")
     skip_patterns: Optional[List[int]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class GoogleTTS(BaseTTS):
     def __init__(self, **kwargs: Any):
@@ -205,15 +196,13 @@ class GoogleTTS(BaseTTS):
 
 
 class AmazonTTSOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     access_key: str = Field(..., description="AWS access key")
     secret_key: str = Field(..., description="AWS secret key")
     region: str = Field(..., description="AWS region (e.g., us-east-1)")
     voice_id: str = Field(..., description="Amazon Polly voice ID")
     skip_patterns: Optional[List[int]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class AmazonTTS(BaseTTS):
     def __init__(self, **kwargs: Any):
@@ -238,13 +227,11 @@ class AmazonTTS(BaseTTS):
 
 
 class HumeAITTSOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     key: str = Field(..., description="Hume AI API key")
     config_id: Optional[str] = Field(default=None, description="Configuration ID")
     skip_patterns: Optional[List[int]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class HumeAITTS(BaseTTS):
     def __init__(self, **kwargs: Any):
@@ -267,6 +254,8 @@ class HumeAITTS(BaseTTS):
 
 
 class RimeTTSOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     key: str = Field(..., description="Rime API key")
     speaker: str = Field(..., description="Speaker ID")
     model_id: Optional[str] = Field(default=None, description="Model ID")
@@ -274,10 +263,6 @@ class RimeTTSOptions(BaseModel):
     sampling_rate: Optional[int] = Field(default=None, description="Sampling rate in Hz")
     speed_alpha: Optional[float] = Field(default=None, description="Speed multiplier")
     skip_patterns: Optional[List[int]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class RimeTTS(BaseTTS):
     def __init__(self, **kwargs: Any):
@@ -309,13 +294,11 @@ class RimeTTS(BaseTTS):
 
 
 class FishAudioTTSOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     key: str = Field(..., description="Fish Audio API key")
     reference_id: str = Field(..., description="Reference ID")
     skip_patterns: Optional[List[int]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class FishAudioTTS(BaseTTS):
     def __init__(self, **kwargs: Any):
@@ -338,16 +321,14 @@ class FishAudioTTS(BaseTTS):
 
 
 class MiniMaxTTSOptions(BaseModel):
-    key: str = Field(..., description="MiniMax API key")
-    group_id: str = Field(..., description="MiniMax group identifier")
+    model_config = ConfigDict(extra="forbid")
+
+    key: Optional[str] = Field(default=None, description="MiniMax API key")
+    group_id: Optional[str] = Field(default=None, description="MiniMax group identifier")
     model: str = Field(..., description="TTS model (e.g., 'speech-02-turbo')")
-    voice_id: str = Field(..., description="Voice style identifier (e.g., 'English_captivating_female1')")
-    url: str = Field(..., description="WebSocket endpoint (e.g., 'wss://api-uw.minimax.io/ws/v1/t2a_v2')")
+    voice_id: Optional[str] = Field(default=None, description="Voice style identifier (e.g., 'English_captivating_female1')")
+    url: Optional[str] = Field(default=None, description="WebSocket endpoint (e.g., 'wss://api-uw.minimax.io/ws/v1/t2a_v2')")
     skip_patterns: Optional[List[int]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class MiniMaxTTS(BaseTTS):
     def __init__(self, **kwargs: Any):
@@ -358,13 +339,15 @@ class MiniMaxTTS(BaseTTS):
         return None
 
     def to_config(self) -> Dict[str, Any]:
-        params: Dict[str, Any] = {
-            "key": self.options.key,
-            "group_id": self.options.group_id,
-            "model": self.options.model,
-            "voice_setting": {"voice_id": self.options.voice_id},
-            "url": self.options.url,
-        }
+        params: Dict[str, Any] = {"model": self.options.model}
+        if self.options.key is not None:
+            params["key"] = self.options.key
+        if self.options.group_id is not None:
+            params["group_id"] = self.options.group_id
+        if self.options.voice_id is not None:
+            params["voice_setting"] = {"voice_id": self.options.voice_id}
+        if self.options.url is not None:
+            params["url"] = self.options.url
 
         result: Dict[str, Any] = {"vendor": "minimax", "params": params}
         if self.options.skip_patterns is not None:
@@ -373,14 +356,12 @@ class MiniMaxTTS(BaseTTS):
 
 
 class SarvamTTSOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     key: str = Field(..., description="Sarvam API subscription key")
     speaker: str = Field(..., description="Speaker/voice ID (e.g., 'anushka', 'abhilash', 'karun', 'hitesh', 'manisha', 'vidya', 'arya')")
     target_language_code: str = Field(..., description="Target language code (e.g., 'en-IN', 'hi-IN', 'ta-IN')")
     skip_patterns: Optional[List[int]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class SarvamTTS(BaseTTS):
     def __init__(self, **kwargs: Any):
@@ -404,14 +385,12 @@ class SarvamTTS(BaseTTS):
 
 
 class MurfTTSOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     key: str = Field(..., description="Murf API key")
     voice_id: str = Field(..., description="Voice ID (e.g., 'Ariana', 'Natalie', 'Ken')")
     style: Optional[str] = Field(default=None, description="Voice style (e.g., 'Angry', 'Sad', 'Conversational', 'Newscast')")
     skip_patterns: Optional[List[int]] = Field(default=None)
-
-    class Config:
-        extra = "forbid"
-
 
 class MurfTTS(BaseTTS):
     def __init__(self, **kwargs: Any):

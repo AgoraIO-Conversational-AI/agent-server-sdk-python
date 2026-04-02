@@ -2,22 +2,43 @@
 
 # nopycln: file
 import datetime as dt
+import types
+import typing
 from collections import defaultdict
 from typing import Any, Callable, ClassVar, Dict, List, Mapping, Optional, Set, Tuple, Type, TypeVar, Union, cast
 
 import pydantic
+import typing_extensions
+from .datetime_utils import serialize_datetime
+from .serialization import convert_and_respect_annotation_metadata
+from typing_extensions import TypeAlias
 
 IS_PYDANTIC_V2 = pydantic.VERSION.startswith("2.")
 
 if IS_PYDANTIC_V2:
-    from pydantic.v1.datetime_parse import parse_date as parse_date
-    from pydantic.v1.datetime_parse import parse_datetime as parse_datetime
-    from pydantic.v1.fields import ModelField as ModelField
-    from pydantic.v1.json import ENCODERS_BY_TYPE as encoders_by_type  # type: ignore[attr-defined]
-    from pydantic.v1.typing import get_args as get_args
-    from pydantic.v1.typing import get_origin as get_origin
-    from pydantic.v1.typing import is_literal_type as is_literal_type
-    from pydantic.v1.typing import is_union as is_union
+    UnionType: Any = getattr(types, "UnionType", None)
+    ModelField = Any
+    encoders_by_type = {
+        dt.date: str,
+        dt.datetime: serialize_datetime,
+    }
+    get_args = typing_extensions.get_args
+    get_origin = typing_extensions.get_origin
+
+    _DATE_ADAPTER = pydantic.TypeAdapter(dt.date)  # type: ignore[attr-defined]
+    _DATETIME_ADAPTER = pydantic.TypeAdapter(dt.datetime)  # type: ignore[attr-defined]
+
+    def parse_date(value: Any) -> dt.date:
+        return _DATE_ADAPTER.validate_python(value)
+
+    def parse_datetime(value: Any) -> dt.datetime:
+        return _DATETIME_ADAPTER.validate_python(value)
+
+    def is_literal_type(type_: Any) -> bool:
+        return get_origin(type_) in (typing.Literal, typing_extensions.Literal)
+
+    def is_union(type_: Any) -> bool:
+        return get_origin(type_) in (Union, UnionType)
 else:
     from pydantic.datetime_parse import parse_date as parse_date  # type: ignore[no-redef]
     from pydantic.datetime_parse import parse_datetime as parse_datetime  # type: ignore[no-redef]
@@ -27,10 +48,6 @@ else:
     from pydantic.typing import get_origin as get_origin  # type: ignore[no-redef]
     from pydantic.typing import is_literal_type as is_literal_type  # type: ignore[no-redef]
     from pydantic.typing import is_union as is_union  # type: ignore[no-redef]
-
-from .datetime_utils import serialize_datetime
-from .serialization import convert_and_respect_annotation_metadata
-from typing_extensions import TypeAlias
 
 T = TypeVar("T")
 Model = TypeVar("Model", bound=pydantic.BaseModel)
@@ -193,12 +210,15 @@ else:
 
 
 def encode_by_type(o: Any) -> Any:
-    encoders_by_class_tuples: Dict[Callable[[Any], Any], Tuple[Any, ...]] = defaultdict(tuple)
+    encoders_by_class_tuples: Dict[Callable[[Any], Any], Tuple[Type[Any], ...]] = {}
     for type_, encoder in encoders_by_type.items():
-        encoders_by_class_tuples[encoder] += (type_,)
+        typed_encoder = cast(Callable[[Any], Any], encoder)
+        typed_type = cast(Type[Any], type_)
+        encoders_by_class_tuples[typed_encoder] = encoders_by_class_tuples.get(typed_encoder, ()) + (typed_type,)
 
     if type(o) in encoders_by_type:
-        return encoders_by_type[type(o)](o)
+        encoder = cast(Callable[[Any], Any], encoders_by_type[type(o)])
+        return encoder(o)
     for encoder, classes_tuple in encoders_by_class_tuples.items():
         if isinstance(o, classes_tuple):
             return encoder(o)

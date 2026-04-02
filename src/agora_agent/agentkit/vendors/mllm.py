@@ -1,11 +1,13 @@
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from .base import BaseMLLM
 
 
 class OpenAIRealtimeOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     api_key: str = Field(..., description="OpenAI API key")
     model: Optional[str] = Field(default=None, description="Model name (e.g., gpt-4o-realtime-preview)")
     url: Optional[str] = Field(default=None, description="WebSocket URL")
@@ -14,13 +16,6 @@ class OpenAIRealtimeOptions(BaseModel):
     output_modalities: Optional[List[str]] = Field(default=None, description="Output modalities")
     messages: Optional[List[Dict[str, Any]]] = Field(default=None, description="Conversation messages")
     params: Optional[Dict[str, Any]] = Field(default=None, description="Additional parameters")
-    predefined_tools: Optional[List[str]] = Field(default=None, description="List of predefined tools")
-    failure_message: Optional[str] = Field(default=None, description="Message played on failure")
-    max_history: Optional[int] = Field(default=None, description="Maximum conversation history length")
-
-    class Config:
-        extra = "forbid"
-
 
 class OpenAIRealtime(BaseMLLM):
     def __init__(self, **kwargs: Any):
@@ -50,17 +45,13 @@ class OpenAIRealtime(BaseMLLM):
             config["output_modalities"] = self.options.output_modalities
         if self.options.messages is not None:
             config["messages"] = self.options.messages
-        if self.options.predefined_tools is not None:
-            config["predefined_tools"] = self.options.predefined_tools
-        if self.options.failure_message is not None:
-            config["failure_message"] = self.options.failure_message
-        if self.options.max_history is not None:
-            config["max_history"] = self.options.max_history
 
         return config
 
 
 class VertexAIOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     model: str = Field(..., description="Model name")
     project_id: str = Field(..., description="Google Cloud project ID")
     location: str = Field(..., description="Google Cloud location/region")
@@ -72,13 +63,6 @@ class VertexAIOptions(BaseModel):
     output_modalities: Optional[List[str]] = Field(default=None, description="Output modalities")
     messages: Optional[List[Dict[str, Any]]] = Field(default=None, description="Conversation messages")
     additional_params: Optional[Dict[str, Any]] = Field(default=None, description="Additional parameters")
-    predefined_tools: Optional[List[str]] = Field(default=None, description="List of predefined tools")
-    failure_message: Optional[str] = Field(default=None, description="Message played on failure")
-    max_history: Optional[int] = Field(default=None, description="Maximum conversation history length")
-
-    class Config:
-        extra = "forbid"
-
 
 class VertexAI(BaseMLLM):
     def __init__(self, **kwargs: Any):
@@ -96,8 +80,6 @@ class VertexAI(BaseMLLM):
             params["instructions"] = self.options.instructions
         if self.options.voice is not None:
             params["voice"] = self.options.voice
-        if self.options.messages is not None:
-            params["messages"] = self.options.messages
         if self.options.additional_params is not None:
             params.update(self.options.additional_params)
 
@@ -113,11 +95,53 @@ class VertexAI(BaseMLLM):
             config["input_modalities"] = self.options.input_modalities
         if self.options.output_modalities is not None:
             config["output_modalities"] = self.options.output_modalities
-        if self.options.predefined_tools is not None:
-            config["predefined_tools"] = self.options.predefined_tools
-        if self.options.failure_message is not None:
-            config["failure_message"] = self.options.failure_message
-        if self.options.max_history is not None:
-            config["max_history"] = self.options.max_history
+        if self.options.messages is not None:
+            config["messages"] = self.options.messages
+
+        return config
+
+
+class GeminiLiveOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    api_key: str = Field(..., description="Google API key")
+    model: str = Field(..., description="Gemini Live model name")
+    instructions: Optional[str] = Field(default=None, description="System instructions")
+    voice: Optional[str] = Field(default=None, description="Voice name")
+    greeting_message: Optional[str] = Field(default=None, description="Agent greeting message")
+    input_modalities: Optional[List[str]] = Field(default=None, description="Input modalities")
+    output_modalities: Optional[List[str]] = Field(default=None, description="Output modalities")
+    messages: Optional[List[Dict[str, Any]]] = Field(default=None, description="Conversation messages")
+    additional_params: Optional[Dict[str, Any]] = Field(default=None, description="Additional parameters")
+
+class GeminiLive(BaseMLLM):
+    def __init__(self, **kwargs: Any):
+        self.options = GeminiLiveOptions(**kwargs)
+
+    def to_config(self) -> Dict[str, Any]:
+        params: Dict[str, Any] = {}
+        if self.options.additional_params is not None:
+            params.update(self.options.additional_params)
+        params["model"] = self.options.model
+        if self.options.instructions is not None:
+            params["instructions"] = self.options.instructions
+        if self.options.voice is not None:
+            params["voice"] = self.options.voice
+
+        config: Dict[str, Any] = {
+            "vendor": "gemini",
+            "style": "openai",
+            "api_key": self.options.api_key,
+            "params": params,
+        }
+
+        if self.options.greeting_message is not None:
+            config["greeting_message"] = self.options.greeting_message
+        if self.options.input_modalities is not None:
+            config["input_modalities"] = self.options.input_modalities
+        if self.options.output_modalities is not None:
+            config["output_modalities"] = self.options.output_modalities
+        if self.options.messages is not None:
+            config["messages"] = self.options.messages
 
         return config

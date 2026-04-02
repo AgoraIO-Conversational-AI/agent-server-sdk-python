@@ -177,15 +177,20 @@ class Agent:
         return new_agent
 
     def with_avatar(self, vendor: BaseAvatar) -> "Agent":
-        if self._tts_sample_rate is not None and self._tts_sample_rate != vendor.required_sample_rate:
+        required_sample_rate = vendor.required_sample_rate
+        if (
+            required_sample_rate not in (None, 0)
+            and self._tts_sample_rate is not None
+            and self._tts_sample_rate != required_sample_rate
+        ):
             raise ValueError(
-                f"Avatar requires TTS sample rate of {vendor.required_sample_rate} Hz, "
+                f"Avatar requires TTS sample rate of {required_sample_rate} Hz, "
                 f"but TTS is configured with {self._tts_sample_rate} Hz. "
-                f"Please update your TTS sample_rate to {vendor.required_sample_rate}."
+                f"Please update your TTS sample_rate to {required_sample_rate}."
             )
         new_agent = self._clone()
         new_agent._avatar = vendor.to_config()
-        new_agent._avatar_required_sample_rate = vendor.required_sample_rate
+        new_agent._avatar_required_sample_rate = required_sample_rate
         return new_agent
 
     def with_turn_detection(self, config: TurnDetectionConfig) -> "Agent":
@@ -385,7 +390,11 @@ class Agent:
         token: typing.Optional[str] = None,
         idle_timeout: typing.Optional[int] = None,
         enable_string_uid: typing.Optional[bool] = None,
+        preset: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
+        pipeline_id: typing.Optional[str] = None,
         expires_in: typing.Optional[int] = None,
+        debug: typing.Optional[bool] = None,
+        warn: typing.Optional[typing.Callable[[str], None]] = None,
     ) -> "AgentSession":
         from .agent_session import AgentSession
 
@@ -402,7 +411,11 @@ class Agent:
             remote_uids=remote_uids,
             idle_timeout=idle_timeout,
             enable_string_uid=enable_string_uid,
+            preset=preset,
+            pipeline_id=pipeline_id,
             expires_in=expires_in,
+            debug=debug,
+            warn=warn,
         )
 
     def create_async_session(
@@ -415,7 +428,11 @@ class Agent:
         token: typing.Optional[str] = None,
         idle_timeout: typing.Optional[int] = None,
         enable_string_uid: typing.Optional[bool] = None,
+        preset: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
+        pipeline_id: typing.Optional[str] = None,
         expires_in: typing.Optional[int] = None,
+        debug: typing.Optional[bool] = None,
+        warn: typing.Optional[typing.Callable[[str], None]] = None,
     ) -> "AsyncAgentSession":
         """Create an async session for use with :class:`~agora_agent.AsyncAgora`.
 
@@ -437,7 +454,11 @@ class Agent:
             remote_uids=remote_uids,
             idle_timeout=idle_timeout,
             enable_string_uid=enable_string_uid,
+            preset=preset,
+            pipeline_id=pipeline_id,
             expires_in=expires_in,
+            debug=debug,
+            warn=warn,
         )
 
     def to_properties(
@@ -451,6 +472,7 @@ class Agent:
         app_id: typing.Optional[str] = None,
         app_certificate: typing.Optional[str] = None,
         expires_in: typing.Optional[int] = None,
+        skip_vendor_validation: bool = False,
     ) -> StartAgentsRequestProperties:
         if token is None:
             if app_id is None or app_certificate is None:
@@ -514,11 +536,10 @@ class Agent:
                 mllm_config = dict(self._mllm)
                 if self._greeting:
                     mllm_config.setdefault("greeting_message", self._greeting)
-                if self._failure_message:
-                    mllm_config.setdefault("failure_message", self._failure_message)
-                if self._max_history is not None:
-                    mllm_config.setdefault("max_history", self._max_history)
                 base_kwargs["mllm"] = mllm_config
+            return StartAgentsRequestProperties(**base_kwargs)
+
+        if skip_vendor_validation:
             return StartAgentsRequestProperties(**base_kwargs)
 
         if self._tts is None:
@@ -533,11 +554,11 @@ class Agent:
         if self._instructions:
             llm_config["system_messages"] = [{"role": "system", "content": self._instructions}]
         if self._greeting:
-            llm_config["greeting_message"] = self._greeting
+            llm_config.setdefault("greeting_message", self._greeting)
         if self._failure_message:
-            llm_config["failure_message"] = self._failure_message
+            llm_config.setdefault("failure_message", self._failure_message)
         if self._max_history is not None:
-            llm_config["max_history"] = self._max_history
+            llm_config.setdefault("max_history", self._max_history)
 
         base_kwargs["llm"] = llm_config
         base_kwargs["tts"] = self._tts

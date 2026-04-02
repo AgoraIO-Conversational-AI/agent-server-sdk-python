@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from .base import BaseLLM
 
@@ -16,7 +16,9 @@ def _ensure_mcp_transport(servers: List[Dict[str, Any]]) -> List[Dict[str, Any]]
     return result
 
 class OpenAIOptions(BaseModel):
-    api_key: str = Field(..., description="OpenAI API key")
+    model_config = ConfigDict(extra="forbid")
+
+    api_key: Optional[str] = Field(default=None, description="OpenAI API key")
     model: str = Field(default="gpt-4o-mini", description="Model name")
     base_url: Optional[str] = Field(default=None, description="Custom base URL")
     temperature: Optional[float] = Field(default=None, ge=0.0, le=2.0)
@@ -33,10 +35,6 @@ class OpenAIOptions(BaseModel):
     vendor: Optional[str] = Field(default=None)
     mcp_servers: Optional[List[Dict[str, Any]]] = Field(default=None)
     max_history: Optional[int] = Field(default=None, gt=0, description="Maximum number of conversation history messages to cache")
-
-    class Config:
-        extra = "forbid"
-
 
 class OpenAI(BaseLLM):
     def __init__(self, **kwargs: Any):
@@ -57,11 +55,12 @@ class OpenAI(BaseLLM):
 
         config: Dict[str, Any] = {
             "url": self.options.base_url or "https://api.openai.com/v1/chat/completions",
-            "api_key": self.options.api_key,
             "params": params,
             "style": "openai",
             "input_modalities": self.options.input_modalities or ["text"],
         }
+        if self.options.api_key is not None:
+            config["api_key"] = self.options.api_key
 
         if self.options.system_messages is not None:
             config["system_messages"] = self.options.system_messages
@@ -86,6 +85,8 @@ class OpenAI(BaseLLM):
 
 
 class AzureOpenAIOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     api_key: str = Field(..., description="Azure OpenAI API key")
     endpoint: str = Field(..., description="Azure endpoint URL")
     deployment_name: str = Field(..., description="Azure deployment name")
@@ -104,10 +105,6 @@ class AzureOpenAIOptions(BaseModel):
     vendor: Optional[str] = Field(default=None)
     mcp_servers: Optional[List[Dict[str, Any]]] = Field(default=None)
     max_history: Optional[int] = Field(default=None, gt=0, description="Maximum number of conversation history messages to cache")
-
-    class Config:
-        extra = "forbid"
-
 
 class AzureOpenAI(BaseLLM):
     def __init__(self, **kwargs: Any):
@@ -159,6 +156,8 @@ class AzureOpenAI(BaseLLM):
 
 
 class AnthropicOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     api_key: str = Field(..., description="Anthropic API key")
     model: str = Field(default="claude-3-5-sonnet-20241022", description="Model name")
     url: Optional[str] = Field(default=None, description="Custom API endpoint URL")
@@ -176,10 +175,6 @@ class AnthropicOptions(BaseModel):
     vendor: Optional[str] = Field(default=None)
     mcp_servers: Optional[List[Dict[str, Any]]] = Field(default=None)
     max_history: Optional[int] = Field(default=None, gt=0, description="Maximum number of conversation history messages to cache")
-
-    class Config:
-        extra = "forbid"
-
 
 class Anthropic(BaseLLM):
     def __init__(self, **kwargs: Any):
@@ -226,6 +221,8 @@ class Anthropic(BaseLLM):
 
 
 class GeminiOptions(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     api_key: str = Field(..., description="Google AI API key")
     model: str = Field(default="gemini-2.0-flash-exp", description="Model name")
     url: Optional[str] = Field(default=None, description="Custom API endpoint URL")
@@ -244,10 +241,6 @@ class GeminiOptions(BaseModel):
     vendor: Optional[str] = Field(default=None)
     mcp_servers: Optional[List[Dict[str, Any]]] = Field(default=None)
     max_history: Optional[int] = Field(default=None, gt=0, description="Maximum number of conversation history messages to cache")
-
-    class Config:
-        extra = "forbid"
-
 
 class Gemini(BaseLLM):
     def __init__(self, **kwargs: Any):

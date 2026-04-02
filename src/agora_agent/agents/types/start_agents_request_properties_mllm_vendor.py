@@ -2,4 +2,4 @@
 
 import typing
 
-StartAgentsRequestPropertiesMllmVendor = typing.Union[typing.Literal["openai", "vertexai"], typing.Any]
+StartAgentsRequestPropertiesMllmVendor = typing.Union[typing.Literal["openai", "gemini", "vertexai"], typing.Any]

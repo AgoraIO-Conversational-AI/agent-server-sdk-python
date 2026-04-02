@@ -36,6 +36,14 @@ from .agent import (
     McpServersItem,
 )
 from .agent_session import AgentSession, AgentSessionOptions, AsyncAgentSession
+from .avatar_types import (
+    is_akool_avatar,
+    is_anam_avatar,
+    is_heygen_avatar,
+    is_live_avatar_avatar,
+    validate_avatar_config,
+    validate_tts_sample_rate,
+)
 from .constants import (
     DataChannel,
     SilenceActionValues,
@@ -54,10 +62,19 @@ from .token import (
     expires_in_hours,
     expires_in_minutes,
 )
+from .presets import (
+    AgentPresets,
+    DeepgramPresetModels,
+    MiniMaxPresetModels,
+    OpenAIPresetModels,
+    OpenAITtsPresetModels,
+    normalize_preset_input,
+)
 from .vendors import (
     AkoolAvatar,
     AmazonSTT,
     AmazonTTS,
+    AnamAvatar,
     Anthropic,
     AresSTT,
     AssemblyAISTT,
@@ -74,6 +91,7 @@ from .vendors import (
     ElevenLabsTTS,
     FishAudioTTS,
     Gemini,
+    GeminiLive,
     GoogleSTT,
     GoogleTTS,
     HeyGenAvatar,
@@ -82,6 +100,7 @@ from .vendors import (
     MicrosoftSTT,
     MicrosoftTTS,
     MiniMaxTTS,
+    MurfTTS,
     OpenAI,
     OpenAIRealtime,
     OpenAISampleRate,
@@ -93,6 +112,7 @@ from .vendors import (
     SarvamTTS,
     SpeechmaticsSTT,
     VertexAI,
+    LiveAvatarAvatar,
 )
 
 __all__ = [
@@ -150,6 +170,12 @@ __all__ = [
     "AgentSession",
     "AsyncAgentSession",
     "AgentSessionOptions",
+    "AgentPresets",
+    "DeepgramPresetModels",
+    "OpenAIPresetModels",
+    "OpenAITtsPresetModels",
+    "MiniMaxPresetModels",
+    "normalize_preset_input",
     "generate_rtc_token",
     "GenerateTokenOptions",
     "generate_convo_ai_token",
@@ -181,6 +207,7 @@ __all__ = [
     "RimeTTS",
     "FishAudioTTS",
     "MiniMaxTTS",
+    "MurfTTS",
     "SarvamTTS",
     "SpeechmaticsSTT",
     "DeepgramSTT",
@@ -192,7 +219,16 @@ __all__ = [
     "AresSTT",
     "SarvamSTT",
     "OpenAIRealtime",
+    "GeminiLive",
     "VertexAI",
     "HeyGenAvatar",
+    "LiveAvatarAvatar",
     "AkoolAvatar",
+    "AnamAvatar",
+    "is_heygen_avatar",
+    "is_live_avatar_avatar",
+    "is_akool_avatar",
+    "is_anam_avatar",
+    "validate_avatar_config",
+    "validate_tts_sample_rate",
 ]

@@ -21,7 +21,7 @@ class StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechDisabledConfig
     """
     Voice processing strategy when the agent is interacting:
     - `append`: Human voice does not interrupt the agent. The agent processes the human voice input after the current interaction ends.
-    - `ignored`: The agent ignores human voice input and discards it without storing in context.
+    - `ignore`: The agent ignores human voice input and discards it without storing in context.
     """
 
     if IS_PYDANTIC_V2:

@@ -5,17 +5,13 @@ import typing
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.unchecked_base_model import UncheckedBaseModel
+from .get_turns_agents_response_turns_item import GetTurnsAgentsResponseTurnsItem
 
 
-class StartAgentsRequestPropertiesTurnDetectionConfigEndOfSpeechSemanticConfig(UncheckedBaseModel):
+class GetTurnsAgentsResponse(UncheckedBaseModel):
+    turns: typing.Optional[typing.List[GetTurnsAgentsResponseTurnsItem]] = pydantic.Field(default=None)
     """
-    Semantic configuration. Used when `mode` is `semantic`.
-    """
-
-    silence_duration_ms: typing.Optional[int] = None
-    max_wait_ms: typing.Optional[int] = pydantic.Field(default=None)
-    """
-    Maximum wait time in milliseconds. Use `-1` for no timeout. The maximum time to wait for semantic determination. After timeout, the conversation end is determined based on the current state.
+    A list of conversation turns for the agent session.
     """
 
     if IS_PYDANTIC_V2:

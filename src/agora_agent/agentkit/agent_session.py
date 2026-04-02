@@ -2,7 +2,17 @@ import typing
 import warnings
 
 from ..core.api_error import ApiError
+from ..agents.types.start_agents_request_properties import StartAgentsRequestProperties
 from .agent import Agent
+from .avatar_types import (
+    is_akool_avatar,
+    is_anam_avatar,
+    is_heygen_avatar,
+    is_live_avatar_avatar,
+    validate_avatar_config,
+    validate_tts_sample_rate,
+)
+from .presets import resolve_session_presets
 from .token import generate_convo_ai_token
 
 
@@ -34,7 +44,11 @@ class AgentSessionOptions(_AgentSessionRequiredOptions, total=False):
     token: str
     idle_timeout: int
     enable_string_uid: bool
+    preset: typing.Union[str, typing.Sequence[str]]
+    pipeline_id: str
     expires_in: int
+    debug: bool
+    warn: typing.Callable[[str], None]
 
 
 class _AgentSessionBase:
@@ -57,7 +71,11 @@ class _AgentSessionBase:
         token: typing.Optional[str] = None,
         idle_timeout: typing.Optional[int] = None,
         enable_string_uid: typing.Optional[bool] = None,
+        preset: typing.Optional[typing.Union[str, typing.Sequence[str]]] = None,
+        pipeline_id: typing.Optional[str] = None,
         expires_in: typing.Optional[int] = None,
+        debug: typing.Optional[bool] = None,
+        warn: typing.Optional[typing.Callable[[str], None]] = None,
     ):
         self._client = client
         self._agent = agent
@@ -70,7 +88,11 @@ class _AgentSessionBase:
         self._remote_uids = remote_uids
         self._idle_timeout = idle_timeout
         self._enable_string_uid = enable_string_uid
+        self._preset = preset
+        self._pipeline_id = pipeline_id
         self._expires_in = expires_in
+        self._debug = debug
+        self._warn = warn or warnings.warn
         self._agent_id: typing.Optional[str] = None
         self._status: str = "idle"
         self._event_handlers: typing.Dict[str, typing.List[typing.Callable[..., None]]] = {}
@@ -139,19 +161,92 @@ class _AgentSessionBase:
         return {"additional_headers": headers}
 
     def _validate_avatar_config(self) -> None:
-        avatar_sr = self._agent._avatar_required_sample_rate
-        tts_sr = self._agent._tts_sample_rate
-        if avatar_sr is not None and tts_sr is not None and tts_sr != avatar_sr:
-            raise ValueError(
-                f"Avatar requires TTS sample rate of {avatar_sr} Hz, "
-                f"but TTS is configured with {tts_sr} Hz."
+        avatar = self._agent.avatar
+        tts = self._agent.tts
+        if not avatar or avatar.get("enable", True) is False:
+            return
+
+        if (
+            is_heygen_avatar(avatar)
+            or is_live_avatar_avatar(avatar)
+            or is_akool_avatar(avatar)
+            or is_anam_avatar(avatar)
+        ):
+            validate_avatar_config(avatar)
+
+        tts_params = tts.get("params") if isinstance(tts, dict) else None
+        sample_rate = tts_params.get("sample_rate") if isinstance(tts_params, dict) else None
+        if isinstance(sample_rate, int):
+            validate_tts_sample_rate(avatar, sample_rate)
+        elif is_heygen_avatar(avatar):
+            self._warn(
+                "Warning: HeyGen avatar detected but TTS sample_rate is not explicitly set. "
+                "HeyGen requires 24,000 Hz. Please ensure your TTS provider is configured for 24kHz."
             )
-        if avatar_sr is not None and tts_sr is None:
-            warnings.warn(
-                f"Avatar requires TTS sample rate of {avatar_sr} Hz, "
-                f"but TTS sample_rate is not explicitly set. "
-                f"Please ensure your TTS provider is configured for {avatar_sr} Hz."
+        elif is_live_avatar_avatar(avatar):
+            self._warn(
+                "Warning: LiveAvatar avatar detected but TTS sample_rate is not explicitly set. "
+                "LiveAvatar requires 24,000 Hz. Please ensure your TTS provider is configured for 24kHz."
             )
+        elif is_akool_avatar(avatar):
+            self._warn(
+                "Warning: Akool avatar detected but TTS sample_rate is not explicitly set. "
+                "Akool requires 16,000 Hz. Please ensure your TTS provider is configured for 16kHz."
+            )
+
+    @staticmethod
+    def _dump_model(value: typing.Any) -> typing.Any:
+        if hasattr(value, "model_dump"):
+            return value.model_dump(exclude_none=True)
+        if isinstance(value, dict):
+            return {k: _AgentSessionBase._dump_model(v) for k, v in value.items() if v is not None}
+        if isinstance(value, list):
+            return [_AgentSessionBase._dump_model(item) for item in value]
+        return value
+
+    def _is_mllm_mode(self) -> bool:
+        advanced_features = self._agent.advanced_features
+        if isinstance(advanced_features, dict):
+            return advanced_features.get("enable_mllm") is True
+        return bool(getattr(advanced_features, "enable_mllm", False))
+
+    def _build_start_properties(self, token_opts: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
+        base_properties = self._agent.to_properties(
+            channel=self._channel,
+            agent_uid=self._agent_uid,
+            remote_uids=self._remote_uids,
+            idle_timeout=self._idle_timeout,
+            enable_string_uid=self._enable_string_uid,
+            skip_vendor_validation=True,
+            **token_opts,
+        )
+        properties = self._dump_model(base_properties)
+
+        if self._is_mllm_mode():
+            if self._agent.mllm is not None:
+                mllm = dict(self._agent.mllm)
+                if self._agent.greeting:
+                    mllm.setdefault("greeting_message", self._agent.greeting)
+                properties["mllm"] = mllm
+            return properties
+
+        if self._agent.tts is not None:
+            properties["tts"] = self._dump_model(self._agent.tts)
+        if self._agent.llm is not None:
+            llm = dict(self._agent.llm)
+            if self._agent.instructions:
+                llm["system_messages"] = [{"role": "system", "content": self._agent.instructions}]
+            if self._agent.greeting:
+                llm.setdefault("greeting_message", self._agent.greeting)
+            if self._agent.failure_message:
+                llm.setdefault("failure_message", self._agent.failure_message)
+            if self._agent.max_history is not None:
+                llm.setdefault("max_history", self._agent.max_history)
+            properties["llm"] = llm
+        if self._agent.stt is not None:
+            properties["asr"] = self._dump_model(self._agent.stt)
+
+        return properties
 
     # ------------------------------------------------------------------
     # Event handling
@@ -247,19 +342,33 @@ class AgentSession(_AgentSessionBase):
                     "expires_in": self._expires_in,
                 }
 
-            properties = self._agent.to_properties(
-                channel=self._channel,
-                agent_uid=self._agent_uid,
-                remote_uids=self._remote_uids,
-                idle_timeout=self._idle_timeout,
-                enable_string_uid=self._enable_string_uid,
-                **token_opts,
+            properties = self._build_start_properties(token_opts)
+            resolved_preset, resolved_properties = resolve_session_presets(
+                self._preset,
+                properties,
             )
+
+            if self._debug:
+                print("[Agora Debug] Starting agent session...")
+                print("[Agora Debug] Request:", {
+                    "appid": self._app_id,
+                    "name": self._name,
+                    "preset": resolved_preset,
+                    "pipeline_id": self._pipeline_id,
+                    "properties": resolved_properties,
+                })
+
+            try:
+                request_properties: typing.Any = StartAgentsRequestProperties(**resolved_properties)
+            except Exception:
+                request_properties = resolved_properties
 
             response = self._client.agents.start(
                 self._app_id,
                 name=self._name,
-                properties=properties,
+                properties=request_properties,
+                preset=resolved_preset,
+                pipeline_id=self._pipeline_id,
                 request_options=self._request_options(),
             )
 
@@ -386,6 +495,15 @@ class AgentSession(_AgentSessionBase):
             self._app_id, self._agent_id, request_options=self._request_options()
         )
 
+    def get_turns(self) -> typing.Any:
+        """Get turn-by-turn analytics and timing details for this session."""
+        if not self._agent_id:
+            raise RuntimeError("No agent ID available")
+
+        return self._client.agents.get_turns(
+            self._app_id, self._agent_id, request_options=self._request_options()
+        )
+
 
 class AsyncAgentSession(_AgentSessionBase):
     """Async version of :class:`AgentSession` for use with :class:`AsyncAgora`.
@@ -439,19 +557,33 @@ class AsyncAgentSession(_AgentSessionBase):
                     "expires_in": self._expires_in,
                 }
 
-            properties = self._agent.to_properties(
-                channel=self._channel,
-                agent_uid=self._agent_uid,
-                remote_uids=self._remote_uids,
-                idle_timeout=self._idle_timeout,
-                enable_string_uid=self._enable_string_uid,
-                **token_opts,
+            properties = self._build_start_properties(token_opts)
+            resolved_preset, resolved_properties = resolve_session_presets(
+                self._preset,
+                properties,
             )
+
+            if self._debug:
+                print("[Agora Debug] Starting agent session...")
+                print("[Agora Debug] Request:", {
+                    "appid": self._app_id,
+                    "name": self._name,
+                    "preset": resolved_preset,
+                    "pipeline_id": self._pipeline_id,
+                    "properties": resolved_properties,
+                })
+
+            try:
+                request_properties: typing.Any = StartAgentsRequestProperties(**resolved_properties)
+            except Exception:
+                request_properties = resolved_properties
 
             response = await self._client.agents.start(
                 self._app_id,
                 name=self._name,
-                properties=properties,
+                properties=request_properties,
+                preset=resolved_preset,
+                pipeline_id=self._pipeline_id,
                 request_options=self._request_options(),
             )
 
@@ -575,5 +707,14 @@ class AsyncAgentSession(_AgentSessionBase):
             raise RuntimeError("No agent ID available")
 
         return await self._client.agents.get(
+            self._app_id, self._agent_id, request_options=self._request_options()
+        )
+
+    async def get_turns(self) -> typing.Any:
+        """Get turn-by-turn analytics and timing details for this session."""
+        if not self._agent_id:
+            raise RuntimeError("No agent ID available")
+
+        return await self._client.agents.get_turns(
             self._app_id, self._agent_id, request_options=self._request_options()
         )

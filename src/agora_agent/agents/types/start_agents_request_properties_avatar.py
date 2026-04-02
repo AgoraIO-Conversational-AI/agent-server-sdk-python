@@ -22,7 +22,8 @@ class StartAgentsRequestPropertiesAvatar(UncheckedBaseModel):
     """
     Avatar vendor. Supports the following values:
     - `akool`: Akool (Beta)
-    - `heygen`: HeyGen (Beta)
+    - `liveavatar`: LiveAvatar (Beta)
+    - `anam`: Anam (Beta)
     """
 
     params: typing.Optional[typing.Dict[str, typing.Any]] = pydantic.Field(default=None)

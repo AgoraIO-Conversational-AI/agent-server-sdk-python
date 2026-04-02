@@ -110,6 +110,29 @@ client.agents.start(
 <dl>
 <dd>
 
+**preset:** `typing.Optional[str]` 
+
+A comma-separated string of one or more presets. Each preset provides a predefined configuration for ASR, LLM, and TTS. You can specify a preset for any or all of ASR, LLM, and TTS. When a preset is specified, you do not need to provide the endpoint URL, API key, or model for the preset providers. Use the `asr`, `llm`, and `tts` fields to configure additional settings.
+
+Available presets:
+- ASR: `deepgram_nova_2`, `deepgram_nova_3`
+- LLM: `openai_gpt_4o_mini`, `openai_gpt_4_1_mini`, `openai_gpt_5_nano`, `openai_gpt_5_mini`
+- TTS: `minimax_speech_2_6_turbo`, `minimax_speech_2_8_turbo`, `openai_tts_1`
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**pipeline_id:** `typing.Optional[str]` — The unique ID of a published agent in AI Studio. When provided, the saved agent configuration is used as the base configuration. Any fields specified in `properties` override the corresponding agent settings. When you specify a `pipeline_id`, the `asr`, `tts`, and `llm` fields in `properties` are optional.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
 **request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
     
 </dd>
@@ -374,6 +397,91 @@ client = Agora(
     password="YOUR_PASSWORD",
 )
 client.agents.get_history(
+    appid="appid",
+    agent_id="agentId",
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**appid:** `str` — The App ID of the project.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agent_id:** `str` — The agent instance ID you obtained after successfully calling `join` to start a conversational AI agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.agents.<a href="src/agora_agent/agents/client.py">get_turns</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Query conversation turn information for a conversational AI agent session.
+
+After a conversation with the agent ends, use this endpoint to query the conversation turn information, including the start information, end information, and performance metrics of each conversation turn.
+
+You can query sessions within the last 7 days.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from agora_agent import Agora
+
+client = Agora(
+    authorization="YOUR_AUTHORIZATION",
+    username="YOUR_USERNAME",
+    password="YOUR_PASSWORD",
+)
+client.agents.get_turns(
     appid="appid",
     agent_id="agentId",
 )
