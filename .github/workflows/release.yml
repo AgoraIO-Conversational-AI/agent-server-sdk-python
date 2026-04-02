@@ -1,0 +1,76 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Tag to publish"
+        required: false
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+
+      - name: Bootstrap poetry
+        run: |
+          curl -sSL https://install.python-poetry.org | python - -y --version 1.5.1
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Compile
+        run: poetry run mypy .
+
+      - name: Test
+        run: poetry run pytest -rP .
+
+      - name: Build
+        run: poetry build
+
+      - name: Extract changelog notes
+        id: changelog
+        env:
+          INPUT_TAG_NAME: ${{ github.event.inputs.tag_name }}
+        run: |
+          VERSION="${INPUT_TAG_NAME:-${GITHUB_REF_NAME}}"
+          NOTES=$(awk -v ver="## [${VERSION}]" '
+            index($0, ver) == 1 { found=1; next }
+            found && /^## / { exit }
+            found { print }
+          ' changelog.md)
+          echo "notes<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$NOTES" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTES: ${{ steps.changelog.outputs.notes }}
+          INPUT_TAG_NAME: ${{ github.event.inputs.tag_name }}
+        run: |
+          VERSION="${INPUT_TAG_NAME:-${GITHUB_REF_NAME}}"
+          echo "$NOTES" > release_notes.md
+          gh release create "$VERSION" \
+            --title "$VERSION" \
+            --notes-file release_notes.md \
+            dist/*
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
