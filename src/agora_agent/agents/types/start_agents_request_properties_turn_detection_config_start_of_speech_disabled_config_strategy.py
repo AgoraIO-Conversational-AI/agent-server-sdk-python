@@ -3,5 +3,5 @@
 import typing
 
 StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechDisabledConfigStrategy = typing.Union[
-    typing.Literal["append", "ignored"], typing.Any
+    typing.Literal["append", "ignore"], typing.Any
 ]

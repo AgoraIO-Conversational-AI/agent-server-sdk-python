@@ -10,7 +10,7 @@ from .start_agents_request_properties_mllm_vendor import StartAgentsRequestPrope
 
 class StartAgentsRequestPropertiesMllm(UncheckedBaseModel):
     """
-    Multimodal Large Language Model (MLLM) configuration for real-time audio and text processing. MLLM is an exclusive alternative to the standard `asr` + `llm` + `tts` pipeline.
+    Multimodal Large Language Model (MLLM) configuration for real-time audio and text processing. `mllm` is an exclusive alternative to the standard `asr` + `llm` + `tts` pipeline.
     """
 
     url: typing.Optional[str] = pydantic.Field(default=None)
@@ -55,7 +55,8 @@ class StartAgentsRequestPropertiesMllm(UncheckedBaseModel):
     """
     MLLM provider. Currently supports:
     - `openai`: OpenAI Realtime API
-    - `vertexai`: Use this for Google Gemini Live
+    - `gemini`: Google Gemini Live
+    - `vertexai`: Google Gemini Live (Vertex AI)
     """
 
     style: typing.Optional[typing.Literal["openai"]] = pydantic.Field(default=None)

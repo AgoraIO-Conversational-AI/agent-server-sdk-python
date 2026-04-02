@@ -1,3 +1,3 @@
 from importlib import metadata
 
-__version__ = metadata.version("agent-server-sdk-python")
+__version__ = metadata.version("agora-agent-server-sdk")

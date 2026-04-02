@@ -12,14 +12,9 @@ class StartAgentsRequestPropertiesAdvancedFeatures(UncheckedBaseModel):
     Advanced features configuration.
     """
 
-    enable_aivad: typing.Optional[bool] = pydantic.Field(default=None)
-    """
-    Whether to enable the intelligent interruption handling function (AIVAD). This feature is currently available only for English. Deprecated. Use `turn_detection.config.end_of_speech.mode.semantic` instead.
-    """
-
     enable_mllm: typing.Optional[bool] = pydantic.Field(default=None)
     """
-    Enable Multimodal Large Language Model. Enabling MLLM automatically disables ASR, LLM, and TTS. When you set this parameter to true, `enable_aivad` is also disabled.
+    Enable Multimodal Large Language Model for voice-to-voice processing. Enabling MLLM automatically disables ASR, LLM, and TTS since the MLLM handles end-to-end voice processing directly. See `turn_detection.type` for turn detection options available with MLLM.
     """
 
     enable_rtm: typing.Optional[bool] = pydantic.Field(default=None)

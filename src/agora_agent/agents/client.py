@@ -8,6 +8,7 @@ from ..core.request_options import RequestOptions
 from .raw_client import AsyncRawAgentsClient, RawAgentsClient
 from .types.get_agents_response import GetAgentsResponse
 from .types.get_history_agents_response import GetHistoryAgentsResponse
+from .types.get_turns_agents_response import GetTurnsAgentsResponse
 from .types.interrupt_agents_response import InterruptAgentsResponse
 from .types.list_agents_request_state import ListAgentsRequestState
 from .types.list_agents_response import ListAgentsResponse
@@ -44,6 +45,8 @@ class AgentsClient:
         *,
         name: str,
         properties: StartAgentsRequestProperties,
+        preset: typing.Optional[str] = OMIT,
+        pipeline_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartAgentsResponse:
         """
@@ -59,6 +62,17 @@ class AgentsClient:
 
         properties : StartAgentsRequestProperties
             Configuration details of the agent.
+
+        preset : typing.Optional[str]
+            A comma-separated string of one or more presets. Each preset provides a predefined configuration for ASR, LLM, and TTS. You can specify a preset for any or all of ASR, LLM, and TTS. When a preset is specified, you do not need to provide the endpoint URL, API key, or model for the preset providers. Use the `asr`, `llm`, and `tts` fields to configure additional settings.
+
+            Available presets:
+            - ASR: `deepgram_nova_2`, `deepgram_nova_3`
+            - LLM: `openai_gpt_4o_mini`, `openai_gpt_4_1_mini`, `openai_gpt_5_nano`, `openai_gpt_5_mini`
+            - TTS: `minimax_speech_2_6_turbo`, `minimax_speech_2_8_turbo`, `openai_tts_1`
+
+        pipeline_id : typing.Optional[str]
+            The unique ID of a published agent in AI Studio. When provided, the saved agent configuration is used as the base configuration. Any fields specified in `properties` override the corresponding agent settings. When you specify a `pipeline_id`, the `asr`, `tts`, and `llm` fields in `properties` are optional.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -115,7 +129,14 @@ class AgentsClient:
             ),
         )
         """
-        _response = self._raw_client.start(appid, name=name, properties=properties, request_options=request_options)
+        _response = self._raw_client.start(
+            appid,
+            name=name,
+            properties=properties,
+            preset=preset,
+            pipeline_id=pipeline_id,
+            request_options=request_options,
+        )
         return _response.data
 
     def list(
@@ -278,6 +299,49 @@ class AgentsClient:
         )
         """
         _response = self._raw_client.get_history(appid, agent_id, request_options=request_options)
+        return _response.data
+
+    def get_turns(
+        self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> GetTurnsAgentsResponse:
+        """
+        Query conversation turn information for a conversational AI agent session.
+
+        After a conversation with the agent ends, use this endpoint to query the conversation turn information, including the start information, end information, and performance metrics of each conversation turn.
+
+        You can query sessions within the last 7 days.
+
+        Parameters
+        ----------
+        appid : str
+            The App ID of the project.
+
+        agent_id : str
+            The agent instance ID you obtained after successfully calling `join` to start a conversational AI agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        GetTurnsAgentsResponse
+            Request was successful. The response body contains the result of the request.
+
+        Examples
+        --------
+        from agora_agent import Agora
+
+        client = Agora(
+            authorization="YOUR_AUTHORIZATION",
+            username="YOUR_USERNAME",
+            password="YOUR_PASSWORD",
+        )
+        client.agents.get_turns(
+            appid="appid",
+            agent_id="agentId",
+        )
+        """
+        _response = self._raw_client.get_turns(appid, agent_id, request_options=request_options)
         return _response.data
 
     def stop(self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> None:
@@ -513,6 +577,8 @@ class AsyncAgentsClient:
         *,
         name: str,
         properties: StartAgentsRequestProperties,
+        preset: typing.Optional[str] = OMIT,
+        pipeline_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> StartAgentsResponse:
         """
@@ -528,6 +594,17 @@ class AsyncAgentsClient:
 
         properties : StartAgentsRequestProperties
             Configuration details of the agent.
+
+        preset : typing.Optional[str]
+            A comma-separated string of one or more presets. Each preset provides a predefined configuration for ASR, LLM, and TTS. You can specify a preset for any or all of ASR, LLM, and TTS. When a preset is specified, you do not need to provide the endpoint URL, API key, or model for the preset providers. Use the `asr`, `llm`, and `tts` fields to configure additional settings.
+
+            Available presets:
+            - ASR: `deepgram_nova_2`, `deepgram_nova_3`
+            - LLM: `openai_gpt_4o_mini`, `openai_gpt_4_1_mini`, `openai_gpt_5_nano`, `openai_gpt_5_mini`
+            - TTS: `minimax_speech_2_6_turbo`, `minimax_speech_2_8_turbo`, `openai_tts_1`
+
+        pipeline_id : typing.Optional[str]
+            The unique ID of a published agent in AI Studio. When provided, the saved agent configuration is used as the base configuration. Any fields specified in `properties` override the corresponding agent settings. When you specify a `pipeline_id`, the `asr`, `tts`, and `llm` fields in `properties` are optional.
 
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
@@ -593,7 +670,12 @@ class AsyncAgentsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.start(
-            appid, name=name, properties=properties, request_options=request_options
+            appid,
+            name=name,
+            properties=properties,
+            preset=preset,
+            pipeline_id=pipeline_id,
+            request_options=request_options,
         )
         return _response.data
 
@@ -782,6 +864,57 @@ class AsyncAgentsClient:
         asyncio.run(main())
         """
         _response = await self._raw_client.get_history(appid, agent_id, request_options=request_options)
+        return _response.data
+
+    async def get_turns(
+        self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> GetTurnsAgentsResponse:
+        """
+        Query conversation turn information for a conversational AI agent session.
+
+        After a conversation with the agent ends, use this endpoint to query the conversation turn information, including the start information, end information, and performance metrics of each conversation turn.
+
+        You can query sessions within the last 7 days.
+
+        Parameters
+        ----------
+        appid : str
+            The App ID of the project.
+
+        agent_id : str
+            The agent instance ID you obtained after successfully calling `join` to start a conversational AI agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        GetTurnsAgentsResponse
+            Request was successful. The response body contains the result of the request.
+
+        Examples
+        --------
+        import asyncio
+
+        from agora_agent import AsyncAgora
+
+        client = AsyncAgora(
+            authorization="YOUR_AUTHORIZATION",
+            username="YOUR_USERNAME",
+            password="YOUR_PASSWORD",
+        )
+
+
+        async def main() -> None:
+            await client.agents.get_turns(
+                appid="appid",
+                agent_id="agentId",
+            )
+
+
+        asyncio.run(main())
+        """
+        _response = await self._raw_client.get_turns(appid, agent_id, request_options=request_options)
         return _response.data
 
     async def stop(self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None) -> None:

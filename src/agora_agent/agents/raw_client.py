@@ -13,6 +13,7 @@ from ..core.serialization import convert_and_respect_annotation_metadata
 from ..core.unchecked_base_model import construct_type
 from .types.get_agents_response import GetAgentsResponse
 from .types.get_history_agents_response import GetHistoryAgentsResponse
+from .types.get_turns_agents_response import GetTurnsAgentsResponse
 from .types.interrupt_agents_response import InterruptAgentsResponse
 from .types.list_agents_request_state import ListAgentsRequestState
 from .types.list_agents_response import ListAgentsResponse
@@ -38,6 +39,8 @@ class RawAgentsClient:
         *,
         name: str,
         properties: StartAgentsRequestProperties,
+        preset: typing.Optional[str] = OMIT,
+        pipeline_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> HttpResponse[StartAgentsResponse]:
         """
@@ -54,6 +57,17 @@ class RawAgentsClient:
         properties : StartAgentsRequestProperties
             Configuration details of the agent.
 
+        preset : typing.Optional[str]
+            A comma-separated string of one or more presets. Each preset provides a predefined configuration for ASR, LLM, and TTS. You can specify a preset for any or all of ASR, LLM, and TTS. When a preset is specified, you do not need to provide the endpoint URL, API key, or model for the preset providers. Use the `asr`, `llm`, and `tts` fields to configure additional settings.
+
+            Available presets:
+            - ASR: `deepgram_nova_2`, `deepgram_nova_3`
+            - LLM: `openai_gpt_4o_mini`, `openai_gpt_4_1_mini`, `openai_gpt_5_nano`, `openai_gpt_5_mini`
+            - TTS: `minimax_speech_2_6_turbo`, `minimax_speech_2_8_turbo`, `openai_tts_1`
+
+        pipeline_id : typing.Optional[str]
+            The unique ID of a published agent in AI Studio. When provided, the saved agent configuration is used as the base configuration. Any fields specified in `properties` override the corresponding agent settings. When you specify a `pipeline_id`, the `asr`, `tts`, and `llm` fields in `properties` are optional.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -67,6 +81,8 @@ class RawAgentsClient:
             method="POST",
             json={
                 "name": name,
+                "preset": preset,
+                "pipeline_id": pipeline_id,
                 "properties": convert_and_respect_annotation_metadata(
                     object_=properties, annotation=StartAgentsRequestProperties, direction="write"
                 ),
@@ -267,6 +283,52 @@ class RawAgentsClient:
                     GetHistoryAgentsResponse,
                     construct_type(
                         type_=GetHistoryAgentsResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return HttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    def get_turns(
+        self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> HttpResponse[GetTurnsAgentsResponse]:
+        """
+        Query conversation turn information for a conversational AI agent session.
+
+        After a conversation with the agent ends, use this endpoint to query the conversation turn information, including the start information, end information, and performance metrics of each conversation turn.
+
+        You can query sessions within the last 7 days.
+
+        Parameters
+        ----------
+        appid : str
+            The App ID of the project.
+
+        agent_id : str
+            The agent instance ID you obtained after successfully calling `join` to start a conversational AI agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        HttpResponse[GetTurnsAgentsResponse]
+            Request was successful. The response body contains the result of the request.
+        """
+        _response = self._client_wrapper.httpx_client.request(
+            f"v2/projects/{jsonable_encoder(appid)}/agents/{jsonable_encoder(agent_id)}/turns",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    GetTurnsAgentsResponse,
+                    construct_type(
+                        type_=GetTurnsAgentsResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -503,6 +565,8 @@ class AsyncRawAgentsClient:
         *,
         name: str,
         properties: StartAgentsRequestProperties,
+        preset: typing.Optional[str] = OMIT,
+        pipeline_id: typing.Optional[str] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
     ) -> AsyncHttpResponse[StartAgentsResponse]:
         """
@@ -519,6 +583,17 @@ class AsyncRawAgentsClient:
         properties : StartAgentsRequestProperties
             Configuration details of the agent.
 
+        preset : typing.Optional[str]
+            A comma-separated string of one or more presets. Each preset provides a predefined configuration for ASR, LLM, and TTS. You can specify a preset for any or all of ASR, LLM, and TTS. When a preset is specified, you do not need to provide the endpoint URL, API key, or model for the preset providers. Use the `asr`, `llm`, and `tts` fields to configure additional settings.
+
+            Available presets:
+            - ASR: `deepgram_nova_2`, `deepgram_nova_3`
+            - LLM: `openai_gpt_4o_mini`, `openai_gpt_4_1_mini`, `openai_gpt_5_nano`, `openai_gpt_5_mini`
+            - TTS: `minimax_speech_2_6_turbo`, `minimax_speech_2_8_turbo`, `openai_tts_1`
+
+        pipeline_id : typing.Optional[str]
+            The unique ID of a published agent in AI Studio. When provided, the saved agent configuration is used as the base configuration. Any fields specified in `properties` override the corresponding agent settings. When you specify a `pipeline_id`, the `asr`, `tts`, and `llm` fields in `properties` are optional.
+
         request_options : typing.Optional[RequestOptions]
             Request-specific configuration.
 
@@ -532,6 +607,8 @@ class AsyncRawAgentsClient:
             method="POST",
             json={
                 "name": name,
+                "preset": preset,
+                "pipeline_id": pipeline_id,
                 "properties": convert_and_respect_annotation_metadata(
                     object_=properties, annotation=StartAgentsRequestProperties, direction="write"
                 ),
@@ -735,6 +812,52 @@ class AsyncRawAgentsClient:
                     GetHistoryAgentsResponse,
                     construct_type(
                         type_=GetHistoryAgentsResponse,  # type: ignore
+                        object_=_response.json(),
+                    ),
+                )
+                return AsyncHttpResponse(response=_response, data=_data)
+            _response_json = _response.json()
+        except JSONDecodeError:
+            raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response.text)
+        raise ApiError(status_code=_response.status_code, headers=dict(_response.headers), body=_response_json)
+
+    async def get_turns(
+        self, appid: str, agent_id: str, *, request_options: typing.Optional[RequestOptions] = None
+    ) -> AsyncHttpResponse[GetTurnsAgentsResponse]:
+        """
+        Query conversation turn information for a conversational AI agent session.
+
+        After a conversation with the agent ends, use this endpoint to query the conversation turn information, including the start information, end information, and performance metrics of each conversation turn.
+
+        You can query sessions within the last 7 days.
+
+        Parameters
+        ----------
+        appid : str
+            The App ID of the project.
+
+        agent_id : str
+            The agent instance ID you obtained after successfully calling `join` to start a conversational AI agent.
+
+        request_options : typing.Optional[RequestOptions]
+            Request-specific configuration.
+
+        Returns
+        -------
+        AsyncHttpResponse[GetTurnsAgentsResponse]
+            Request was successful. The response body contains the result of the request.
+        """
+        _response = await self._client_wrapper.httpx_client.request(
+            f"v2/projects/{jsonable_encoder(appid)}/agents/{jsonable_encoder(agent_id)}/turns",
+            method="GET",
+            request_options=request_options,
+        )
+        try:
+            if 200 <= _response.status_code < 300:
+                _data = typing.cast(
+                    GetTurnsAgentsResponse,
+                    construct_type(
+                        type_=GetTurnsAgentsResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
