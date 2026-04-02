@@ -209,12 +209,15 @@ else:
 
 
 def encode_by_type(o: Any) -> Any:
-    encoders_by_class_tuples: Dict[Callable[[Any], Any], Tuple[Any, ...]] = defaultdict(tuple)
+    encoders_by_class_tuples: Dict[Callable[[Any], Any], Tuple[type[Any], ...]] = {}
     for type_, encoder in encoders_by_type.items():
-        encoders_by_class_tuples[encoder] += (type_,)
+        typed_encoder = cast(Callable[[Any], Any], encoder)
+        typed_type = cast(type[Any], type_)
+        encoders_by_class_tuples[typed_encoder] = encoders_by_class_tuples.get(typed_encoder, ()) + (typed_type,)
 
     if type(o) in encoders_by_type:
-        return encoders_by_type[type(o)](o)
+        encoder = cast(Callable[[Any], Any], encoders_by_type[type(o)])
+        return encoder(o)
     for encoder, classes_tuple in encoders_by_class_tuples.items():
         if isinstance(o, classes_tuple):
             return encoder(o)

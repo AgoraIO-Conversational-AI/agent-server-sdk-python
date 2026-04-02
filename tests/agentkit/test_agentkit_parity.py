@@ -1,3 +1,4 @@
+from typing import Any, Dict, List, Tuple
 from types import SimpleNamespace
 import unittest
 
@@ -16,8 +17,8 @@ from agora_agent.agentkit.vendors import DeepgramSTT
 
 class DummyAgents:
     def __init__(self) -> None:
-        self.start_calls = []
-        self.turn_calls = []
+        self.start_calls: List[Tuple[Any, Dict[str, Any]]] = []
+        self.turn_calls: List[Tuple[Any, Any, Any]] = []
 
     def start(self, app_id, **kwargs):
         self.start_calls.append((app_id, kwargs))
