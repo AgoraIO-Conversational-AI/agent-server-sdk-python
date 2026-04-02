@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [v1.3.0] — 2026-04-02
+
+### Added
+
+- **`AgentSession`** — Added `get_turns()` for turn analytics in both sync and async sessions.
+- **`Agent` / `AgentSession`** — Added session-level `preset` and `pipeline_id` support, including preset normalization and automatic inference for supported reseller-backed models.
+- **`AgentKit`** — Added preset constants and helper utilities for discoverable preset usage.
+- **`AgentKit`** — Added missing public vendor surface for `GeminiLive`, `LiveAvatarAvatar`, and `AnamAvatar`.
+- **Tests** — Added AgentKit parity and vendor regression coverage for presets, session behavior, and wrapper mappings.
+
+### Changed
+
+- **`OpenAI` / `OpenAITTS` / `MiniMaxTTS`** — Relaxed no-key preset paths so reseller-backed usage can be expressed without forcing credential fields.
+- **`GeminiLive`** — Aligned wrapper output with the Agora low-level MLLM contract and kept `messages` at the top level.
+- **`Avatar` wrappers** — Updated avatar handling for `LiveAvatar` and `Anam`, including sample-rate validation behavior.
+
+### Fixed
+
+- **`AgentKit` MLLM** — Removed unsupported wrapper-only fields so the Python surface stays aligned with the generated Agora API contract.
+- **`pydantic_utilities`** — Updated Pydantic compatibility handling for Python 3.14-safe operation.
+- **Mypy/test packaging** — Added explicit test package markers to avoid duplicate module resolution during type checking.
+
 ## [v1.2.0] — 2026-03-27
 
 ### Fixed
