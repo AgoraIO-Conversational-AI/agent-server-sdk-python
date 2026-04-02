@@ -16,6 +16,7 @@ from typing_extensions import TypeAlias
 IS_PYDANTIC_V2 = pydantic.VERSION.startswith("2.")
 
 if IS_PYDANTIC_V2:
+    UnionType: Any = getattr(types, "UnionType", None)
     ModelField = Any
     encoders_by_type = {
         dt.date: str,
@@ -37,7 +38,7 @@ if IS_PYDANTIC_V2:
         return get_origin(type_) in (typing.Literal, typing_extensions.Literal)
 
     def is_union(type_: Any) -> bool:
-        return get_origin(type_) in (Union, types.UnionType)
+        return get_origin(type_) in (Union, UnionType)
 else:
     from pydantic.datetime_parse import parse_date as parse_date  # type: ignore[no-redef]
     from pydantic.datetime_parse import parse_datetime as parse_datetime  # type: ignore[no-redef]
@@ -209,10 +210,10 @@ else:
 
 
 def encode_by_type(o: Any) -> Any:
-    encoders_by_class_tuples: Dict[Callable[[Any], Any], Tuple[type[Any], ...]] = {}
+    encoders_by_class_tuples: Dict[Callable[[Any], Any], Tuple[Type[Any], ...]] = {}
     for type_, encoder in encoders_by_type.items():
         typed_encoder = cast(Callable[[Any], Any], encoder)
-        typed_type = cast(type[Any], type_)
+        typed_type = cast(Type[Any], type_)
         encoders_by_class_tuples[typed_encoder] = encoders_by_class_tuples.get(typed_encoder, ()) + (typed_type,)
 
     if type(o) in encoders_by_type:
