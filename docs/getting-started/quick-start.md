@@ -1,111 +1,92 @@
 ---
 sidebar_position: 3
 title: Quick Start
-description: Build and run your first Agora Conversational AI agent in Python.
+description: Build and run your first Agora Conversational AI agent in Python with app credentials and presets.
 ---
 
 # Quick Start
 
-This guide walks you through building a voice agent using the cascading flow (ASR → LLM → TTS) with both sync and async clients.
+This guide uses the recommended onboarding path:
 
-## Sync Example
+- `app_id`, `app_certificate`, and `area` on `Agora` or `AsyncAgora`
+- `preset` for Agora-managed ASR, LLM, and TTS
+- automatic ConvoAI REST auth and RTC join token generation
+- no vendor API keys in application code
 
-This complete script creates an agent with OpenAI for the LLM, ElevenLabs for TTS, and Deepgram for STT:
+## Sync example
 
 ```python
 from agora_agent import Agora, Area
-from agora_agent.agentkit import Agent
-from agora_agent.agentkit.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT
+from agora_agent.agentkit import Agent, AgentPresets
 
-# 1. Create a client with app credentials
-client = Agora(
-    area=Area.US,
-    app_id='your-app-id',
-    app_certificate='your-app-certificate',
-)
 
-# 2. Build an agent with vendor configuration
-agent = (
-    Agent(name='support-assistant', instructions='You are a helpful voice assistant.')
-    .with_llm(OpenAI(api_key='your-openai-key', model='gpt-4o-mini'))
-    .with_tts(ElevenLabsTTS(key='your-elevenlabs-key', model_id='eleven_flash_v2_5', voice_id='your-voice-id'))
-    .with_stt(DeepgramSTT(api_key='your-deepgram-key', language='en-US'))
-)
-
-# 3. Create and start a session
-session = agent.create_session(
-    client,
-    channel='support-room-123',
-    agent_uid='1',
-    remote_uids=['100'],
-)
-agent_id = session.start()
-print(f'Agent started with ID: {agent_id}')
-
-# 4. Interact with the agent
-session.say('Hello! How can I help you today?')
-
-# 5. Stop the session when done
-session.stop()
-print('Agent stopped.')
-```
-
-## Async Example
-
-For async applications, use `AsyncAgora` for the client. All session methods become coroutines that require `await`:
-
-```python
-import asyncio
-from agora_agent import AsyncAgora, Area
-from agora_agent.agentkit import Agent
-from agora_agent.agentkit.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT
-
-async def main():
-    # 1. Create an async client
-    client = AsyncAgora(
+def main() -> None:
+    client = Agora(
         area=Area.US,
-        app_id='your-app-id',
-        app_certificate='your-app-certificate',
+        app_id="your-app-id",
+        app_certificate="your-app-certificate",
     )
 
-    # 2. Build an agent (same as sync — Agent is client-agnostic)
-    agent = (
-        Agent(name='support-assistant', instructions='You are a helpful voice assistant.')
-        .with_llm(OpenAI(api_key='your-openai-key', model='gpt-4o-mini'))
-        .with_tts(ElevenLabsTTS(key='your-elevenlabs-key', model_id='eleven_flash_v2_5', voice_id='your-voice-id'))
-        .with_stt(DeepgramSTT(api_key='your-deepgram-key', language='en-US'))
+    # Agent-level behavior lives here. Vendor selection comes from presets below.
+    agent = Agent(
+        name="support-assistant",
+        instructions="You are a concise support voice assistant.",
+        greeting="Hello! How can I help you today?",
+        max_history=10,
     )
 
-    # 3. Create a session — works with both sync and async clients
     session = agent.create_session(
         client,
-        channel='support-room-123',
-        agent_uid='1',
-        remote_uids=['100'],
+        channel="support-room-123",
+        agent_uid="1",
+        remote_uids=["100"],
+        idle_timeout=120,
+        preset=[
+            AgentPresets.asr.deepgram_nova_3,
+            AgentPresets.llm.openai_gpt_5_mini,
+            AgentPresets.tts.openai_tts_1,
+        ],
     )
 
-    # 4. All session methods are coroutines — use await
-    agent_id = await session.start()
-    print(f'Agent started with ID: {agent_id}')
+    agent_session_id = session.start()
+    print(f"Agent started: {agent_session_id}")
 
-    await session.say('Hello! How can I help you today?')
-    await session.stop()
-    print('Agent stopped.')
+    session.say("Thanks for calling Agora support.")
+    session.stop()
 
-asyncio.run(main())
+
+if __name__ == "__main__":
+    main()
 ```
 
-## What Happens Under the Hood
+## What this does
 
-1. The `Agent` builder collects your vendor configuration into a properties object
-2. `session.start()` generates an RTC token (using the client's `app_id` and `app_certificate`), then calls the Agora API to start the agent
-3. The agent connects to the specified channel and begins listening for audio from the remote UIDs
-4. `session.say()` sends text to be spoken by the agent's TTS
-5. `session.stop()` gracefully shuts down the agent
+1. `Agora` runs in app-credentials mode when you pass `app_id` and `app_certificate` only.
+2. `Agent` holds reusable behavior such as instructions, greeting, and history settings.
+3. `preset` tells Agora which managed ASR, LLM, and TTS vendors to run.
+4. `session.start()` lets the SDK generate the required auth tokens automatically.
+5. `session.start()` returns the unique agent session ID.
 
-## Next Steps
+## Async applications
 
-- Learn how the [Agent builder](../concepts/agent.md) works
-- Understand the [AgentSession lifecycle](../concepts/session.md)
-- Explore the full [vendor catalog](../concepts/vendors.md)
-- Try the [MLLM flow](../guides/mllm-flow.md) for multimodal agents
+For `asyncio` services, switch to `AsyncAgora` and `await` the session methods. The preset and token-auth flow stays the same.
+
+## When to use BYOK instead
+
+Use presets when you want the fastest path to a working agent.
+
+Use BYOK when you need to:
+
+- supply your own vendor API keys
+- use models outside the preset catalog
+- point at custom vendor endpoints
+- manage vendor-specific parameters directly
+
+See [BYOK Guide](../guides/byok.md).
+
+## Next steps
+
+- [Authentication](./authentication.md)
+- [BYOK Guide](../guides/byok.md)
+- [MLLM Flow](../guides/mllm-flow.md)
+- [Agent Reference](../reference/agent.md)

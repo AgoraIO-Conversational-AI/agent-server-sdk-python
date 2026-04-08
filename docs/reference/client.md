@@ -8,6 +8,7 @@ description: Constructor options and public methods for the Agora Python client.
 
 ## `Agora` Constructor
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent import Agora, Area
 
@@ -41,6 +42,7 @@ Identical to `Agora` except:
 |---|---|
 | `httpx_client` | Accepts `httpx.AsyncClient` instead of `httpx.Client` |
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent import AsyncAgora, Area
 
@@ -57,6 +59,7 @@ client = AsyncAgora(
 
 Cycle to the next region prefix in the pool. Call this when a request fails to try a different endpoint.
 
+<!-- snippet: fragment -->
 ```python
 client.next_region()
 ```
@@ -68,6 +71,7 @@ client.next_region()
 
 Trigger DNS-based domain selection to find the fastest-responding domain suffix.
 
+<!-- snippet: fragment -->
 ```python
 # Sync (Agora)
 client.select_best_domain()
@@ -85,6 +89,7 @@ await client.select_best_domain()
 
 Get the current base URL being used for requests.
 
+<!-- snippet: fragment -->
 ```python
 url = client.get_current_url()
 # "https://api-us-west-1.agora.io/api/conversational-ai-agent"
@@ -97,6 +102,7 @@ url = client.get_current_url()
 
 Access the underlying `Pool` object for advanced domain management.
 
+<!-- snippet: fragment -->
 ```python
 pool = client.pool
 pool.get_area()  # Area.US

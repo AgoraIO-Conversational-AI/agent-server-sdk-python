@@ -10,6 +10,7 @@ description: Full API reference for the Python Agent builder class.
 
 ## Constructor
 
+<!-- snippet: fragment -->
 ```python
 Agent(
     name: Optional[str] = None,
@@ -52,6 +53,7 @@ All builder methods return a new `Agent` instance (immutable pattern).
 
 Set the LLM vendor for cascading flow.
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent.agentkit.vendors import OpenAI
 agent = Agent().with_llm(OpenAI(api_key='your-key', model='gpt-4o-mini'))
@@ -61,6 +63,7 @@ agent = Agent().with_llm(OpenAI(api_key='your-key', model='gpt-4o-mini'))
 
 Set the TTS vendor. Records the vendor's `sample_rate` for avatar validation.
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent.agentkit.vendors import ElevenLabsTTS
 agent = Agent().with_tts(ElevenLabsTTS(key='your-key', model_id='eleven_flash_v2_5', voice_id='your-voice-id'))
@@ -70,6 +73,7 @@ agent = Agent().with_tts(ElevenLabsTTS(key='your-key', model_id='eleven_flash_v2
 
 Set the STT (ASR) vendor.
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent.agentkit.vendors import DeepgramSTT
 agent = Agent().with_stt(DeepgramSTT(api_key='your-key', language='en-US'))
@@ -79,6 +83,7 @@ agent = Agent().with_stt(DeepgramSTT(api_key='your-key', language='en-US'))
 
 Set the MLLM vendor for multimodal flow. Requires `AdvancedFeatures(enable_mllm=True)`.
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent.agentkit import AdvancedFeatures
 from agora_agent.agentkit.vendors import OpenAIRealtime
@@ -89,6 +94,7 @@ agent = Agent(advanced_features=AdvancedFeatures(enable_mllm=True)).with_mllm(Op
 
 Set the avatar vendor. Raises `ValueError` if TTS sample rate does not match the avatar's `required_sample_rate`.
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent.agentkit.vendors import HeyGenAvatar
 agent = agent.with_avatar(HeyGenAvatar(api_key='your-key', quality='medium', agora_uid='2'))
@@ -150,6 +156,7 @@ Set filler words configuration (played while waiting for LLM response).
 
 ## `create_session()`
 
+<!-- snippet: fragment -->
 ```python
 create_session(
     client: Any,
@@ -184,6 +191,7 @@ Creates an `AgentSession` bound to the given client and channel.
 
 Converts the agent configuration into a `StartAgentsRequestProperties` object for the Agora API. Called internally by `AgentSession.start()`.
 
+<!-- snippet: fragment -->
 ```python
 to_properties(
     channel: str,

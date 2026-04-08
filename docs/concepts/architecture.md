@@ -68,6 +68,7 @@ The SDK provides two parallel client hierarchies:
 
 Every method on `AgentSession` that makes an HTTP call (`start()`, `stop()`, `say()`, `interrupt()`, `update()`, `get_history()`, `get_info()`) has an `async` equivalent on `AsyncAgentSession` that must be called with `await`:
 
+<!-- snippet: fragment -->
 ```python
 # Sync
 agent_id = session.start()
@@ -84,6 +85,7 @@ The `Agent` builder class is the same for both — it does not make HTTP calls, 
 
 ## Import Paths
 
+<!-- snippet: executable -->
 ```python
 # Top-level client and types
 from agora_agent import Agora, AsyncAgora, Area, Pool

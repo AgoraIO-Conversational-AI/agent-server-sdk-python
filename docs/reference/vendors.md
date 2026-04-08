@@ -8,6 +8,7 @@ description: Constructor options for all LLM, TTS, STT, MLLM, and Avatar vendor 
 
 All vendor classes are available from `agora_agent.agentkit.vendors`:
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent.agentkit.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT, OpenAIRealtime, HeyGenAvatar
 ```
@@ -32,6 +33,7 @@ from agora_agent.agentkit.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT, Ope
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
 | `params` | `Dict[str, Any]` | No | `None` | Additional model parameters |
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent.agentkit.vendors import OpenAI
 
@@ -54,6 +56,7 @@ llm = OpenAI(api_key='your-key', model='gpt-4o-mini', temperature=0.7)
 | `failure_message` | `str` | No | `None` | Failure message |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent.agentkit.vendors import AzureOpenAI
 
@@ -78,6 +81,7 @@ llm = AzureOpenAI(
 | `failure_message` | `str` | No | `None` | Failure message |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent.agentkit.vendors import Anthropic
 
@@ -99,6 +103,7 @@ llm = Anthropic(api_key='your-anthropic-key', model='claude-3-5-sonnet-20241022'
 | `failure_message` | `str` | No | `None` | Failure message |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent.agentkit.vendors import Gemini
 

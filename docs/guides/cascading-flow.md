@@ -54,7 +54,7 @@ async def main():
         area=Area.US,
         app_id='your-app-id',
         app_certificate='your-app-certificate',
-    )
+        )
 
     agent = (
         Agent(name='assistant', instructions='You are a friendly customer support agent.')
