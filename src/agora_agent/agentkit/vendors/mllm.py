@@ -16,6 +16,9 @@ class OpenAIRealtimeOptions(BaseModel):
     output_modalities: Optional[List[str]] = Field(default=None, description="Output modalities")
     messages: Optional[List[Dict[str, Any]]] = Field(default=None, description="Conversation messages")
     params: Optional[Dict[str, Any]] = Field(default=None, description="Additional parameters")
+    predefined_tools: Optional[List[str]] = Field(default=None, description="Predefined tools")
+    failure_message: Optional[str] = Field(default=None, description="Message played on failure")
+    max_history: Optional[int] = Field(default=None, description="Maximum conversation history length")
 
 class OpenAIRealtime(BaseMLLM):
     def __init__(self, **kwargs: Any):
@@ -45,6 +48,12 @@ class OpenAIRealtime(BaseMLLM):
             config["output_modalities"] = self.options.output_modalities
         if self.options.messages is not None:
             config["messages"] = self.options.messages
+        if self.options.predefined_tools is not None:
+            config["predefined_tools"] = self.options.predefined_tools
+        if self.options.failure_message is not None:
+            config["failure_message"] = self.options.failure_message
+        if self.options.max_history is not None:
+            config["max_history"] = self.options.max_history
 
         return config
 
@@ -53,6 +62,7 @@ class VertexAIOptions(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     model: str = Field(..., description="Model name")
+    url: Optional[str] = Field(default=None, description="WebSocket URL")
     project_id: str = Field(..., description="Google Cloud project ID")
     location: str = Field(..., description="Google Cloud location/region")
     adc_credentials_string: str = Field(..., description="Application Default Credentials JSON string")
@@ -63,6 +73,9 @@ class VertexAIOptions(BaseModel):
     output_modalities: Optional[List[str]] = Field(default=None, description="Output modalities")
     messages: Optional[List[Dict[str, Any]]] = Field(default=None, description="Conversation messages")
     additional_params: Optional[Dict[str, Any]] = Field(default=None, description="Additional parameters")
+    predefined_tools: Optional[List[str]] = Field(default=None, description="Predefined tools")
+    failure_message: Optional[str] = Field(default=None, description="Message played on failure")
+    max_history: Optional[int] = Field(default=None, description="Maximum conversation history length")
 
 class VertexAI(BaseMLLM):
     def __init__(self, **kwargs: Any):
@@ -89,6 +102,8 @@ class VertexAI(BaseMLLM):
             "params": params,
         }
 
+        if self.options.url is not None:
+            config["url"] = self.options.url
         if self.options.greeting_message is not None:
             config["greeting_message"] = self.options.greeting_message
         if self.options.input_modalities is not None:
@@ -97,6 +112,12 @@ class VertexAI(BaseMLLM):
             config["output_modalities"] = self.options.output_modalities
         if self.options.messages is not None:
             config["messages"] = self.options.messages
+        if self.options.predefined_tools is not None:
+            config["predefined_tools"] = self.options.predefined_tools
+        if self.options.failure_message is not None:
+            config["failure_message"] = self.options.failure_message
+        if self.options.max_history is not None:
+            config["max_history"] = self.options.max_history
 
         return config
 
@@ -106,6 +127,7 @@ class GeminiLiveOptions(BaseModel):
 
     api_key: str = Field(..., description="Google API key")
     model: str = Field(..., description="Gemini Live model name")
+    url: Optional[str] = Field(default=None, description="WebSocket URL")
     instructions: Optional[str] = Field(default=None, description="System instructions")
     voice: Optional[str] = Field(default=None, description="Voice name")
     greeting_message: Optional[str] = Field(default=None, description="Agent greeting message")
@@ -113,6 +135,9 @@ class GeminiLiveOptions(BaseModel):
     output_modalities: Optional[List[str]] = Field(default=None, description="Output modalities")
     messages: Optional[List[Dict[str, Any]]] = Field(default=None, description="Conversation messages")
     additional_params: Optional[Dict[str, Any]] = Field(default=None, description="Additional parameters")
+    predefined_tools: Optional[List[str]] = Field(default=None, description="Predefined tools")
+    failure_message: Optional[str] = Field(default=None, description="Message played on failure")
+    max_history: Optional[int] = Field(default=None, description="Maximum conversation history length")
 
 class GeminiLive(BaseMLLM):
     def __init__(self, **kwargs: Any):
@@ -135,6 +160,8 @@ class GeminiLive(BaseMLLM):
             "params": params,
         }
 
+        if self.options.url is not None:
+            config["url"] = self.options.url
         if self.options.greeting_message is not None:
             config["greeting_message"] = self.options.greeting_message
         if self.options.input_modalities is not None:
@@ -143,5 +170,11 @@ class GeminiLive(BaseMLLM):
             config["output_modalities"] = self.options.output_modalities
         if self.options.messages is not None:
             config["messages"] = self.options.messages
+        if self.options.predefined_tools is not None:
+            config["predefined_tools"] = self.options.predefined_tools
+        if self.options.failure_message is not None:
+            config["failure_message"] = self.options.failure_message
+        if self.options.max_history is not None:
+            config["max_history"] = self.options.max_history
 
         return config

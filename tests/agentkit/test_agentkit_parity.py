@@ -137,9 +137,13 @@ class AgentKitParityTests(unittest.TestCase):
         config = GeminiLive(
             api_key="google-key",
             model="gemini-live-2.5-flash",
+            url="wss://generativelanguage.googleapis.com/ws",
             instructions="You are concise.",
             voice="Aoede",
             greeting_message="Hello",
+            predefined_tools=["_publish_message"],
+            failure_message="Please try again.",
+            max_history=8,
             additional_params={"temperature": 0.2},
             messages=[{"role": "user", "content": "Hi"}],
         ).to_config()
@@ -150,6 +154,7 @@ class AgentKitParityTests(unittest.TestCase):
                 "vendor": "gemini",
                 "style": "openai",
                 "api_key": "google-key",
+                "url": "wss://generativelanguage.googleapis.com/ws",
                 "params": {
                     "temperature": 0.2,
                     "model": "gemini-live-2.5-flash",
@@ -158,6 +163,9 @@ class AgentKitParityTests(unittest.TestCase):
                 },
                 "messages": [{"role": "user", "content": "Hi"}],
                 "greeting_message": "Hello",
+                "predefined_tools": ["_publish_message"],
+                "failure_message": "Please try again.",
+                "max_history": 8,
             },
         )
 
