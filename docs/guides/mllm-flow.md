@@ -1,7 +1,7 @@
 ---
 sidebar_position: 2
 title: MLLM Flow (Multimodal)
-description: Use OpenAI Realtime or Vertex AI Gemini Live for end-to-end audio processing.
+description: Use OpenAI Realtime or Gemini Live for end-to-end audio processing.
 ---
 
 # MLLM Flow (Multimodal)
@@ -11,7 +11,7 @@ The MLLM (Multimodal LLM) flow uses a single model to handle both audio input an
 Two MLLM vendors are supported:
 
 - **OpenAI Realtime** — `gpt-4o-realtime-preview` and related models
-- **Vertex AI** — Gemini Live via Google Cloud
+- **Gemini Live** — direct Google AI API access for audio-native Gemini models
 
 ## Required: Enable MLLM Mode
 
@@ -75,7 +75,7 @@ async def main():
         area=Area.US,
         app_id='your-app-id',
         app_certificate='your-app-certificate',
-    )
+        )
 
     agent = (
         Agent(
@@ -96,14 +96,14 @@ async def main():
 asyncio.run(main())
 ```
 
-## Vertex AI (Gemini Live)
+## Gemini Live
 
-Vertex AI requires Google Cloud credentials:
+Gemini Live uses a Google AI API key:
 
 ```python
 from agora_agent import Agora, Area
 from agora_agent.agentkit import Agent, AdvancedFeatures
-from agora_agent.agentkit.vendors import VertexAI
+from agora_agent.agentkit.vendors import GeminiLive
 
 client = Agora(
     area=Area.AP,
@@ -117,11 +117,9 @@ agent = (
         instructions='You are a helpful multilingual assistant.',
         advanced_features=AdvancedFeatures(enable_mllm=True),
     )
-    .with_mllm(VertexAI(
-        model='gemini-2.0-flash-exp',
-        project_id='your-gcp-project-id',
-        location='us-central1',
-        adc_credentials_string='your-adc-credentials-json-string',
+    .with_mllm(GeminiLive(
+        api_key='your-google-ai-api-key',
+        model='gemini-live-2.5-flash',
         voice='Aoede',
     ))
 )
@@ -153,7 +151,7 @@ mllm = OpenAIRealtime(
 |---|---|---|
 | Latency | Lower — single model, no pipeline | Higher — three models in sequence |
 | Voice control | Model-dependent | Full vendor choice for TTS |
-| Vendor flexibility | Limited (OpenAI Realtime or Vertex AI) | Mix and match 4 LLMs, 12 TTS, 10 STT |
+| Vendor flexibility | Limited (OpenAI Realtime or Gemini Live) | Mix and match 4 LLMs, 12 TTS, 10 STT |
 | Audio understanding | Model hears tone, pacing, emotion | STT produces text only |
 
 ## Next Steps

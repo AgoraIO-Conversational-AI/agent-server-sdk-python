@@ -7,6 +7,7 @@ description: Full API reference for the Python AgentSession class.
 # AgentSession / AsyncAgentSession Reference
 
 **Import:**
+<!-- snippet: fragment -->
 ```python
 from agora_agent.agentkit import AgentSession
 from agora_agent.agentkit.agent_session import AsyncAgentSession
@@ -18,6 +19,7 @@ from agora_agent import AgentSession, AsyncAgentSession
 
 Sessions are normally created via `Agent.create_session()`. Direct construction is available for advanced use:
 
+<!-- snippet: fragment -->
 ```python
 AgentSession(
     client: Any,
@@ -63,6 +65,7 @@ Start the agent session. Generates an RTC token if not provided, validates avata
 | **Raises** | `RuntimeError` if not in `idle`, `stopped`, or `error` state | Same |
 | **Raises** | `ValueError` if avatar/TTS sample rate mismatch | Same |
 
+<!-- snippet: fragment -->
 ```python
 # Sync
 agent_id = session.start()
@@ -80,6 +83,7 @@ Stop the agent session. If the agent has already stopped (404 from API), transit
 | **Signature** | `stop() -> None` | `async stop() -> None` |
 | **Raises** | `RuntimeError` if not in `running` state | Same |
 
+<!-- snippet: fragment -->
 ```python
 # Sync
 session.stop()
@@ -103,6 +107,7 @@ Send text to be spoken by the agent's TTS.
 | `priority` | `str` | No | `INTERRUPT`, `APPEND`, or `IGNORE` |
 | `interruptable` | `bool` | No | Whether the message can be interrupted |
 
+<!-- snippet: fragment -->
 ```python
 # Sync
 session.say('Hello!', priority='INTERRUPT', interruptable=False)
@@ -120,6 +125,7 @@ Interrupt the agent while speaking or thinking.
 | **Signature** | `interrupt() -> None` | `async interrupt() -> None` |
 | **Raises** | `RuntimeError` if not in `running` state | Same |
 
+<!-- snippet: fragment -->
 ```python
 # Sync
 session.interrupt()
@@ -137,6 +143,7 @@ Update the agent configuration at runtime.
 | **Signature** | `update(properties: Any) -> None` | `async update(properties: Any) -> None` |
 | **Raises** | `RuntimeError` if not in `running` state | Same |
 
+<!-- snippet: fragment -->
 ```python
 from agora_agent.agents.types import UpdateAgentsRequestProperties
 
@@ -156,6 +163,7 @@ Retrieve the conversation history.
 | **Signature** | `get_history() -> Any` | `async get_history() -> Any` |
 | **Raises** | `RuntimeError` if no agent ID | Same |
 
+<!-- snippet: fragment -->
 ```python
 # Sync
 history = session.get_history()
@@ -173,6 +181,7 @@ Retrieve the current session info.
 | **Signature** | `get_info() -> Any` | `async get_info() -> Any` |
 | **Raises** | `RuntimeError` if no agent ID | Same |
 
+<!-- snippet: fragment -->
 ```python
 # Sync
 info = session.get_info()
@@ -185,6 +194,7 @@ info = await session.get_info()
 
 Register an event handler. This method is synchronous on both `AgentSession` and `AsyncAgentSession`.
 
+<!-- snippet: fragment -->
 ```python
 session.on('started', lambda data: print(f'Started: {data}'))
 ```
@@ -198,6 +208,7 @@ session.on('started', lambda data: print(f'Started: {data}'))
 
 Remove a previously registered event handler.
 
+<!-- snippet: fragment -->
 ```python
 session.off('started', my_handler)
 ```

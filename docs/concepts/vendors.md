@@ -10,6 +10,7 @@ The SDK provides typed vendor classes for every supported provider. Each vendor 
 
 All vendor classes are available from `agora_agent.agentkit.vendors`:
 
+<!-- snippet: executable -->
 ```python
 from agora_agent.agentkit.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT
 ```
@@ -25,6 +26,7 @@ Used with `agent.with_llm()` for the cascading flow (ASR → LLM → TTS).
 | `Anthropic` | Anthropic | `api_key` |
 | `Gemini` | Google Gemini | `api_key` |
 
+<!-- snippet: executable -->
 ```python
 from agora_agent.agentkit.vendors import OpenAI
 
@@ -50,6 +52,7 @@ Used with `agent.with_tts()`. Each TTS vendor produces audio at a specific sampl
 | `MiniMaxTTS` | MiniMax | `key` | — |
 | `SarvamTTS` | Sarvam | `api_key` | — |
 
+<!-- snippet: executable -->
 ```python
 from agora_agent.agentkit.vendors import ElevenLabsTTS
 
@@ -78,6 +81,7 @@ Used with `agent.with_stt()`.
 | `SonioxSTT` | Soniox | `api_key`, `language` |
 | `SarvamSTT` | Sarvam | `api_key`, `language` |
 
+<!-- snippet: executable -->
 ```python
 from agora_agent.agentkit.vendors import DeepgramSTT
 
@@ -93,6 +97,7 @@ Used with `agent.with_mllm()` for the [MLLM flow](../guides/mllm-flow.md). These
 | `OpenAIRealtime` | OpenAI Realtime | `api_key` |
 | `VertexAI` | Vertex AI (Gemini Live) | `model`, `project_id`, `location`, `adc_credentials_string` |
 
+<!-- snippet: executable -->
 ```python
 from agora_agent.agentkit.vendors import OpenAIRealtime
 
@@ -108,6 +113,7 @@ Used with `agent.with_avatar()`. Avatars require specific TTS sample rates — s
 | `HeyGenAvatar` | HeyGen | `api_key`, `quality`, `agora_uid` | 24000 Hz |
 | `AkoolAvatar` | Akool | `api_key`, `agora_uid` | 16000 Hz |
 
+<!-- snippet: executable -->
 ```python
 from agora_agent.agentkit.vendors import HeyGenAvatar
 

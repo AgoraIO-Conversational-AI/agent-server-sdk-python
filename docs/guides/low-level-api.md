@@ -24,6 +24,7 @@ client = Agora(
     area=Area.US,
     app_id="YOUR_APP_ID",
     app_certificate="YOUR_APP_CERTIFICATE",
+    auth_token="your-rest-auth-token",
 )
 client.agents.start(
     client.app_id,
@@ -79,6 +80,7 @@ client = AsyncAgora(
     area=Area.US,
     app_id="YOUR_APP_ID",
     app_certificate="YOUR_APP_CERTIFICATE",
+    auth_token="your-rest-auth-token",
 )
 
 async def main() -> None:
@@ -145,6 +147,7 @@ client = Agora(
     area=Area.US,
     app_id="YOUR_APP_ID",
     app_certificate="YOUR_APP_CERTIFICATE",
+    auth_token="your-rest-auth-token",
 )
 
 client.agents.start(

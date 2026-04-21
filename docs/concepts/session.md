@@ -33,6 +33,7 @@ You can check the current state with `session.status`.
 
 Use `Agent.create_session()` to create a session:
 
+<!-- snippet: executable -->
 ```python
 from agora_agent import Agora, Area
 from agora_agent.agentkit import Agent
@@ -52,6 +53,7 @@ session = agent.create_session(client, channel='my-channel', agent_uid='1', remo
 
 ## Sync Methods
 
+<!-- snippet: fragment -->
 ```python
 # Start the agent — returns the agent ID
 agent_id = session.start()
@@ -82,6 +84,7 @@ session.stop()
 
 `AsyncAgentSession` provides the same methods as coroutines. Every call that makes an HTTP request requires `await`:
 
+<!-- snippet: fragment -->
 ```python
 agent_id = await session.start()
 await session.say('Hello! How can I help?')
@@ -109,6 +112,7 @@ await session.stop()
 
 Both `AgentSession` and `AsyncAgentSession` support event handlers via `on()` and `off()`:
 
+<!-- snippet: fragment -->
 ```python
 def on_started(data):
     print(f'Agent started: {data["agent_id"]}')
@@ -147,6 +151,7 @@ session.off('started', on_started)
 
 If the agentkit does not yet expose a method for a new API endpoint, use `session.raw` to access the underlying Fern-generated `AgentsClient` (sync) or `AsyncAgentsClient` (async) directly:
 
+<!-- snippet: fragment -->
 ```python
 # Access any Fern-generated method
 response = session.raw.list(session.app_id)
@@ -156,6 +161,7 @@ response = session.raw.list(session.app_id)
 
 Session methods raise `RuntimeError` if called in an invalid state:
 
+<!-- snippet: fragment -->
 ```python
 session = agent.create_session(client, channel='my-channel', agent_uid='1', remote_uids=['100'])
 

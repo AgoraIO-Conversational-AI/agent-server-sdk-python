@@ -10,6 +10,7 @@ The `Agent` class is a fluent builder for configuring AI agent properties. It co
 
 ## Constructor
 
+<!-- snippet: executable -->
 ```python
 from agora_agent.agentkit import Agent
 
@@ -72,6 +73,7 @@ Each `with_*` method returns a **new** `Agent` instance — the original is unch
 
 ## Chaining Example
 
+<!-- snippet: executable -->
 ```python
 from agora_agent.agentkit import Agent
 from agora_agent.agentkit.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT
@@ -88,6 +90,7 @@ agent = (
 
 Because each `with_*` call returns a new `Agent`, you can build a base configuration and create multiple sessions from it:
 
+<!-- snippet: executable -->
 ```python
 from agora_agent import Agora, Area
 from agora_agent.agentkit import Agent
@@ -111,6 +114,7 @@ session_b = base.create_session(client, channel='room-b', agent_uid='1', remote_
 
 Creates a new `AgentSession` bound to a client and channel.
 
+<!-- snippet: fragment -->
 ```python
 session = agent.create_session(
     client,
