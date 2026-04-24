@@ -108,6 +108,7 @@ def test_to_properties_generates_token_and_respects_mllm_vendor_precedence():
     agent = Agent(greeting="top hello", failure_message="top fail", max_history=9).with_mllm(
         OpenAIRealtime(
             api_key="key",
+            url="wss://openai.example.com/realtime",
             greeting_message="vendor hello",
         )
     ).with_advanced_features({"enable_mllm": True})
@@ -123,6 +124,7 @@ def test_to_properties_generates_token_and_respects_mllm_vendor_precedence():
     )
 
     assert props["mllm"]["greeting_message"] == "vendor hello"
-    assert "failure_message" not in props["mllm"]
-    assert "max_history" not in props["mllm"]
+    assert props["mllm"]["failure_message"] == "top fail"
+    assert props["mllm"]["max_history"] == 9
+    assert props["mllm"]["url"] == "wss://openai.example.com/realtime"
     assert isinstance(props["token"], str) and props["token"]

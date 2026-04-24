@@ -536,6 +536,10 @@ class Agent:
                 mllm_config = dict(self._mllm)
                 if self._greeting:
                     mllm_config.setdefault("greeting_message", self._greeting)
+                if self._failure_message:
+                    mllm_config.setdefault("failure_message", self._failure_message)
+                if self._max_history is not None:
+                    mllm_config.setdefault("max_history", self._max_history)
                 base_kwargs["mllm"] = mllm_config
             return StartAgentsRequestProperties(**base_kwargs)
 

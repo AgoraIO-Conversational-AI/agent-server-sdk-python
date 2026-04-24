@@ -56,22 +56,56 @@ def test_llm_vendor_mappings_cover_core_shapes_and_defaults():
 
 
 def test_mllm_vendor_mappings_cover_optional_branches():
-    realtime = OpenAIRealtime(api_key="key").to_config()
-    assert realtime == {"vendor": "openai", "style": "openai", "api_key": "key"}
+    realtime = OpenAIRealtime(
+        api_key="key",
+        url="wss://openai.example.com/realtime",
+        predefined_tools=["_publish_message"],
+        failure_message="Retry",
+        max_history=3,
+    ).to_config()
+    assert realtime == {
+        "vendor": "openai",
+        "style": "openai",
+        "api_key": "key",
+        "url": "wss://openai.example.com/realtime",
+        "predefined_tools": ["_publish_message"],
+        "failure_message": "Retry",
+        "max_history": 3,
+    }
 
     vertex = VertexAI(
         model="gemini-live",
+        url="wss://vertex.example.com/realtime",
         project_id="project",
         location="us-central1",
         adc_credentials_string="creds",
         additional_params={"temperature": 0.2},
+        predefined_tools=["_publish_message"],
+        failure_message="Try again",
+        max_history=5,
     ).to_config()
     assert vertex["vendor"] == "vertexai"
+    assert vertex["url"] == "wss://vertex.example.com/realtime"
     assert vertex["params"]["temperature"] == 0.2
+    assert vertex["predefined_tools"] == ["_publish_message"]
+    assert vertex["failure_message"] == "Try again"
+    assert vertex["max_history"] == 5
 
-    gemini_live = GeminiLive(api_key="key", model="gemini-live", voice="Aoede").to_config()
+    gemini_live = GeminiLive(
+        api_key="key",
+        model="gemini-live",
+        url="wss://gemini.example.com/realtime",
+        voice="Aoede",
+        predefined_tools=["_publish_message"],
+        failure_message="Please try again.",
+        max_history=8,
+    ).to_config()
     assert gemini_live["vendor"] == "gemini"
+    assert gemini_live["url"] == "wss://gemini.example.com/realtime"
     assert gemini_live["params"]["voice"] == "Aoede"
+    assert gemini_live["predefined_tools"] == ["_publish_message"]
+    assert gemini_live["failure_message"] == "Please try again."
+    assert gemini_live["max_history"] == 8
 
 
 def test_stt_vendor_mappings_cover_all_wrappers():
