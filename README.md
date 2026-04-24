@@ -3,7 +3,7 @@
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FAgoraIO-Conversational-AI%2Fagent-server-sdk-python)
 [![pypi](https://img.shields.io/pypi/v/agora-agent-server-sdk)](https://pypi.python.org/pypi/agora-agent-server-sdk)
 
-The Agora Conversational AI SDK provides convenient access to the Agora Conversational AI APIs, enabling you to build voice-powered AI agents with support for both cascading flows (ASR -> LLM -> TTS) and multimodal flows (MLLM) for real-time audio processing.
+The Agora Agent Server SDK for Python lets you build real-time voice agents on Agora Conversational AI with a high-level `Agent` / `AgentSession` API and a generated low-level REST client.
 
 ## Requirements
 
@@ -162,6 +162,24 @@ agent = Agent(
 If you want to bring your own vendor credentials instead of using Agora-managed presets, use the BYOK guide:
 
 - [BYOK Guide](./docs/guides/byok.md)
+
+## MLLM (Realtime / Multimodal)
+
+Use `with_mllm()` for OpenAI Realtime or Gemini Live. No STT, LLM, or TTS vendor is needed when MLLM mode is enabled.
+
+```python
+from agora_agent.agentkit import Agent, OpenAIRealtime
+
+agent = Agent(name="realtime-assistant").with_mllm(
+    OpenAIRealtime(
+        api_key=os.environ["OPENAI_API_KEY"],
+        model="gpt-4o-realtime-preview",
+        greeting_message="Hello! Ready to chat.",
+    )
+)
+```
+
+See the [MLLM Flow guide](./docs/guides/mllm-flow.md) for full examples with Gemini Live and Vertex AI.
 
 ## Documentation
 
