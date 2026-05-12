@@ -22,6 +22,11 @@ class StartAgentsRequestPropertiesLlmGreetingConfigs(UncheckedBaseModel):
     - `single_first`: Broadcasts a greeting only once to the first user who joins the channel.
     """
 
+    delay_ms: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    The delay in milliseconds before the agent plays the greeting message after a user joins the channel.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

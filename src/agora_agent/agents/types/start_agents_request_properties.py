@@ -11,6 +11,7 @@ from .start_agents_request_properties_asr import StartAgentsRequestPropertiesAsr
 from .start_agents_request_properties_avatar import StartAgentsRequestPropertiesAvatar
 from .start_agents_request_properties_filler_words import StartAgentsRequestPropertiesFillerWords
 from .start_agents_request_properties_geofence import StartAgentsRequestPropertiesGeofence
+from .start_agents_request_properties_interruption import StartAgentsRequestPropertiesInterruption
 from .start_agents_request_properties_llm import StartAgentsRequestPropertiesLlm
 from .start_agents_request_properties_mllm import StartAgentsRequestPropertiesMllm
 from .start_agents_request_properties_parameters import StartAgentsRequestPropertiesParameters
@@ -36,7 +37,7 @@ class StartAgentsRequestProperties(UncheckedBaseModel):
 
     agent_rtc_uid: str = pydantic.Field()
     """
-    The user ID of the agent in the channel. A value of `0` means that a random UID is generated and assigned. Set the `token` accordingly.
+    The user ID of the agent in the channel. All UIDs within an RTC channel must be unique. Ensure no other user or service bot is using this UID. A value of `0` means that a unique random UID is generated and assigned. Set the `token` accordingly.
     """
 
     remote_rtc_uids: typing.List[str] = pydantic.Field()
@@ -93,7 +94,12 @@ class StartAgentsRequestProperties(UncheckedBaseModel):
 
     turn_detection: typing.Optional[StartAgentsRequestPropertiesTurnDetection] = pydantic.Field(default=None)
     """
-    Conversation turn detection settings. Controls the logic for voice activity detection and conversation turn determination.
+    Conversation turn detection settings. Controls the logic for voice activity detection and conversation turn determination. This object has no effect when `mllm.enable` is true; use `mllm.turn_detection` instead.
+    """
+
+    interruption: typing.Optional[StartAgentsRequestPropertiesInterruption] = pydantic.Field(default=None)
+    """
+    Interruption control configuration. Provides unified management of the agent's behavior when interrupted by the user.
     """
 
     sal: typing.Optional[StartAgentsRequestPropertiesSal] = pydantic.Field(default=None)

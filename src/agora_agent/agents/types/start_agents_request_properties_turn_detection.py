@@ -15,7 +15,7 @@ from .start_agents_request_properties_turn_detection_type import StartAgentsRequ
 
 class StartAgentsRequestPropertiesTurnDetection(UncheckedBaseModel):
     """
-    Conversation turn detection settings. Controls the logic for voice activity detection and conversation turn determination.
+    Conversation turn detection settings. Controls the logic for voice activity detection and conversation turn determination. This object has no effect when `mllm.enable` is true; use `mllm.turn_detection` instead.
     """
 
     mode: typing.Optional[typing.Literal["default"]] = pydantic.Field(default=None)

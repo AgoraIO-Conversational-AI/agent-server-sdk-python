@@ -28,8 +28,8 @@ class StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeech(UncheckedBase
     """
     Start of speech detection mode:
     - `vad`: Based on VAD (Voice Activity Detection). Uses audio signal detection.
-    - `keywords`: (Beta) Based on keyword trigger. Conversation begins when the agent detects a specified keyword.
-    - `disabled`: Disables start of speech detection. Does not actively trigger new conversation turns.
+    - `keywords`: Deprecated. Use `interruption.mode = "keywords"` instead.
+    - `disabled`: Deprecated. Use `interruption.enable = false` with `interruption.disabled_config.strategy` to configure the handling strategy.
     """
 
     vad_config: typing.Optional[StartAgentsRequestPropertiesTurnDetectionConfigStartOfSpeechVadConfig] = pydantic.Field(
