@@ -1,7 +1,8 @@
 from agora_agent.agentkit.agent import Agent
 import asyncio
+import warnings
 from agora_agent.agentkit.agent_session import AgentSession, AsyncAgentSession
-from agora_agent.agentkit.vendors import DeepgramTTS, MicrosoftTTS, OpenAI, OpenAIRealtime
+from agora_agent.agentkit.vendors import DeepgramTTS, HeyGenAvatar, MicrosoftTTS, OpenAI, OpenAIRealtime
 from agora_agent.agent_management.types.agent_think_response import AgentThinkResponse
 from typing import Any, Dict, List, Tuple
 
@@ -127,6 +128,27 @@ def test_with_mllm_sets_legacy_enable_mllm_flag() -> None:
     assert props.mllm.enable is True
     assert props.advanced_features is not None
     assert props.advanced_features.enable_mllm is True
+
+
+def test_with_tools_sets_enable_tools() -> None:
+    props = Agent().with_tools().to_properties(
+        channel="room",
+        token="rtc-token",
+        agent_uid="1",
+        remote_uids=["2"],
+        skip_vendor_validation=True,
+    )
+
+    assert props.advanced_features is not None
+    assert props.advanced_features.enable_tools is True
+
+
+def test_heygen_avatar_emits_deprecation_warning() -> None:
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        HeyGenAvatar(api_key="heygen-key", quality="high", agora_uid="42")
+
+    assert any("HeyGenAvatar is deprecated" in str(warning.message) for warning in caught)
 
 
 def test_deepgram_tts_vendor_config() -> None:

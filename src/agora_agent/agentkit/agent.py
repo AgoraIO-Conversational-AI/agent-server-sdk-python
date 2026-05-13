@@ -259,6 +259,20 @@ class Agent:
         new_agent._advanced_features = features
         return new_agent
 
+    def with_tools(self, enabled: bool = True) -> "Agent":
+        """Returns a new Agent with MCP tool invocation enabled or disabled."""
+        new_agent = self._clone()
+        if new_agent._advanced_features is None:
+            new_agent._advanced_features = StartAgentsRequestPropertiesAdvancedFeatures(enable_tools=enabled)
+        elif isinstance(new_agent._advanced_features, dict):
+            new_agent._advanced_features = typing.cast(
+                AdvancedFeatures,
+                {**new_agent._advanced_features, "enable_tools": enabled},
+            )
+        else:
+            new_agent._advanced_features = new_agent._advanced_features.model_copy(update={"enable_tools": enabled})
+        return new_agent
+
     def with_parameters(self, parameters: typing.Union[SessionParams, SessionParamsInput]) -> "Agent":
         """Returns a new Agent with the specified session parameters.
 

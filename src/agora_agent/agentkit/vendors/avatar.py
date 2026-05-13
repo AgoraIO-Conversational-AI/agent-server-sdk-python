@@ -1,3 +1,4 @@
+import warnings
 from typing import Any, Dict, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -31,7 +32,14 @@ class HeyGenAvatarOptions(BaseModel):
         return v
 
 class HeyGenAvatar(BaseAvatar):
+    """Deprecated: HeyGen has been renamed to LiveAvatar. Use LiveAvatarAvatar instead."""
+
     def __init__(self, **kwargs: Any):
+        warnings.warn(
+            "HeyGenAvatar is deprecated; use LiveAvatarAvatar instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         self.options = HeyGenAvatarOptions(**kwargs)
 
     @property
