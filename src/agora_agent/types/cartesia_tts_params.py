@@ -5,6 +5,7 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 from ..core.unchecked_base_model import UncheckedBaseModel
+from .cartesia_tts_voice import CartesiaTtsVoice
 
 
 class CartesiaTtsParams(UncheckedBaseModel):
@@ -12,16 +13,12 @@ class CartesiaTtsParams(UncheckedBaseModel):
     Cartesia TTS configuration parameters.
     """
 
-    key: str = pydantic.Field()
+    api_key: str = pydantic.Field()
     """
     Cartesia API key
     """
 
-    voice_id: str = pydantic.Field()
-    """
-    Cartesia voice ID
-    """
-
+    voice: CartesiaTtsVoice
     model_id: typing.Optional[str] = pydantic.Field(default=None)
     """
     Model ID (optional)

@@ -9,6 +9,7 @@ from .core.client_wrapper import AsyncClientWrapper, SyncClientWrapper
 from .environment import AgoraEnvironment
 
 if typing.TYPE_CHECKING:
+    from .agent_management.client import AgentManagementClient, AsyncAgentManagementClient
     from .agents.client import AgentsClient, AsyncAgentsClient
     from .phone_numbers.client import AsyncPhoneNumbersClient, PhoneNumbersClient
     from .telephony.client import AsyncTelephonyClient, TelephonyClient
@@ -88,6 +89,7 @@ class Agora:
             timeout=_defaulted_timeout,
         )
         self._agents: typing.Optional[AgentsClient] = None
+        self._agent_management: typing.Optional[AgentManagementClient] = None
         self._telephony: typing.Optional[TelephonyClient] = None
         self._phone_numbers: typing.Optional[PhoneNumbersClient] = None
 
@@ -98,6 +100,14 @@ class Agora:
 
             self._agents = AgentsClient(client_wrapper=self._client_wrapper)
         return self._agents
+
+    @property
+    def agent_management(self):
+        if self._agent_management is None:
+            from .agent_management.client import AgentManagementClient  # noqa: E402
+
+            self._agent_management = AgentManagementClient(client_wrapper=self._client_wrapper)
+        return self._agent_management
 
     @property
     def telephony(self):
@@ -190,6 +200,7 @@ class AsyncAgora:
             timeout=_defaulted_timeout,
         )
         self._agents: typing.Optional[AsyncAgentsClient] = None
+        self._agent_management: typing.Optional[AsyncAgentManagementClient] = None
         self._telephony: typing.Optional[AsyncTelephonyClient] = None
         self._phone_numbers: typing.Optional[AsyncPhoneNumbersClient] = None
 
@@ -200,6 +211,14 @@ class AsyncAgora:
 
             self._agents = AsyncAgentsClient(client_wrapper=self._client_wrapper)
         return self._agents
+
+    @property
+    def agent_management(self):
+        if self._agent_management is None:
+            from .agent_management.client import AsyncAgentManagementClient  # noqa: E402
+
+            self._agent_management = AsyncAgentManagementClient(client_wrapper=self._client_wrapper)
+        return self._agent_management
 
     @property
     def telephony(self):

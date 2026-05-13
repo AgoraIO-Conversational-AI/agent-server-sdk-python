@@ -10,7 +10,7 @@ All vendor classes are available from `agora_agent.agentkit.vendors`:
 
 <!-- snippet: fragment -->
 ```python
-from agora_agent.agentkit.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT, OpenAIRealtime, HeyGenAvatar
+from agora_agent.agentkit.vendors import OpenAI, ElevenLabsTTS, DeepgramTTS, DeepgramSTT, OpenAIRealtime, GeminiLive, HeyGenAvatar
 ```
 
 ---
@@ -31,7 +31,11 @@ from agora_agent.agentkit.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT, Ope
 | `greeting_message` | `str` | No | `None` | Greeting message |
 | `failure_message` | `str` | No | `None` | Failure message |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
+| `output_modalities` | `List[str]` | No | `None` | Output modalities |
 | `params` | `Dict[str, Any]` | No | `None` | Additional model parameters |
+| `headers` | `Dict[str, str]` | No | `None` | Custom HTTP headers forwarded to the LLM provider |
+| `greeting_configs` | `Dict[str, Any]` | No | `None` | Greeting playback configuration |
+| `template_variables` | `Dict[str, str]` | No | `None` | Template variables for messages |
 
 <!-- snippet: fragment -->
 ```python
@@ -55,6 +59,11 @@ llm = OpenAI(api_key='your-key', model='gpt-4o-mini', temperature=0.7)
 | `greeting_message` | `str` | No | `None` | Greeting message |
 | `failure_message` | `str` | No | `None` | Failure message |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
+| `output_modalities` | `List[str]` | No | `None` | Output modalities |
+| `params` | `Dict[str, Any]` | No | `None` | Additional model parameters |
+| `headers` | `Dict[str, str]` | No | `None` | Custom HTTP headers forwarded to the LLM provider |
+| `greeting_configs` | `Dict[str, Any]` | No | `None` | Greeting playback configuration |
+| `template_variables` | `Dict[str, str]` | No | `None` | Template variables for messages |
 
 <!-- snippet: fragment -->
 ```python
@@ -80,6 +89,11 @@ llm = AzureOpenAI(
 | `greeting_message` | `str` | No | `None` | Greeting message |
 | `failure_message` | `str` | No | `None` | Failure message |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
+| `output_modalities` | `List[str]` | No | `None` | Output modalities |
+| `params` | `Dict[str, Any]` | No | `None` | Additional model parameters |
+| `headers` | `Dict[str, str]` | No | `None` | Custom HTTP headers forwarded to the LLM provider |
+| `greeting_configs` | `Dict[str, Any]` | No | `None` | Greeting playback configuration |
+| `template_variables` | `Dict[str, str]` | No | `None` | Template variables for messages |
 
 <!-- snippet: fragment -->
 ```python
@@ -102,6 +116,11 @@ llm = Anthropic(api_key='your-anthropic-key', model='claude-3-5-sonnet-20241022'
 | `greeting_message` | `str` | No | `None` | Greeting message |
 | `failure_message` | `str` | No | `None` | Failure message |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
+| `output_modalities` | `List[str]` | No | `None` | Output modalities |
+| `params` | `Dict[str, Any]` | No | `None` | Additional model parameters |
+| `headers` | `Dict[str, str]` | No | `None` | Custom HTTP headers forwarded to the LLM provider |
+| `greeting_configs` | `Dict[str, Any]` | No | `None` | Greeting playback configuration |
+| `template_variables` | `Dict[str, str]` | No | `None` | Template variables for messages |
 
 <!-- snippet: fragment -->
 ```python
@@ -180,6 +199,17 @@ Fixed sample rate: 24000 Hz.
 | `secret_key` | `str` | Yes | — | AWS secret key |
 | `region` | `str` | Yes | — | AWS region (e.g., `us-east-1`) |
 | `voice_id` | `str` | Yes | — | Amazon Polly voice ID |
+| `skip_patterns` | `List[int]` | No | `None` | Skip patterns |
+
+### `DeepgramTTS`
+
+| Parameter | Type | Required | Default | Description |
+|---|---|---|---|---|
+| `api_key` | `str` | Yes | — | Deepgram API key |
+| `model` | `str` | Yes | — | Deepgram TTS model (e.g., `aura-2-thalia-en`) |
+| `base_url` | `str` | No | `None` | WebSocket endpoint; defaults server-side to `wss://api.deepgram.com/v1/speak` |
+| `sample_rate` | `int` | No | `None` | Sample rate in Hz (for example, `24000`) |
+| `params` | `Dict[str, Any]` | No | `None` | Additional Deepgram TTS parameters |
 | `skip_patterns` | `List[int]` | No | `None` | Skip patterns |
 
 ### `HumeAITTS`
@@ -313,14 +343,6 @@ Fixed sample rate: 24000 Hz.
 | `language` | `str` | No | `None` | Language code |
 | `additional_params` | `Dict[str, Any]` | No | `None` | Additional parameters |
 
-### `SonioxSTT`
-
-| Parameter | Type | Required | Default | Description |
-|---|---|---|---|---|
-| `api_key` | `str` | Yes | — | Soniox API key |
-| `language` | `str` | Yes | — | Language code (e.g., `en`) |
-| `additional_params` | `Dict[str, Any]` | No | `None` | Additional parameters |
-
 ### `SarvamSTT`
 
 | Parameter | Type | Required | Default | Description |
@@ -348,6 +370,26 @@ Fixed sample rate: 24000 Hz.
 | `output_modalities` | `List[str]` | No | `None` | Output modalities |
 | `messages` | `List[Dict]` | No | `None` | Conversation messages |
 | `params` | `Dict[str, Any]` | No | `None` | Additional parameters |
+| `turn_detection` | `MllmTurnDetectionConfig` | No | `None` | MLLM turn detection configuration; overrides top-level `turn_detection` |
+
+### `GeminiLive`
+
+| Parameter | Type | Required | Default | Description |
+|---|---|---|---|---|
+| `api_key` | `str` | Yes | — | Google Gemini API key |
+| `model` | `str` | Yes | — | Gemini Live model name |
+| `url` | `str` | No | `None` | Custom WebSocket URL |
+| `instructions` | `str` | No | `None` | System instructions |
+| `voice` | `str` | No | `None` | Voice name |
+| `greeting_message` | `str` | No | `None` | Greeting message |
+| `failure_message` | `str` | No | `None` | Message played when the model call fails |
+| `max_history` | `int` | No | `None` | Maximum conversation history length |
+| `predefined_tools` | `List[str]` | No | `None` | Predefined tools (e.g., `["_publish_message"]`) |
+| `input_modalities` | `List[str]` | No | `None` | Input modalities |
+| `output_modalities` | `List[str]` | No | `None` | Output modalities |
+| `messages` | `List[Dict]` | No | `None` | Conversation messages |
+| `additional_params` | `Dict[str, Any]` | No | `None` | Additional parameters |
+| `turn_detection` | `MllmTurnDetectionConfig` | No | `None` | MLLM turn detection configuration; overrides top-level `turn_detection` |
 
 ### `VertexAI`
 
@@ -367,6 +409,7 @@ Fixed sample rate: 24000 Hz.
 | `output_modalities` | `List[str]` | No | `None` | Output modalities |
 | `messages` | `List[Dict]` | No | `None` | Conversation messages |
 | `additional_params` | `Dict[str, Any]` | No | `None` | Additional parameters |
+| `turn_detection` | `MllmTurnDetectionConfig` | No | `None` | MLLM turn detection configuration; overrides top-level `turn_detection` |
 
 ---
 

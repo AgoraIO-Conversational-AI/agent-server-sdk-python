@@ -16,6 +16,7 @@ For string values with a finite set of options (e.g. `data_channel`, `sal_mode`,
 |---|---|---|
 | `sal` | `with_sal(config)` | Selective Attention Locking — speaker recognition and noise suppression |
 | `advanced_features` | `with_advanced_features(features)` | Enable MLLM, RTM, SAL, tools |
+| `tools` | `with_tools(enabled=True)` | Enable MCP tool invocation |
 | `parameters` | `with_parameters(params)` | Silence config, farewell config, data channel |
 | `failure_message` | `with_failure_message(msg)` | Message spoken when LLM fails |
 | `max_history` | `with_max_history(n)` | Max conversation turns in LLM context |
@@ -60,13 +61,13 @@ from agora_agent.agentkit import Agent, AdvancedFeatures
 from agora_agent.agentkit.vendors import OpenAIRealtime
 
 # MLLM mode (see mllm-flow guide)
-agent = Agent(advanced_features=AdvancedFeatures(enable_mllm=True)).with_mllm(OpenAIRealtime(api_key='...'))
+agent = Agent().with_mllm(OpenAIRealtime(api_key='...'))
 
 # RTM signaling for custom data delivery
 agent = Agent(advanced_features=AdvancedFeatures(enable_rtm=True))
 
 # Enable tool invocation via MCP
-agent = Agent(advanced_features=AdvancedFeatures(enable_tools=True))
+agent = Agent().with_tools()
 ```
 
 ## Session Parameters
@@ -340,5 +341,5 @@ agent_id = session.start()
 
 - [Agent Reference](../reference/agent.md) — full API signatures
 - [Cascading Flow](./cascading-flow.md) — ASR → LLM → TTS setup
-- [MLLM Flow](./mllm-flow.md) — multimodal flow with `enable_mllm`
+- [MLLM Flow](./mllm-flow.md) — multimodal flow with `mllm.enable`
 - [Regional Routing](./regional-routing.md) — client area and geofence

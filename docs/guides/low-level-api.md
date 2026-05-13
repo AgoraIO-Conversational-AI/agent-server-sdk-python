@@ -8,6 +8,13 @@ description: Direct client.agents.start() usage without the builder pattern.
 
 For full control over request payloads you can call the generated clients directly and pass raw types such as `StartAgentsRequestProperties`, `Tts_Elevenlabs`, and `StartAgentsRequestPropertiesAsr`. Use this when you need vendor or options not exposed by the agentkit, or when integrating with generated types from the API spec.
 
+## Raw telephony and phone-number APIs
+
+AgentKit focuses on realtime agent session helpers. Telephony call status, call hangup, and phone-number management are exposed through the generated low-level clients:
+
+- `client.telephony` for call status and hangup operations
+- `client.phone_numbers` for phone-number list, create, retrieve, update, and delete operations
+
 ## Cascading flow (ASR → LLM → TTS)
 
 ```python
@@ -129,11 +136,6 @@ For real-time audio with OpenAI Realtime or Google Gemini Live, use the MLLM flo
 
 ```python
 from agora_agent import Agora, Area
-from agora_agent.agentkit import (
-    AdvancedFeatures,
-    TurnDetectionConfig,
-    TurnDetectionTypeValues,
-)
 from agora_agent.agents import (
     StartAgentsRequestProperties,
     StartAgentsRequestPropertiesMllm,
@@ -159,8 +161,8 @@ client.agents.start(
         agent_rtc_uid="1001",
         remote_rtc_uids=["1002"],
         idle_timeout=120,
-        advanced_features=AdvancedFeatures(enable_mllm=True),
         mllm=StartAgentsRequestPropertiesMllm(
+            enable=True,
             url="wss://api.openai.com/v1/realtime",
             api_key="<your_openai_api_key>",
             vendor=StartAgentsRequestPropertiesMllmVendor.OPENAI,
@@ -171,18 +173,12 @@ client.agents.start(
             input_modalities=["audio"],
             output_modalities=["text", "audio"],
             greeting_message="Hello! I'm ready to chat in real-time.",
-        ),
-        turn_detection=TurnDetectionConfig(
-            type=TurnDetectionTypeValues.SERVER_VAD,  # deprecated; use config.end_of_speech instead
-            threshold=0.5,
-            silence_duration_ms=500,
-        ),
-        tts=StartAgentsRequestPropertiesTts(
-            vendor=StartAgentsRequestPropertiesTtsVendor.ELEVENLABS,
-            params={},
-        ),
-        llm=StartAgentsRequestPropertiesLlm(
-            url="https://api.openai.com/v1/chat/completions",
+            turn_detection={
+                "mode": "server_vad",
+                "server_vad_config": {
+                    "idle_timeout_ms": 5000,
+                },
+            },
         ),
     ),
 )

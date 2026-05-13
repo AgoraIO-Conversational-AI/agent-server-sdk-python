@@ -5,12 +5,18 @@ import typing
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.unchecked_base_model import UncheckedBaseModel
+from .start_agents_request_properties_mllm_turn_detection import StartAgentsRequestPropertiesMllmTurnDetection
 from .start_agents_request_properties_mllm_vendor import StartAgentsRequestPropertiesMllmVendor
 
 
 class StartAgentsRequestPropertiesMllm(UncheckedBaseModel):
     """
     Multimodal Large Language Model (MLLM) configuration for real-time audio and text processing. `mllm` is an exclusive alternative to the standard `asr` + `llm` + `tts` pipeline.
+    """
+
+    enable: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Enable Multimodal Large Language Model for voice-to-voice processing. Enabling MLLM automatically disables ASR, LLM, and TTS since the MLLM handles end-to-end voice processing directly. Replaces the deprecated `advanced_features.enable_mllm`.
     """
 
     url: typing.Optional[str] = pydantic.Field(default=None)
@@ -30,7 +36,7 @@ class StartAgentsRequestPropertiesMllm(UncheckedBaseModel):
 
     params: typing.Optional[typing.Dict[str, typing.Any]] = pydantic.Field(default=None)
     """
-    Additional MLLM configuration parameters. The `modalities` setting is overridden by `input_modalities` and `output_modalities`. The `turn_detection` setting is overridden by the `turn_detection` section outside of `mllm`.
+    Additional MLLM configuration parameters. The `modalities` setting is overridden by `input_modalities` and `output_modalities`. The `turn_detection` setting is overridden by `mllm.turn_detection`.
     """
 
     input_modalities: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
@@ -51,6 +57,21 @@ class StartAgentsRequestPropertiesMllm(UncheckedBaseModel):
     Agent greeting message. If provided, the first user in the channel is automatically greeted with this message upon joining.
     """
 
+    failure_message: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Message played when the MLLM call fails.
+    """
+
+    max_history: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Maximum number of conversation history messages cached for the MLLM session.
+    """
+
+    predefined_tools: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    """
+    Predefined tools available to the MLLM provider.
+    """
+
     vendor: typing.Optional[StartAgentsRequestPropertiesMllmVendor] = pydantic.Field(default=None)
     """
     MLLM provider. Currently supports:
@@ -59,10 +80,9 @@ class StartAgentsRequestPropertiesMllm(UncheckedBaseModel):
     - `vertexai`: Google Gemini Live (Vertex AI)
     """
 
-    style: typing.Optional[typing.Literal["openai"]] = pydantic.Field(default=None)
+    turn_detection: typing.Optional[StartAgentsRequestPropertiesMllmTurnDetection] = pydantic.Field(default=None)
     """
-    The request style for MLLM completion:
-    - `openai`: For OpenAI Realtime API format
+    Turn detection configuration for the MLLM module. When defined, the top-level `turn_detection` object has no effect.
     """
 
     if IS_PYDANTIC_V2:

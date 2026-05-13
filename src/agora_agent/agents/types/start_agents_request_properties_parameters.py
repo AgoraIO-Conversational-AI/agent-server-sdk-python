@@ -5,6 +5,9 @@ import typing
 import pydantic
 from ...core.pydantic_utilities import IS_PYDANTIC_V2
 from ...core.unchecked_base_model import UncheckedBaseModel
+from .start_agents_request_properties_parameters_audio_scenario import (
+    StartAgentsRequestPropertiesParametersAudioScenario,
+)
 from .start_agents_request_properties_parameters_data_channel import StartAgentsRequestPropertiesParametersDataChannel
 from .start_agents_request_properties_parameters_farewell_config import (
     StartAgentsRequestPropertiesParametersFarewellConfig,
@@ -46,6 +49,14 @@ class StartAgentsRequestPropertiesParameters(UncheckedBaseModel):
     enable_error_message: typing.Optional[bool] = pydantic.Field(default=None)
     """
     Whether to receive agent error events. This setting only takes effect when `advanced_features.enable_rtm` is `true`.
+    """
+
+    audio_scenario: typing.Optional[StartAgentsRequestPropertiesParametersAudioScenario] = pydantic.Field(default=None)
+    """
+    The audio scenario for the RTC channel.
+    - `default`: Maps to `aiserver`.
+    - `chorus`: Real-time chorus scenario, where users have good network conditions and require ultra-low latency.
+    - `aiserver`: Optimized for interactions between the user and the conversational AI agent in terms of latency and network resilience.
     """
 
     if IS_PYDANTIC_V2:

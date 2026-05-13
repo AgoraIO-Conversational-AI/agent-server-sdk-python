@@ -18,6 +18,13 @@ class StartAgentsRequestPropertiesTurnDetectionConfigEndOfSpeechSemanticConfig(U
     Maximum wait time in milliseconds. Use `-1` for no timeout. The maximum time to wait for semantic determination. After timeout, the conversation end is determined based on the current state.
     """
 
+    pause_state_enabled: typing.Optional[bool] = pydantic.Field(default=None)
+    """
+    Whether to detect user intent to pause the conversation:
+    - `true`: The agent uses semantic understanding to determine if the user intends to pause the conversation. For example, when the user's input ends with phrases such as "hold on" or "just a moment", the agent waits for further input rather than treating the utterance as complete and sending it to the LLM.
+    - `false`: The agent does not detect intent to pause the conversation.
+    """
+
     if IS_PYDANTIC_V2:
         model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
     else:

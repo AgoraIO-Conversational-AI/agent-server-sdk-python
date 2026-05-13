@@ -920,6 +920,165 @@ client.agents.interrupt(
 </dl>
 </details>
 
+## Agent Management
+<details><summary><code>client.agent_management.<a href="src/agora_agent/agent_management/client.py">agent_think</a>(...)</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Send a custom text instruction to the specified conversational AI agent instance.
+
+The instruction is injected into the current conversation pipeline as user input, and the agent processes and responds to it following the standard user input logic.
+
+Use this endpoint for the following scenarios:
+- **Implicit instruction injection**: Inject hidden context or directives into the conversation.
+- **Client-side event triggering**: Notify the agent of client-side events, such as a user clicking a button.
+- **Voice and text collaboration**: Combine text instructions with voice input for richer interaction.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```python
+from agora_agent import Agora
+
+client = Agora(
+    authorization="YOUR_AUTHORIZATION",
+    username="YOUR_USERNAME",
+    password="YOUR_PASSWORD",
+)
+client.agent_management.agent_think(
+    appid="appid",
+    agent_id="agentId",
+    text="The user just clicked the purchase button.",
+    on_listening_action="inject",
+    on_thinking_action="interrupt",
+    on_speaking_action="ignore",
+    interruptable=True,
+    metadata={"publisher": "user123", "model": "deepseek-r1"},
+)
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**appid:** `str` — The App ID of the project.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**agent_id:** `str` — The agent instance ID you obtained after successfully calling `join` to start a conversational AI agent.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**text:** `str` — The custom instruction text to inject into the current conversation pipeline. The system processes this as user input.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**on_listening_action:** `typing.Optional[AgentThinkAgentManagementRequestOnListeningAction]` 
+
+The action to take when the agent is in a listening state:
+- `inject`: Inject the custom text instruction into the current turn without interrupting it.
+- `ignore`: Ignore the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**on_thinking_action:** `typing.Optional[AgentThinkAgentManagementRequestOnThinkingAction]` 
+
+The action to take when the agent is in a thinking state:
+- `interrupt`: Interrupt the current state and start a new conversation turn.
+- `ignore`: Ignore the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**on_speaking_action:** `typing.Optional[AgentThinkAgentManagementRequestOnSpeakingAction]` 
+
+The action to take when the agent is in a speaking state:
+- `interrupt`: Interrupt the current state and start a new conversation turn.
+- `ignore`: Ignore the request.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**interruptable:** `typing.Optional[bool]` 
+
+Whether user speech can interrupt the injected instruction:
+- `true`: User speech can interrupt the instruction.
+- `false`: User speech cannot interrupt the instruction.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**metadata:** `typing.Optional[typing.Dict[str, str]]` — Custom metadata in key-value pair format. Use this field to pass additional business information such as identifiers or model references.
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**request_options:** `typing.Optional[RequestOptions]` — Request-specific configuration.
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 ## Telephony
 <details><summary><code>client.telephony.<a href="src/agora_agent/telephony/client.py">list</a>(...)</code></summary>
 <dl>

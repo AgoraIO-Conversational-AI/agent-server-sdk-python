@@ -27,15 +27,33 @@ from .agent import (
     SalMode,
     AdvancedFeatures,
     SessionParams,
+    SessionParamsInput,
     SilenceConfig,
     SilenceAction,
     FarewellConfig,
     ParametersDataChannel,
+    ParametersAudioScenario,
+    InterruptionConfig,
+    InterruptionMode,
+    MllmTurnDetectionConfig,
+    MllmTurnDetectionMode,
     LlmGreetingConfigs,
     LlmGreetingConfigsMode,
     McpServersItem,
 )
 from .agent_session import AgentSession, AgentSessionOptions, AsyncAgentSession
+from ..agent_management.types.agent_think_agent_management_response import (
+    AgentThinkAgentManagementResponse as AgentThinkResponse,
+)
+from ..agent_management.types.agent_think_agent_management_request_on_listening_action import (
+    AgentThinkAgentManagementRequestOnListeningAction as AgentThinkRequestOnListeningAction,
+)
+from ..agent_management.types.agent_think_agent_management_request_on_thinking_action import (
+    AgentThinkAgentManagementRequestOnThinkingAction as AgentThinkRequestOnThinkingAction,
+)
+from ..agent_management.types.agent_think_agent_management_request_on_speaking_action import (
+    AgentThinkAgentManagementRequestOnSpeakingAction as AgentThinkRequestOnSpeakingAction,
+)
 from .avatar_types import (
     is_akool_avatar,
     is_anam_avatar,
@@ -46,6 +64,7 @@ from .avatar_types import (
 )
 from .constants import (
     DataChannel,
+    AudioScenario,
     SilenceActionValues,
     SalModeValues,
     GeofenceArea,
@@ -87,6 +106,7 @@ from .vendors import (
     CartesiaSampleRate,
     CartesiaTTS,
     DeepgramSTT,
+    DeepgramTTS,
     ElevenLabsSampleRate,
     ElevenLabsTTS,
     FishAudioTTS,
@@ -151,12 +171,19 @@ __all__ = [
     "AdvancedFeatures",
     # Session parameters types
     "SessionParams",
+    "SessionParamsInput",
     "SilenceConfig",
     "SilenceAction",
     "FarewellConfig",
     "ParametersDataChannel",
+    "ParametersAudioScenario",
+    "InterruptionConfig",
+    "InterruptionMode",
+    "MllmTurnDetectionConfig",
+    "MllmTurnDetectionMode",
     # Type-safe constants
     "DataChannel",
+    "AudioScenario",
     "SilenceActionValues",
     "SalModeValues",
     "GeofenceArea",
@@ -170,6 +197,10 @@ __all__ = [
     "AgentSession",
     "AsyncAgentSession",
     "AgentSessionOptions",
+    "AgentThinkResponse",
+    "AgentThinkRequestOnListeningAction",
+    "AgentThinkRequestOnThinkingAction",
+    "AgentThinkRequestOnSpeakingAction",
     "AgentPresets",
     "DeepgramPresetModels",
     "OpenAIPresetModels",
@@ -201,6 +232,7 @@ __all__ = [
     "MicrosoftTTS",
     "OpenAITTS",
     "CartesiaTTS",
+    "DeepgramTTS",
     "GoogleTTS",
     "AmazonTTS",
     "HumeAITTS",

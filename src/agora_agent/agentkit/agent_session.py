@@ -2,6 +2,18 @@ import typing
 import warnings
 
 from ..core.api_error import ApiError
+from ..agent_management.types.agent_think_agent_management_request_on_listening_action import (
+    AgentThinkAgentManagementRequestOnListeningAction as AgentThinkRequestOnListeningAction,
+)
+from ..agent_management.types.agent_think_agent_management_request_on_speaking_action import (
+    AgentThinkAgentManagementRequestOnSpeakingAction as AgentThinkRequestOnSpeakingAction,
+)
+from ..agent_management.types.agent_think_agent_management_request_on_thinking_action import (
+    AgentThinkAgentManagementRequestOnThinkingAction as AgentThinkRequestOnThinkingAction,
+)
+from ..agent_management.types.agent_think_agent_management_response import (
+    AgentThinkAgentManagementResponse as AgentThinkResponse,
+)
 from ..agents.types.start_agents_request_properties import StartAgentsRequestProperties
 from .agent import Agent
 from .avatar_types import (
@@ -126,6 +138,11 @@ class _AgentSessionBase:
         """
         return self._client.agents
 
+    @property
+    def raw_agent_management(self) -> typing.Any:
+        """Direct access to the underlying Fern-generated AgentManagement client."""
+        return self._client.agent_management
+
     # ------------------------------------------------------------------
     # Internal helpers
     # ------------------------------------------------------------------
@@ -205,10 +222,10 @@ class _AgentSessionBase:
         return value
 
     def _is_mllm_mode(self) -> bool:
-        advanced_features = self._agent.advanced_features
-        if isinstance(advanced_features, dict):
-            return advanced_features.get("enable_mllm") is True
-        return bool(getattr(advanced_features, "enable_mllm", False))
+        mllm = self._agent.mllm
+        if isinstance(mllm, dict) and mllm.get("enable") is True:
+            return True
+        return mllm is not None
 
     def _build_start_properties(self, token_opts: typing.Dict[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         base_properties = self._agent.to_properties(
@@ -457,6 +474,41 @@ class AgentSession(_AgentSessionBase):
             self._app_id, self._agent_id, request_options=self._request_options()
         )
 
+    def think(
+        self,
+        text: str,
+        *,
+        on_listening_action: typing.Optional[AgentThinkRequestOnListeningAction] = None,
+        on_thinking_action: typing.Optional[AgentThinkRequestOnThinkingAction] = None,
+        on_speaking_action: typing.Optional[AgentThinkRequestOnSpeakingAction] = None,
+        interruptable: typing.Optional[bool] = None,
+        metadata: typing.Optional[typing.Dict[str, str]] = None,
+    ) -> AgentThinkResponse:
+        """Inject a custom text instruction into the current session pipeline."""
+        if self._status != "running":
+            raise RuntimeError(f"Cannot think in {self._status} state")
+        if not self._agent_id:
+            raise RuntimeError("No agent ID available")
+
+        kwargs: typing.Dict[str, typing.Any] = {"text": text}
+        if on_listening_action is not None:
+            kwargs["on_listening_action"] = on_listening_action
+        if on_thinking_action is not None:
+            kwargs["on_thinking_action"] = on_thinking_action
+        if on_speaking_action is not None:
+            kwargs["on_speaking_action"] = on_speaking_action
+        if interruptable is not None:
+            kwargs["interruptable"] = interruptable
+        if metadata is not None:
+            kwargs["metadata"] = metadata
+
+        return self._client.agent_management.agent_think(
+            self._app_id,
+            self._agent_id,
+            request_options=self._request_options(),
+            **kwargs,
+        )
+
     def update(self, properties: typing.Any) -> None:
         """Update the agent configuration at runtime.
 
@@ -670,6 +722,41 @@ class AsyncAgentSession(_AgentSessionBase):
 
         await self._client.agents.interrupt(
             self._app_id, self._agent_id, request_options=self._request_options()
+        )
+
+    async def think(
+        self,
+        text: str,
+        *,
+        on_listening_action: typing.Optional[AgentThinkRequestOnListeningAction] = None,
+        on_thinking_action: typing.Optional[AgentThinkRequestOnThinkingAction] = None,
+        on_speaking_action: typing.Optional[AgentThinkRequestOnSpeakingAction] = None,
+        interruptable: typing.Optional[bool] = None,
+        metadata: typing.Optional[typing.Dict[str, str]] = None,
+    ) -> AgentThinkResponse:
+        """Inject a custom text instruction into the current session pipeline."""
+        if self._status != "running":
+            raise RuntimeError(f"Cannot think in {self._status} state")
+        if not self._agent_id:
+            raise RuntimeError("No agent ID available")
+
+        kwargs: typing.Dict[str, typing.Any] = {"text": text}
+        if on_listening_action is not None:
+            kwargs["on_listening_action"] = on_listening_action
+        if on_thinking_action is not None:
+            kwargs["on_thinking_action"] = on_thinking_action
+        if on_speaking_action is not None:
+            kwargs["on_speaking_action"] = on_speaking_action
+        if interruptable is not None:
+            kwargs["interruptable"] = interruptable
+        if metadata is not None:
+            kwargs["metadata"] = metadata
+
+        return await self._client.agent_management.agent_think(
+            self._app_id,
+            self._agent_id,
+            request_options=self._request_options(),
+            **kwargs,
         )
 
     async def update(self, properties: typing.Any) -> None:

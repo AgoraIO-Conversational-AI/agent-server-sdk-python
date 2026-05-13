@@ -12,7 +12,7 @@ class OpenAiTtsParams(UncheckedBaseModel):
     OpenAI TTS configuration parameters.
     """
 
-    key: str = pydantic.Field()
+    api_key: typing.Optional[str] = pydantic.Field(default=None)
     """
     OpenAI API key
     """
