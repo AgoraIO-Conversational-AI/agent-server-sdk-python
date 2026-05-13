@@ -28,6 +28,7 @@ from .stt import (
 from .tts import (
     AmazonTTS,
     CartesiaTTS,
+    DeepgramTTS,
     ElevenLabsTTS,
     FishAudioTTS,
     GoogleTTS,
@@ -60,6 +61,7 @@ __all__ = [
     "MicrosoftTTS",
     "OpenAITTS",
     "CartesiaTTS",
+    "DeepgramTTS",
     "GoogleTTS",
     "AmazonTTS",
     "HumeAITTS",

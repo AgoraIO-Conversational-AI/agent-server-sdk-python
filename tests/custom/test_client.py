@@ -1,7 +1,7 @@
 from agora_agent.agentkit.agent import Agent
 import asyncio
 from agora_agent.agentkit.agent_session import AgentSession, AsyncAgentSession
-from agora_agent.agentkit.vendors import MicrosoftTTS, OpenAI, OpenAIRealtime
+from agora_agent.agentkit.vendors import DeepgramTTS, MicrosoftTTS, OpenAI, OpenAIRealtime
 from agora_agent.agent_management.types.agent_think_response import AgentThinkResponse
 from typing import Any, Dict, List, Tuple
 
@@ -127,3 +127,22 @@ def test_with_mllm_sets_legacy_enable_mllm_flag() -> None:
     assert props.mllm.enable is True
     assert props.advanced_features is not None
     assert props.advanced_features.enable_mllm is True
+
+
+def test_deepgram_tts_vendor_config() -> None:
+    tts = DeepgramTTS(
+        api_key="deepgram-key",
+        model="aura-2-thalia-en",
+        base_url="wss://api.deepgram.com/v1/speak",
+        sample_rate=24000,
+        params={"encoding": "linear16"},
+    ).to_config()
+
+    assert tts["vendor"] == "deepgram"
+    assert tts["params"] == {
+        "api_key": "deepgram-key",
+        "model": "aura-2-thalia-en",
+        "base_url": "wss://api.deepgram.com/v1/speak",
+        "sample_rate": 24000,
+        "encoding": "linear16",
+    }
