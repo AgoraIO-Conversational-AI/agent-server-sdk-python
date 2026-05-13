@@ -1,10 +1,11 @@
 from agora_agent.agentkit.agent import Agent
 from agora_agent.agentkit.agent_session import AgentSession
+from typing import Any, Dict, List, Tuple
 
 
 class _AgentManagementStub:
     def __init__(self) -> None:
-        self.calls = []
+        self.calls: List[Tuple[str, str, Dict[str, Any]]] = []
 
     def agent_think(self, appid, agent_id, **kwargs):  # noqa: ANN001
         self.calls.append((appid, agent_id, kwargs))
