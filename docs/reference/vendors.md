@@ -31,8 +31,11 @@ from agora_agent.agentkit.vendors import OpenAI, ElevenLabsTTS, DeepgramSTT, Ope
 | `greeting_message` | `str` | No | `None` | Greeting message |
 | `failure_message` | `str` | No | `None` | Failure message |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
+| `output_modalities` | `List[str]` | No | `None` | Output modalities |
 | `params` | `Dict[str, Any]` | No | `None` | Additional model parameters |
 | `headers` | `Dict[str, str]` | No | `None` | Custom HTTP headers forwarded to the LLM provider |
+| `greeting_configs` | `Dict[str, Any]` | No | `None` | Greeting playback configuration |
+| `template_variables` | `Dict[str, str]` | No | `None` | Template variables for messages |
 
 <!-- snippet: fragment -->
 ```python
@@ -56,7 +59,11 @@ llm = OpenAI(api_key='your-key', model='gpt-4o-mini', temperature=0.7)
 | `greeting_message` | `str` | No | `None` | Greeting message |
 | `failure_message` | `str` | No | `None` | Failure message |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
+| `output_modalities` | `List[str]` | No | `None` | Output modalities |
+| `params` | `Dict[str, Any]` | No | `None` | Additional model parameters |
 | `headers` | `Dict[str, str]` | No | `None` | Custom HTTP headers forwarded to the LLM provider |
+| `greeting_configs` | `Dict[str, Any]` | No | `None` | Greeting playback configuration |
+| `template_variables` | `Dict[str, str]` | No | `None` | Template variables for messages |
 
 <!-- snippet: fragment -->
 ```python
@@ -82,7 +89,11 @@ llm = AzureOpenAI(
 | `greeting_message` | `str` | No | `None` | Greeting message |
 | `failure_message` | `str` | No | `None` | Failure message |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
+| `output_modalities` | `List[str]` | No | `None` | Output modalities |
+| `params` | `Dict[str, Any]` | No | `None` | Additional model parameters |
 | `headers` | `Dict[str, str]` | No | `None` | Custom HTTP headers forwarded to the LLM provider |
+| `greeting_configs` | `Dict[str, Any]` | No | `None` | Greeting playback configuration |
+| `template_variables` | `Dict[str, str]` | No | `None` | Template variables for messages |
 
 <!-- snippet: fragment -->
 ```python
@@ -105,7 +116,11 @@ llm = Anthropic(api_key='your-anthropic-key', model='claude-3-5-sonnet-20241022'
 | `greeting_message` | `str` | No | `None` | Greeting message |
 | `failure_message` | `str` | No | `None` | Failure message |
 | `input_modalities` | `List[str]` | No | `None` | Input modalities |
+| `output_modalities` | `List[str]` | No | `None` | Output modalities |
+| `params` | `Dict[str, Any]` | No | `None` | Additional model parameters |
 | `headers` | `Dict[str, str]` | No | `None` | Custom HTTP headers forwarded to the LLM provider |
+| `greeting_configs` | `Dict[str, Any]` | No | `None` | Greeting playback configuration |
+| `template_variables` | `Dict[str, str]` | No | `None` | Template variables for messages |
 
 <!-- snippet: fragment -->
 ```python
@@ -326,14 +341,6 @@ Fixed sample rate: 24000 Hz.
 | Parameter | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `language` | `str` | No | `None` | Language code |
-| `additional_params` | `Dict[str, Any]` | No | `None` | Additional parameters |
-
-### `SonioxSTT`
-
-| Parameter | Type | Required | Default | Description |
-|---|---|---|---|---|
-| `api_key` | `str` | Yes | — | Soniox API key |
-| `language` | `str` | Yes | — | Language code (e.g., `en`) |
 | `additional_params` | `Dict[str, Any]` | No | `None` | Additional parameters |
 
 ### `SarvamSTT`

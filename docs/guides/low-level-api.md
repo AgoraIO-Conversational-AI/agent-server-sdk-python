@@ -8,6 +8,13 @@ description: Direct client.agents.start() usage without the builder pattern.
 
 For full control over request payloads you can call the generated clients directly and pass raw types such as `StartAgentsRequestProperties`, `Tts_Elevenlabs`, and `StartAgentsRequestPropertiesAsr`. Use this when you need vendor or options not exposed by the agentkit, or when integrating with generated types from the API spec.
 
+## Raw telephony and phone-number APIs
+
+AgentKit focuses on realtime agent session helpers. Telephony call status, call hangup, and phone-number management are exposed through the generated low-level clients:
+
+- `client.telephony` for call status and hangup operations
+- `client.phone_numbers` for phone-number list, create, retrieve, update, and delete operations
+
 ## Cascading flow (ASR → LLM → TTS)
 
 ```python

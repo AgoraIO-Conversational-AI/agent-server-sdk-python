@@ -1,4 +1,5 @@
-from agora_agent.agentkit.agent import Agent
+from agora_agent.agentkit.agent import Agent, TurnDetectionConfig
+from agora_agent.agentkit.constants import TurnDetectionTypeValues
 import asyncio
 import warnings
 from agora_agent.agentkit.agent_session import AgentSession, AsyncAgentSession
@@ -100,6 +101,9 @@ def test_llm_vendor_headers_are_forwarded_to_properties() -> None:
             api_key="openai-key",
             model="gpt-4o-mini",
             headers={"X-Trace-Id": "trace-123"},
+            output_modalities=["text", "audio"],
+            greeting_configs={"mode": "single_first"},
+            template_variables={"caller_name": "Ada"},
         )
     ).with_tts(MicrosoftTTS(key="tts-key", region="eastus", voice_name="en-US-JennyNeural"))
 
@@ -112,6 +116,27 @@ def test_llm_vendor_headers_are_forwarded_to_properties() -> None:
 
     assert props.llm is not None
     assert props.llm.headers == {"X-Trace-Id": "trace-123"}
+    assert props.llm.output_modalities == ["text", "audio"]
+    assert props.llm.greeting_configs is not None
+    assert props.llm.greeting_configs.mode == "single_first"
+    assert props.llm.template_variables == {"caller_name": "Ada"}
+
+
+def test_with_turn_detection_forwards_config() -> None:
+    turn_detection = TurnDetectionConfig(
+        type=TurnDetectionTypeValues.AGORA_VAD,
+        threshold=0.5,
+    )
+
+    props = Agent().with_turn_detection(turn_detection).to_properties(
+        channel="room",
+        token="rtc-token",
+        agent_uid="1",
+        remote_uids=["2"],
+        skip_vendor_validation=True,
+    )
+
+    assert props.turn_detection == turn_detection
 
 
 def test_with_mllm_sets_legacy_enable_mllm_flag() -> None:

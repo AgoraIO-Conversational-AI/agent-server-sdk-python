@@ -78,7 +78,6 @@ Used with `agent.with_stt()`.
 | `AmazonSTT` | Amazon Transcribe | `access_key`, `secret_key`, `region` |
 | `AssemblyAISTT` | AssemblyAI | `api_key` |
 | `AresSTT` | Ares | — (all optional) |
-| `SonioxSTT` | Soniox | `api_key`, `language` |
 | `SarvamSTT` | Sarvam | `api_key`, `language` |
 
 <!-- snippet: executable -->
