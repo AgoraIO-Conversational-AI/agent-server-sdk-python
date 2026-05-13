@@ -1011,7 +1011,7 @@ client.agent_management.agent_think(
 <dl>
 <dd>
 
-**on_listening_action:** `typing.Optional[AgentThinkRequestOnListeningAction]` 
+**on_listening_action:** `typing.Optional[AgentThinkAgentManagementRequestOnListeningAction]` 
 
 The action to take when the agent is in a listening state:
 - `inject`: Inject the custom text instruction into the current turn without interrupting it.
@@ -1023,7 +1023,7 @@ The action to take when the agent is in a listening state:
 <dl>
 <dd>
 
-**on_thinking_action:** `typing.Optional[AgentThinkRequestOnThinkingAction]` 
+**on_thinking_action:** `typing.Optional[AgentThinkAgentManagementRequestOnThinkingAction]` 
 
 The action to take when the agent is in a thinking state:
 - `interrupt`: Interrupt the current state and start a new conversation turn.
@@ -1035,7 +1035,7 @@ The action to take when the agent is in a thinking state:
 <dl>
 <dd>
 
-**on_speaking_action:** `typing.Optional[AgentThinkRequestOnSpeakingAction]` 
+**on_speaking_action:** `typing.Optional[AgentThinkAgentManagementRequestOnSpeakingAction]` 
 
 The action to take when the agent is in a speaking state:
 - `interrupt`: Interrupt the current state and start a new conversation turn.

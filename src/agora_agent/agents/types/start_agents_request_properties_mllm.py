@@ -57,18 +57,27 @@ class StartAgentsRequestPropertiesMllm(UncheckedBaseModel):
     Agent greeting message. If provided, the first user in the channel is automatically greeted with this message upon joining.
     """
 
+    failure_message: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Message played when the MLLM call fails.
+    """
+
+    max_history: typing.Optional[int] = pydantic.Field(default=None)
+    """
+    Maximum number of conversation history messages cached for the MLLM session.
+    """
+
+    predefined_tools: typing.Optional[typing.List[str]] = pydantic.Field(default=None)
+    """
+    Predefined tools available to the MLLM provider.
+    """
+
     vendor: typing.Optional[StartAgentsRequestPropertiesMllmVendor] = pydantic.Field(default=None)
     """
     MLLM provider. Currently supports:
     - `openai`: OpenAI Realtime API
     - `gemini`: Google Gemini Live
     - `vertexai`: Google Gemini Live (Vertex AI)
-    """
-
-    style: typing.Optional[typing.Literal["openai"]] = pydantic.Field(default=None)
-    """
-    The request style for MLLM completion:
-    - `openai`: For OpenAI Realtime API format
     """
 
     turn_detection: typing.Optional[StartAgentsRequestPropertiesMllmTurnDetection] = pydantic.Field(default=None)

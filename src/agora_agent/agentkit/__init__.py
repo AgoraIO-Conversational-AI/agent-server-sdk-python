@@ -42,15 +42,17 @@ from .agent import (
     McpServersItem,
 )
 from .agent_session import AgentSession, AgentSessionOptions, AsyncAgentSession
-from ..agent_management.types.agent_think_response import AgentThinkResponse
-from ..agent_management.types.agent_think_request_on_listening_action import (
-    AgentThinkRequestOnListeningAction,
+from ..agent_management.types.agent_think_agent_management_response import (
+    AgentThinkAgentManagementResponse as AgentThinkResponse,
 )
-from ..agent_management.types.agent_think_request_on_thinking_action import (
-    AgentThinkRequestOnThinkingAction,
+from ..agent_management.types.agent_think_agent_management_request_on_listening_action import (
+    AgentThinkAgentManagementRequestOnListeningAction as AgentThinkRequestOnListeningAction,
 )
-from ..agent_management.types.agent_think_request_on_speaking_action import (
-    AgentThinkRequestOnSpeakingAction,
+from ..agent_management.types.agent_think_agent_management_request_on_thinking_action import (
+    AgentThinkAgentManagementRequestOnThinkingAction as AgentThinkRequestOnThinkingAction,
+)
+from ..agent_management.types.agent_think_agent_management_request_on_speaking_action import (
+    AgentThinkAgentManagementRequestOnSpeakingAction as AgentThinkRequestOnSpeakingAction,
 )
 from .avatar_types import (
     is_akool_avatar,

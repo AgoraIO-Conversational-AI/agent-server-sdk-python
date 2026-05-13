@@ -2,16 +2,18 @@ import typing
 import warnings
 
 from ..core.api_error import ApiError
-from ..agent_management.types.agent_think_request_on_listening_action import (
-    AgentThinkRequestOnListeningAction,
+from ..agent_management.types.agent_think_agent_management_request_on_listening_action import (
+    AgentThinkAgentManagementRequestOnListeningAction as AgentThinkRequestOnListeningAction,
 )
-from ..agent_management.types.agent_think_request_on_speaking_action import (
-    AgentThinkRequestOnSpeakingAction,
+from ..agent_management.types.agent_think_agent_management_request_on_speaking_action import (
+    AgentThinkAgentManagementRequestOnSpeakingAction as AgentThinkRequestOnSpeakingAction,
 )
-from ..agent_management.types.agent_think_request_on_thinking_action import (
-    AgentThinkRequestOnThinkingAction,
+from ..agent_management.types.agent_think_agent_management_request_on_thinking_action import (
+    AgentThinkAgentManagementRequestOnThinkingAction as AgentThinkRequestOnThinkingAction,
 )
-from ..agent_management.types.agent_think_response import AgentThinkResponse
+from ..agent_management.types.agent_think_agent_management_response import (
+    AgentThinkAgentManagementResponse as AgentThinkResponse,
+)
 from ..agents.types.start_agents_request_properties import StartAgentsRequestProperties
 from .agent import Agent
 from .avatar_types import (

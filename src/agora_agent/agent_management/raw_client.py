@@ -9,10 +9,16 @@ from ..core.http_response import AsyncHttpResponse, HttpResponse
 from ..core.jsonable_encoder import jsonable_encoder
 from ..core.request_options import RequestOptions
 from ..core.unchecked_base_model import construct_type
-from .types.agent_think_request_on_listening_action import AgentThinkRequestOnListeningAction
-from .types.agent_think_request_on_speaking_action import AgentThinkRequestOnSpeakingAction
-from .types.agent_think_request_on_thinking_action import AgentThinkRequestOnThinkingAction
-from .types.agent_think_response import AgentThinkResponse
+from .types.agent_think_agent_management_request_on_listening_action import (
+    AgentThinkAgentManagementRequestOnListeningAction,
+)
+from .types.agent_think_agent_management_request_on_speaking_action import (
+    AgentThinkAgentManagementRequestOnSpeakingAction,
+)
+from .types.agent_think_agent_management_request_on_thinking_action import (
+    AgentThinkAgentManagementRequestOnThinkingAction,
+)
+from .types.agent_think_agent_management_response import AgentThinkAgentManagementResponse
 
 # this is used as the default value for optional parameters
 OMIT = typing.cast(typing.Any, ...)
@@ -28,13 +34,13 @@ class RawAgentManagementClient:
         agent_id: str,
         *,
         text: str,
-        on_listening_action: typing.Optional[AgentThinkRequestOnListeningAction] = OMIT,
-        on_thinking_action: typing.Optional[AgentThinkRequestOnThinkingAction] = OMIT,
-        on_speaking_action: typing.Optional[AgentThinkRequestOnSpeakingAction] = OMIT,
+        on_listening_action: typing.Optional[AgentThinkAgentManagementRequestOnListeningAction] = OMIT,
+        on_thinking_action: typing.Optional[AgentThinkAgentManagementRequestOnThinkingAction] = OMIT,
+        on_speaking_action: typing.Optional[AgentThinkAgentManagementRequestOnSpeakingAction] = OMIT,
         interruptable: typing.Optional[bool] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> HttpResponse[AgentThinkResponse]:
+    ) -> HttpResponse[AgentThinkAgentManagementResponse]:
         """
         Send a custom text instruction to the specified conversational AI agent instance.
 
@@ -56,17 +62,17 @@ class RawAgentManagementClient:
         text : str
             The custom instruction text to inject into the current conversation pipeline. The system processes this as user input.
 
-        on_listening_action : typing.Optional[AgentThinkRequestOnListeningAction]
+        on_listening_action : typing.Optional[AgentThinkAgentManagementRequestOnListeningAction]
             The action to take when the agent is in a listening state:
             - `inject`: Inject the custom text instruction into the current turn without interrupting it.
             - `ignore`: Ignore the request.
 
-        on_thinking_action : typing.Optional[AgentThinkRequestOnThinkingAction]
+        on_thinking_action : typing.Optional[AgentThinkAgentManagementRequestOnThinkingAction]
             The action to take when the agent is in a thinking state:
             - `interrupt`: Interrupt the current state and start a new conversation turn.
             - `ignore`: Ignore the request.
 
-        on_speaking_action : typing.Optional[AgentThinkRequestOnSpeakingAction]
+        on_speaking_action : typing.Optional[AgentThinkAgentManagementRequestOnSpeakingAction]
             The action to take when the agent is in a speaking state:
             - `interrupt`: Interrupt the current state and start a new conversation turn.
             - `ignore`: Ignore the request.
@@ -84,7 +90,7 @@ class RawAgentManagementClient:
 
         Returns
         -------
-        HttpResponse[AgentThinkResponse]
+        HttpResponse[AgentThinkAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = self._client_wrapper.httpx_client.request(
@@ -107,9 +113,9 @@ class RawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentThinkResponse,
+                    AgentThinkAgentManagementResponse,
                     construct_type(
-                        type_=AgentThinkResponse,  # type: ignore
+                        type_=AgentThinkAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )
@@ -130,13 +136,13 @@ class AsyncRawAgentManagementClient:
         agent_id: str,
         *,
         text: str,
-        on_listening_action: typing.Optional[AgentThinkRequestOnListeningAction] = OMIT,
-        on_thinking_action: typing.Optional[AgentThinkRequestOnThinkingAction] = OMIT,
-        on_speaking_action: typing.Optional[AgentThinkRequestOnSpeakingAction] = OMIT,
+        on_listening_action: typing.Optional[AgentThinkAgentManagementRequestOnListeningAction] = OMIT,
+        on_thinking_action: typing.Optional[AgentThinkAgentManagementRequestOnThinkingAction] = OMIT,
+        on_speaking_action: typing.Optional[AgentThinkAgentManagementRequestOnSpeakingAction] = OMIT,
         interruptable: typing.Optional[bool] = OMIT,
         metadata: typing.Optional[typing.Dict[str, str]] = OMIT,
         request_options: typing.Optional[RequestOptions] = None,
-    ) -> AsyncHttpResponse[AgentThinkResponse]:
+    ) -> AsyncHttpResponse[AgentThinkAgentManagementResponse]:
         """
         Send a custom text instruction to the specified conversational AI agent instance.
 
@@ -158,17 +164,17 @@ class AsyncRawAgentManagementClient:
         text : str
             The custom instruction text to inject into the current conversation pipeline. The system processes this as user input.
 
-        on_listening_action : typing.Optional[AgentThinkRequestOnListeningAction]
+        on_listening_action : typing.Optional[AgentThinkAgentManagementRequestOnListeningAction]
             The action to take when the agent is in a listening state:
             - `inject`: Inject the custom text instruction into the current turn without interrupting it.
             - `ignore`: Ignore the request.
 
-        on_thinking_action : typing.Optional[AgentThinkRequestOnThinkingAction]
+        on_thinking_action : typing.Optional[AgentThinkAgentManagementRequestOnThinkingAction]
             The action to take when the agent is in a thinking state:
             - `interrupt`: Interrupt the current state and start a new conversation turn.
             - `ignore`: Ignore the request.
 
-        on_speaking_action : typing.Optional[AgentThinkRequestOnSpeakingAction]
+        on_speaking_action : typing.Optional[AgentThinkAgentManagementRequestOnSpeakingAction]
             The action to take when the agent is in a speaking state:
             - `interrupt`: Interrupt the current state and start a new conversation turn.
             - `ignore`: Ignore the request.
@@ -186,7 +192,7 @@ class AsyncRawAgentManagementClient:
 
         Returns
         -------
-        AsyncHttpResponse[AgentThinkResponse]
+        AsyncHttpResponse[AgentThinkAgentManagementResponse]
             Request was successful. The response body contains the result of the request.
         """
         _response = await self._client_wrapper.httpx_client.request(
@@ -209,9 +215,9 @@ class AsyncRawAgentManagementClient:
         try:
             if 200 <= _response.status_code < 300:
                 _data = typing.cast(
-                    AgentThinkResponse,
+                    AgentThinkAgentManagementResponse,
                     construct_type(
-                        type_=AgentThinkResponse,  # type: ignore
+                        type_=AgentThinkAgentManagementResponse,  # type: ignore
                         object_=_response.json(),
                     ),
                 )

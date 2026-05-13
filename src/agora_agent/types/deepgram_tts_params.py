@@ -5,28 +5,41 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 from ..core.unchecked_base_model import UncheckedBaseModel
-from .cartesia_tts_voice import CartesiaTtsVoice
 
 
-class CartesiaTtsParams(UncheckedBaseModel):
+class DeepgramTtsParams(UncheckedBaseModel):
     """
-    Cartesia TTS configuration parameters.
+    Deepgram TTS configuration parameters.
     """
 
     api_key: str = pydantic.Field()
     """
-    Cartesia API key
+    Deepgram API key
     """
 
-    voice: CartesiaTtsVoice
-    model_id: typing.Optional[str] = pydantic.Field(default=None)
+    model: str = pydantic.Field()
     """
-    Model ID (optional)
+    Deepgram TTS model (for example, "aura-2-thalia-en")
+    """
+
+    base_url: typing.Optional[str] = pydantic.Field(default=None)
+    """
+    Deepgram WebSocket endpoint override
     """
 
     sample_rate: typing.Optional[int] = pydantic.Field(default=None)
     """
     Audio sampling rate in Hz
+    """
+
+    params: typing.Optional[typing.Dict[str, typing.Any]] = pydantic.Field(default=None)
+    """
+    Additional Deepgram TTS parameters
+    """
+
+    skip_patterns: typing.Optional[typing.List[int]] = pydantic.Field(default=None)
+    """
+    Controls whether the TTS module skips bracketed content when reading LLM response text.
     """
 
     if IS_PYDANTIC_V2:

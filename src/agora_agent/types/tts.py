@@ -10,6 +10,7 @@ from ..core.pydantic_utilities import IS_PYDANTIC_V2
 from ..core.unchecked_base_model import UncheckedBaseModel, UnionMetadata
 from .amazon_tts_params import AmazonTtsParams
 from .cartesia_tts_params import CartesiaTtsParams
+from .deepgram_tts_params import DeepgramTtsParams
 from .eleven_labs_tts_params import ElevenLabsTtsParams
 from .fish_audio_tts_params import FishAudioTtsParams
 from .google_tts_params import GoogleTtsParams
@@ -202,6 +203,21 @@ class Tts_Sarvam(UncheckedBaseModel):
             extra = pydantic.Extra.allow
 
 
+class Tts_Deepgram(UncheckedBaseModel):
+    vendor: typing.Literal["deepgram"] = "deepgram"
+    params: DeepgramTtsParams
+    skip_patterns: typing.Optional[typing.List[int]] = None
+
+    if IS_PYDANTIC_V2:
+        model_config: typing.ClassVar[pydantic.ConfigDict] = pydantic.ConfigDict(extra="allow", frozen=True)  # type: ignore # Pydantic v2
+    else:
+
+        class Config:
+            frozen = True
+            smart_union = True
+            extra = pydantic.Extra.allow
+
+
 Tts = typing_extensions.Annotated[
     typing.Union[
         Tts_Microsoft,
@@ -216,6 +232,7 @@ Tts = typing_extensions.Annotated[
         Tts_Google,
         Tts_Amazon,
         Tts_Sarvam,
+        Tts_Deepgram,
     ],
     UnionMetadata(discriminant="vendor"),
 ]

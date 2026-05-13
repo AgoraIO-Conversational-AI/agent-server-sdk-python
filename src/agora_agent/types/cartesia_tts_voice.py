@@ -5,28 +5,21 @@ import typing
 import pydantic
 from ..core.pydantic_utilities import IS_PYDANTIC_V2
 from ..core.unchecked_base_model import UncheckedBaseModel
-from .cartesia_tts_voice import CartesiaTtsVoice
 
 
-class CartesiaTtsParams(UncheckedBaseModel):
+class CartesiaTtsVoice(UncheckedBaseModel):
     """
-    Cartesia TTS configuration parameters.
-    """
-
-    api_key: str = pydantic.Field()
-    """
-    Cartesia API key
+    Cartesia voice selection.
     """
 
-    voice: CartesiaTtsVoice
-    model_id: typing.Optional[str] = pydantic.Field(default=None)
+    mode: typing.Literal["id"] = pydantic.Field(default="id")
     """
-    Model ID (optional)
+    Cartesia voice selection mode.
     """
 
-    sample_rate: typing.Optional[int] = pydantic.Field(default=None)
+    id: str = pydantic.Field()
     """
-    Audio sampling rate in Hz
+    Cartesia voice ID
     """
 
     if IS_PYDANTIC_V2:

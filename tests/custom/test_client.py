@@ -4,7 +4,7 @@ import asyncio
 import warnings
 from agora_agent.agentkit.agent_session import AgentSession, AsyncAgentSession
 from agora_agent.agentkit.vendors import DeepgramTTS, HeyGenAvatar, MicrosoftTTS, OpenAI, OpenAIRealtime
-from agora_agent.agent_management.types.agent_think_response import AgentThinkResponse
+from agora_agent.agentkit import AgentThinkResponse
 from typing import Any, Dict, List, Tuple
 
 
@@ -172,7 +172,7 @@ def test_mllm_turn_detection_is_forwarded_without_legacy_style() -> None:
 
     assert props.mllm is not None
     assert props.mllm.vendor == "openai"
-    assert props.mllm.style is None
+    assert "style" not in props.mllm.dict()
     assert props.mllm.turn_detection == mllm_turn_detection
 
 
