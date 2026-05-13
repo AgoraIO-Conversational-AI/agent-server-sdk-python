@@ -29,6 +29,7 @@ class OpenAIOptions(BaseModel):
     failure_message: Optional[str] = Field(default=None)
     input_modalities: Optional[List[str]] = Field(default=None)
     params: Optional[Dict[str, Any]] = Field(default=None)
+    headers: Optional[Dict[str, str]] = Field(default=None)
     output_modalities: Optional[List[str]] = Field(default=None)
     greeting_configs: Optional[Dict[str, Any]] = Field(default=None)
     template_variables: Optional[Dict[str, str]] = Field(default=None)
@@ -61,6 +62,8 @@ class OpenAI(BaseLLM):
         }
         if self.options.api_key is not None:
             config["api_key"] = self.options.api_key
+        if self.options.headers is not None:
+            config["headers"] = self.options.headers
 
         if self.options.system_messages is not None:
             config["system_messages"] = self.options.system_messages
@@ -99,6 +102,7 @@ class AzureOpenAIOptions(BaseModel):
     failure_message: Optional[str] = Field(default=None)
     input_modalities: Optional[List[str]] = Field(default=None)
     params: Optional[Dict[str, Any]] = Field(default=None)
+    headers: Optional[Dict[str, str]] = Field(default=None)
     output_modalities: Optional[List[str]] = Field(default=None)
     greeting_configs: Optional[Dict[str, Any]] = Field(default=None)
     template_variables: Optional[Dict[str, str]] = Field(default=None)
@@ -134,6 +138,8 @@ class AzureOpenAI(BaseLLM):
             params["max_tokens"] = self.options.max_tokens
         if params:
             config["params"] = params
+        if self.options.headers is not None:
+            config["headers"] = self.options.headers
 
         if self.options.system_messages is not None:
             config["system_messages"] = self.options.system_messages
@@ -169,6 +175,7 @@ class AnthropicOptions(BaseModel):
     failure_message: Optional[str] = Field(default=None)
     input_modalities: Optional[List[str]] = Field(default=None)
     params: Optional[Dict[str, Any]] = Field(default=None)
+    headers: Optional[Dict[str, str]] = Field(default=None)
     output_modalities: Optional[List[str]] = Field(default=None)
     greeting_configs: Optional[Dict[str, Any]] = Field(default=None)
     template_variables: Optional[Dict[str, str]] = Field(default=None)
@@ -200,6 +207,8 @@ class Anthropic(BaseLLM):
 
         if self.options.system_messages is not None:
             config["system_messages"] = self.options.system_messages
+        if self.options.headers is not None:
+            config["headers"] = self.options.headers
         if self.options.greeting_message is not None:
             config["greeting_message"] = self.options.greeting_message
         if self.options.failure_message is not None:
@@ -235,6 +244,7 @@ class GeminiOptions(BaseModel):
     failure_message: Optional[str] = Field(default=None)
     input_modalities: Optional[List[str]] = Field(default=None)
     params: Optional[Dict[str, Any]] = Field(default=None)
+    headers: Optional[Dict[str, str]] = Field(default=None)
     output_modalities: Optional[List[str]] = Field(default=None)
     greeting_configs: Optional[Dict[str, Any]] = Field(default=None)
     template_variables: Optional[Dict[str, str]] = Field(default=None)
@@ -268,6 +278,8 @@ class Gemini(BaseLLM):
 
         if self.options.system_messages is not None:
             config["system_messages"] = self.options.system_messages
+        if self.options.headers is not None:
+            config["headers"] = self.options.headers
         if self.options.greeting_message is not None:
             config["greeting_message"] = self.options.greeting_message
         if self.options.failure_message is not None:
